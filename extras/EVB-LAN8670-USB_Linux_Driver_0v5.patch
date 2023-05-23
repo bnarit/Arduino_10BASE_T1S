@@ -1,0 +1,17 @@
+813c813
+< 	retval = usbnet_get_link_ksettings(net, cmd);
+---
+> 	retval = usbnet_get_link_ksettings_mii(net, cmd);
+831c831
+< 	retval = usbnet_set_link_ksettings(net, cmd);
+---
+> 	retval = usbnet_set_link_ksettings_mii(net, cmd);
+873,874c873
+< 	mac_addr = of_get_mac_address(dev->udev->dev.of_node);
+< 	if (!IS_ERR(mac_addr)) {
+---
+> 	if (!IS_ERR(of_get_mac_address(dev->udev->dev.of_node, mac_addr))) {
+1180c1179
+< 	.ndo_get_stats64	= usbnet_get_stats64,
+---
+> 	.ndo_get_stats64	= NULL,
