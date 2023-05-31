@@ -9,9 +9,9 @@
 cd extras/evb-lan8670-usb-linux-5.19
 make
 ```
-* Load kernel driver:
+* Load kernel driver (configuration of 10BASE-T1S PHY within `load.sh`):
 ```bash
-* ./load.sh
+./load.sh
 ```
 * `dmesg` output when connecting the USB dongle:
 ```bash
