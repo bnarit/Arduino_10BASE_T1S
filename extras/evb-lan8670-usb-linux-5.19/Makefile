@@ -1,6 +1,5 @@
 ifndef KDIR
-#KDIR=/lib/modules/$(shell uname -r)/build
-    KDIR=/home/i17164/Projects/arduino/linux
+    KDIR=/lib/modules/$(shell uname -r)/build
 endif
 
 obj-m := microchip_t1s.o
