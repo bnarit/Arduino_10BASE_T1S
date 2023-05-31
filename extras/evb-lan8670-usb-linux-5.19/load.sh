@@ -23,4 +23,3 @@ sudo insmod microchip_t1s.ko enable=1 node_id=0 node_count=8 max_bc=0 burst_time
 sudo insmod smsc95xx_t1s.ko
 
 sudo ip addr add dev eth1 192.168.1.100/24
-sudo ifconfig eth1 up
