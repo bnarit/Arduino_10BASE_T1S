@@ -35,9 +35,9 @@ Microchip or any third party.
 
 #include <stddef.h>
 #include <string.h>
-#include "tc6.h"
-#include "tc6-conf.h"
-#include "tc6-regs.h"
+#include "../inc/tc6.h"
+#include "../cfg-example/tc6-conf.h"
+#include "../inc/tc6-regs.h"
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                          AUTO GENERATED DEFINES                      */

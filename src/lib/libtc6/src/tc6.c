@@ -43,8 +43,8 @@ Microchip or any third party.
 #include <string.h>
 #include <limits.h>
 #include <assert.h>
-#include "tc6-conf.h"
-#include "tc6.h"
+#include "../cfg-example/tc6-conf.h"
+#include "../inc/tc6.h"
 #include "tc6-queue.h"
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
