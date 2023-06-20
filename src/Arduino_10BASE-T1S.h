@@ -24,3 +24,4 @@
 
 #include "lib/libtc6/inc/tc6.h"
 #include "lib/libtc6/inc/tc6-regs.h"
+#include "lib/libtc6/cfg-example/tc6-conf.h"
