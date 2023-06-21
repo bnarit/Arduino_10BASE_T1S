@@ -43,15 +43,18 @@ Microchip or any third party.
 #include <stdarg.h>
 #include <string.h>
 #include <assert.h>
-#include "lwip/netif.h"
-#include "lwip/init.h"
-#include "lwip/timeouts.h"
-#include "netif/etharp.h"
-#include "lwip/mem.h"
-#include "lwip/memp.h"
-#include "tc6-conf.h"
-#include "tc6-regs.h"
-#include "tc6.h"
+//#include "lwip/netif.h"
+//#include "lwip/init.h"
+//#include "lwip/timeouts.h"
+//#include "netif/etharp.h"
+//#include "lwip/mem.h"
+//#include "lwip/memp.h"
+#include <Arduino.h>
+#include <lwIP_Arduino.h>
+#include <Arduino_10BASE-T1S.h>
+//#include "tc6-conf.h"
+//#include "tc6-regs.h"
+//#include "tc6.h"
 #include "tc6-stub.h"
 #include "tc6-lwip.h"
 

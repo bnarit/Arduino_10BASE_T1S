@@ -2,6 +2,8 @@
 
 #include "tc6-stub.h"
 
+/* arduino-cli compile -b arduino:samd:nano_33_iot -v examples/LAN8651 */
+
 void setup()
 {
   Serial.begin(115200);
