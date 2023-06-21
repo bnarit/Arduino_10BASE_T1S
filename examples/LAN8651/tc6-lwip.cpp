@@ -406,7 +406,7 @@ u32_t sys_now(void)
 
 static void OnRawTx(TC6_t *pInst, const uint8_t *pTx, uint16_t len, void *pTag, void *pGlobalTag)
 {
-    struct pbuf *p = pTag;
+    struct pbuf *p = (struct pbuf *)pTag;
     (void)pInst;
     (void)pTx;
     (void)len;
@@ -496,7 +496,7 @@ void TC6_CB_OnRxEthernetPacket(TC6_t *pInst, bool success, uint16_t len, uint64_
         TC6_ASSERT(lw->tc.pbuf);
         TC6_ASSERT(lw->tc.pbuf->ref != 0);
         pbuf_realloc(lw->tc.pbuf, len); /* Shrink a pbuf chain to a desired length. */
-        ethhdr = lw->tc.pbuf->payload;
+        ethhdr = (eth_hdr *)lw->tc.pbuf->payload;
         ethType = htons(ethhdr->type);
         if (FilterRxEthernetPacket(ethType)) {
             /* Integrator decided that TCP/IP stack shall consume the received packet */
@@ -703,7 +703,7 @@ uint32_t TC6Regs_CB_GetTicksMs(void)
 
 static void OnPlcaStatus(TC6_t *pInst, bool success, uint32_t addr, uint32_t value, void *tag, void *pGlobalTag)
 {
-    TC6LwIP_t *lw =tag;
+    TC6LwIP_t *lw = (TC6LwIP_t *)tag;
     (void)pInst;
     (void)addr;
     (void)pGlobalTag;
