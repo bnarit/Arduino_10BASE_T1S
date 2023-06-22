@@ -70,11 +70,19 @@ Microchip or any third party.
 
 static const uint8_t FALLBACK_MAC[] = {0x00u, 0x80u, 0xC2u, 0x00u, 0x01u, 0xCCu};
 
+#if defined(ARDUINO_SAMD_NANO_33_IOT)
 static int const IRQ_PIN   =  2;
 static int const RESET_PIN =  9;
 static int const CS_PIN    = 10;
+#elif defined(ARDUINO_RASPBERRY_PI_PICO)
+static int const IRQ_PIN   = 15;
+static int const RESET_PIN = 14;
+static int const CS_PIN    =  5;
+#else
+# error "No pins defined for your board"
+#endif
 
-static SPISettings const LAN865x_SPI_SETTING{10*1000*1000UL, MSBFIRST, SPI_MODE0};
+static SPISettings const LAN865x_SPI_SETTING{1*1000*1000UL, MSBFIRST, SPI_MODE0};
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                      DEFINES AND LOCAL VARIABLES                     */
@@ -117,16 +125,26 @@ static void IntHandler() { IntHandler((uintptr_t)&d[0]); }
 
 bool TC6Stub_Init(uint8_t idx, uint8_t pMac[6])
 {
-    pinMode(CS_PIN, OUTPUT);
     digitalWrite(CS_PIN, HIGH);
+    pinMode(CS_PIN, OUTPUT);
 
-    pinMode(RESET_PIN, OUTPUT);
     digitalWrite(RESET_PIN, HIGH);
+    pinMode(RESET_PIN, OUTPUT);
 
     pinMode(IRQ_PIN, INPUT_PULLUP);
 
+#if defined(ARDUINO_RASPBERRY_PI_PICO)
+    SPI.setSCK(2);
+    SPI.setTX (3);
+    SPI.setRX (4);
+    SPI.setCS (5);
+#endif
     SPI.begin();
 
+#if defined(ARDUINO_RASPBERRY_PI_PICO)
+    Wire.setSDA(0);
+    Wire.setSCL(1);
+#endif
     Wire.begin();
 
     bool success = false;
@@ -143,10 +161,11 @@ bool TC6Stub_Init(uint8_t idx, uint8_t pMac[6])
         }
         switch (idx) {
         case FIRST_TC6_INSTANCE:
-            attachInterrupt(digitalPinToInterrupt(IRQ_PIN), IntHandler, FALLING);
             digitalWrite(RESET_PIN, LOW);
             delay(1000);
             digitalWrite(RESET_PIN, HIGH);
+            delay(1000);
+            attachInterrupt(digitalPinToInterrupt(IRQ_PIN), IntHandler, FALLING);
 //            EIC_CallbackRegister(EIC_PIN_6, IntHandler, (uintptr_t)ps);
 //            TC6_RESET_1_Set();
 //            SYSTICK_DelayMs(10);
@@ -182,6 +201,7 @@ bool TC6Stub_Init(uint8_t idx, uint8_t pMac[6])
 
 bool TC6Stub_IntActive(uint8_t idx)
 {
+    Serial.println("TC6Stub_IntActive");
     Stub_Local_t *ps = &d[idx];
     ASSERT(idx < TC6_MAX_INSTANCES);
     ps->intReported = ps->intIn;
@@ -190,6 +210,7 @@ bool TC6Stub_IntActive(uint8_t idx)
 
 void TC6Stub_ReleaseInt(uint8_t idx)
 {
+    Serial.println("TC6Stub_ReleaseInt");
     Stub_Local_t *ps = &d[idx];
     ASSERT(idx < TC6_MAX_INSTANCES);
     if (digitalRead(IRQ_PIN) == HIGH) {
@@ -213,6 +234,30 @@ bool TC6Stub_SpiTransaction(uint8_t idx, uint8_t *pTx, uint8_t *pRx, uint16_t le
 
     SPI.endTransaction();
     digitalWrite(CS_PIN, HIGH);
+
+#if 1
+    Serial.print("TX = ");
+    for (size_t b = 0; b < len; b++)
+    {
+      char msg[8] = {0};
+      snprintf(msg, sizeof(msg), "%02X ", pTx[b]);
+      Serial.print(msg);
+    }
+    Serial.println();
+
+    Serial.print("RX = ");
+    for (size_t b = 0; b < len; b++)
+    {
+      char msg[8] = {0};
+      snprintf(msg, sizeof(msg), "%02X ", pRx[b]);
+      Serial.print(msg);
+    }
+    Serial.println();
+#endif
+
+  return true;
+}
+
 //    DRV_SPI_TRANSFER_HANDLE transferHandle;
 //    Stub_Local_t *ps = &d[idx];
 //    bool success = false;
@@ -228,7 +273,7 @@ bool TC6Stub_SpiTransaction(uint8_t idx, uint8_t *pTx, uint8_t *pRx, uint16_t le
 //        }
 //    }
 //    return success;
-}
+//}
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                  PRIVATE FUNCTION IMPLEMENTATIONS                    */
@@ -319,6 +364,7 @@ static bool GetMacAddress(Stub_Local_t *ps)
 
 static void IntHandler(uintptr_t context)
 {
+    Serial.println("IntHandler");
     Stub_Local_t *ps = (Stub_Local_t *)context;
     ps->intIn++;
 }

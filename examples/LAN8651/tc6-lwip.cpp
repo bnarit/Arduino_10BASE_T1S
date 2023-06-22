@@ -465,7 +465,7 @@ void TC6_CB_OnRxEthernetSlice(TC6_t *pInst, const uint8_t *pRx, uint16_t offset,
         }
     }
     if (success) {
-        (void)memcpy(lw->tc.pbuf->payload + offset, pRx, len);
+        (void)memcpy((uint8_t *)lw->tc.pbuf->payload + offset, pRx, len);
         lw->tc.rxLen += len;
     }
 }
