@@ -28,6 +28,8 @@ void setup()
   Serial.begin(115200);
   while (!Serial) { }
 
+  delay(1000);
+
 //  uint8_t mac_addr[6] = {0};
 //  if (!TC6Stub_Init(0, mac_addr)) {
 //    Serial.println("TC6Stub_Init failed.");
@@ -47,7 +49,7 @@ void setup()
                                      MAC_PROMISCUOUS_MODE,
                                      MAC_TX_CUT_THROUGH,
                                      MAC_RX_CUT_THROUGH);
-  if (lwip_idx) {
+  if (lwip_idx < 0) {
     Serial.println("'TC6LwIP_Init' failed.");
     return;
   }
@@ -69,10 +71,7 @@ void loop()
   if ((now - prev_beacon_check) > 1000)
   {
     prev_beacon_check = now;
-    Serial.println("Checking beacon ...");
-
-    if (!TC6LwIP_GetPlcaStatus(lwip_idx, OnPlcaStatus))
-      Serial.println("GetPlcaStatus failed");
+    TC6LwIP_GetPlcaStatus(lwip_idx, OnPlcaStatus);
   }
 }
 
