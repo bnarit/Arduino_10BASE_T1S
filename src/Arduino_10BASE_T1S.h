@@ -25,3 +25,10 @@
 #include "lib/libtc6/inc/tc6.h"
 #include "lib/libtc6/inc/tc6-regs.h"
 #include "lib/libtc6/cfg-example/tc6-conf.h"
+
+#include "lib/liblwip/include/lwip/netif.h"
+#include "lib/liblwip/include/lwip/init.h"
+#include "lib/liblwip/include/lwip/timeouts.h"
+#include "lib/liblwip/include/netif/etharp.h"
+#include "lib/liblwip/include/lwip/mem.h"
+#include "lib/liblwip/include/lwip/memp.h"
