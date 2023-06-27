@@ -50,7 +50,7 @@ Microchip or any third party.
 //#include "lwip/mem.h"
 //#include "lwip/memp.h"
 #include <Arduino.h>
-#include <lwIP_Arduino.h>
+//#include <lwIP_Arduino.h>
 #include <Arduino_10BASE_T1S.h>
 //#include "tc6-conf.h"
 //#include "tc6-regs.h"
