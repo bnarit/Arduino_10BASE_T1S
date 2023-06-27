@@ -52,7 +52,7 @@ Microchip or any third party.
 #include <SPI.h>
 #include <Wire.h>
 #include <Arduino.h>
-#include <Arduino_10BASE-T1S.h>
+#include <Arduino_10BASE_T1S.h>
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                          USER ADJUSTABLE                             */
@@ -84,7 +84,6 @@ typedef struct
     uint8_t intIn;
     uint8_t intOut;
     uint8_t intReported;
-    uint8_t idx;
 } Stub_Local_t;
 
 static Stub_Local_t d = { 0 };
@@ -99,8 +98,12 @@ static bool GetMacAddress(Stub_Local_t *ps);
 /*                         PUBLIC FUNCTIONS                             */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
-bool TC6Stub_Init(uint8_t idx, uint8_t pMac[6])
+bool TC6Stub_Init(uint8_t /* idx */, uint8_t pMac[6])
 {
+    d.intIn = 0;
+    d.intOut = 0;
+    d.intReported = 0;
+
     digitalWrite(CS_PIN, HIGH);
     pinMode(CS_PIN, OUTPUT);
 
@@ -135,7 +138,11 @@ bool TC6Stub_Init(uint8_t idx, uint8_t pMac[6])
     delay(100);
 
     attachInterrupt(digitalPinToInterrupt(IRQ_PIN),
-                    []() -> void { d.intIn++; },
+                    []() -> void
+                    {
+                      d.intIn++;
+                      Serial.println(d.intIn);
+                    },
                     FALLING);
 
     return true;
@@ -143,6 +150,7 @@ bool TC6Stub_Init(uint8_t idx, uint8_t pMac[6])
 
 bool TC6Stub_IntActive(uint8_t /* idx */)
 {
+    Serial.println("TC6Stub_IntActive");
     Stub_Local_t *ps = &d;
     ps->intReported = ps->intIn;
     return (ps->intReported != ps->intOut);
@@ -150,6 +158,7 @@ bool TC6Stub_IntActive(uint8_t /* idx */)
 
 void TC6Stub_ReleaseInt(uint8_t /* idx */)
 {
+    Serial.println("TC6Stub_IntActive");
     Stub_Local_t *ps = &d;
     if (digitalRead(IRQ_PIN) == HIGH) {
         ps->intOut = ps->intReported;

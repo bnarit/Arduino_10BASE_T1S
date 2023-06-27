@@ -1,5 +1,5 @@
 /*
- * This file is part of the Arduino_10BASE-T1S library.
+ * This file is part of the Arduino_10BASE_T1S library.
  * Copyright (c) 2023 Arduino SA.
  *
  * This library is free software; you can redistribute it and/or

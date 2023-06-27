@@ -1,4 +1,4 @@
-#include <Arduino_10BASE-T1S.h>
+#include <Arduino_10BASE_T1S.h>
 
 #include "tc6-stub.h"
 #include "tc6-lwip.h"

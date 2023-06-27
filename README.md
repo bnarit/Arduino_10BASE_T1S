@@ -1,4 +1,4 @@
-`Arduino_10BASE-T1S`
+`Arduino_10BASE_T1S`
 ====================
 
 ### How-to-[`EVB-LAN8670-USB`](https://www.microchip.com/en-us/development-tool/EV08L38A)
