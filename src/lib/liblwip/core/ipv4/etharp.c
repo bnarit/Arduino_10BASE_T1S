@@ -43,17 +43,17 @@
  *
  */
 
-#include "lwip/opt.h"
+#include "../../include/lwip/opt.h"
 
 #if LWIP_IPV4 && LWIP_ARP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/etharp.h"
-#include "lwip/stats.h"
-#include "lwip/snmp.h"
-#include "lwip/dhcp.h"
-#include "lwip/autoip.h"
-#include "lwip/prot/iana.h"
-#include "netif/ethernet.h"
+#include "../../include/lwip/etharp.h"
+#include "../../include/lwip/stats.h"
+#include "../../include/lwip/snmp.h"
+#include "../../include/lwip/dhcp.h"
+#include "../../include/lwip/autoip.h"
+#include "../../include/lwip/prot/iana.h"
+#include "../../include/netif/ethernet.h"
 
 #include <string.h>
 

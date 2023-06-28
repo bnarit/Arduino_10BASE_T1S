@@ -42,15 +42,15 @@
 #ifndef LWIP_HDR_LOWPAN6_H
 #define LWIP_HDR_LOWPAN6_H
 
-#include "netif/lowpan6_opts.h"
+#include "../netif/lowpan6_opts.h"
 
 #if LWIP_IPV6
 
-#include "netif/lowpan6_common.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip.h"
-#include "lwip/ip_addr.h"
-#include "lwip/netif.h"
+#include "../netif/lowpan6_common.h"
+#include "../lwip/pbuf.h"
+#include "../lwip/ip.h"
+#include "../lwip/ip_addr.h"
+#include "../lwip/netif.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -32,7 +32,7 @@
 #ifndef LWIP_HDR_APPS_NETBIOS_H
 #define LWIP_HDR_APPS_NETBIOS_H
 
-#include "lwip/apps/netbiosns_opts.h"
+#include "../lwip/apps/netbiosns_opts.h"
 
 #ifdef __cplusplus
 extern "C" {

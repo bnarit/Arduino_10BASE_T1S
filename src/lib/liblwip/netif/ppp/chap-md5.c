@@ -28,7 +28,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && CHAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 #if 0 /* UNUSED */
@@ -36,12 +36,12 @@
 #include <string.h>
 #endif /* UNUSED */
 
-#include "netif/ppp/ppp_impl.h"
+#include "../../include/netif/ppp/ppp_impl.h"
 
-#include "netif/ppp/chap-new.h"
-#include "netif/ppp/chap-md5.h"
-#include "netif/ppp/magic.h"
-#include "netif/ppp/pppcrypt.h"
+#include "../../include/netif/ppp/chap-new.h"
+#include "../../include/netif/ppp/chap-md5.h"
+#include "../../include/netif/ppp/magic.h"
+#include "../../include/netif/ppp/pppcrypt.h"
 
 #define MD5_HASH_SIZE		16
 #define MD5_MIN_CHALLENGE	17

@@ -41,16 +41,16 @@
  *
  */
 
-#include "lwip/opt.h"
+#include "../include/lwip/opt.h"
 
 #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/altcp.h"
-#include "lwip/altcp_tcp.h"
-#include "lwip/priv/altcp_priv.h"
-#include "lwip/tcp.h"
-#include "lwip/priv/tcp_priv.h"
-#include "lwip/mem.h"
+#include "../include/lwip/altcp.h"
+#include "../include/lwip/altcp_tcp.h"
+#include "../include/lwip/priv/altcp_priv.h"
+#include "../include/lwip/tcp.h"
+#include "../include/lwip/priv/tcp_priv.h"
+#include "../include/lwip/mem.h"
 
 #include <string.h>
 

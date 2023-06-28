@@ -28,7 +28,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && CHAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 #if 0 /* UNUSED */
@@ -36,18 +36,18 @@
 #include <string.h>
 #endif /* UNUSED */
 
-#include "netif/ppp/ppp_impl.h"
+#include "../../include/netif/ppp/ppp_impl.h"
 
 #if 0 /* UNUSED */
 #include "session.h"
 #endif /* UNUSED */
 
-#include "netif/ppp/chap-new.h"
-#include "netif/ppp/chap-md5.h"
+#include "../../include/netif/ppp/chap-new.h"
+#include "../../include/netif/ppp/chap-md5.h"
 #if MSCHAP_SUPPORT
-#include "netif/ppp/chap_ms.h"
+#include "../../include/netif/ppp/chap_ms.h"
 #endif
-#include "netif/ppp/magic.h"
+#include "../../include/netif/ppp/magic.h"
 
 #if 0 /* UNUSED */
 /* Hook for a plugin to validate CHAP challenge */

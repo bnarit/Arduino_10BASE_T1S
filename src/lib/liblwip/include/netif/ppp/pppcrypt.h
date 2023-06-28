@@ -30,7 +30,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 /* This header file is included in all PPP modules needing hashes and/or ciphers */
@@ -42,7 +42,7 @@
  * If included PolarSSL copy is not used, user is expected to include
  * external libraries in arch/cc.h (which is included by lwip/arch.h).
  */
-#include "lwip/arch.h"
+#include "../../include/lwip/arch.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -53,7 +53,7 @@ extern "C" {
  */
 #if !LWIP_USE_EXTERNAL_MBEDTLS
 
-#include "netif/ppp/polarssl/md4.h"
+#include "../../netif/ppp/polarssl/md4.h"
 #define lwip_md4_context md4_context
 #define lwip_md4_init(context)
 #define lwip_md4_starts md4_starts
@@ -61,7 +61,7 @@ extern "C" {
 #define lwip_md4_finish md4_finish
 #define lwip_md4_free(context)
 
-#include "netif/ppp/polarssl/md5.h"
+#include "../../netif/ppp/polarssl/md5.h"
 #define lwip_md5_context md5_context
 #define lwip_md5_init(context)
 #define lwip_md5_starts md5_starts
@@ -69,7 +69,7 @@ extern "C" {
 #define lwip_md5_finish md5_finish
 #define lwip_md5_free(context)
 
-#include "netif/ppp/polarssl/sha1.h"
+#include "../../netif/ppp/polarssl/sha1.h"
 #define lwip_sha1_context sha1_context
 #define lwip_sha1_init(context)
 #define lwip_sha1_starts sha1_starts
@@ -77,14 +77,14 @@ extern "C" {
 #define lwip_sha1_finish sha1_finish
 #define lwip_sha1_free(context)
 
-#include "netif/ppp/polarssl/des.h"
+#include "../../netif/ppp/polarssl/des.h"
 #define lwip_des_context des_context
 #define lwip_des_init(context)
 #define lwip_des_setkey_enc des_setkey_enc
 #define lwip_des_crypt_ecb des_crypt_ecb
 #define lwip_des_free(context)
 
-#include "netif/ppp/polarssl/arc4.h"
+#include "../../netif/ppp/polarssl/arc4.h"
 #define lwip_arc4_context arc4_context
 #define lwip_arc4_init(context)
 #define lwip_arc4_setup arc4_setup

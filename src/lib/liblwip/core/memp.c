@@ -43,44 +43,44 @@
  *
  */
 
-#include "lwip/opt.h"
+#include "../include/lwip/opt.h"
 
-#include "lwip/memp.h"
-#include "lwip/sys.h"
-#include "lwip/stats.h"
+#include "../include/lwip/memp.h"
+#include "../include/lwip/sys.h"
+#include "../include/lwip/stats.h"
 
 #include <string.h>
 
 /* Make sure we include everything we need for size calculation required by memp_std.h */
-#include "lwip/pbuf.h"
-#include "lwip/raw.h"
-#include "lwip/udp.h"
-#include "lwip/tcp.h"
-#include "lwip/priv/tcp_priv.h"
-#include "lwip/altcp.h"
-#include "lwip/ip4_frag.h"
-#include "lwip/netbuf.h"
-#include "lwip/api.h"
-#include "lwip/priv/tcpip_priv.h"
-#include "lwip/priv/api_msg.h"
-#include "lwip/priv/sockets_priv.h"
-#include "lwip/etharp.h"
-#include "lwip/igmp.h"
-#include "lwip/timeouts.h"
+#include "../include/lwip/pbuf.h"
+#include "../include/lwip/raw.h"
+#include "../include/lwip/udp.h"
+#include "../include/lwip/tcp.h"
+#include "../include/lwip/priv/tcp_priv.h"
+#include "../include/lwip/altcp.h"
+#include "../include/lwip/ip4_frag.h"
+#include "../include/lwip/netbuf.h"
+#include "../include/lwip/api.h"
+#include "../include/lwip/priv/tcpip_priv.h"
+#include "../include/lwip/priv/api_msg.h"
+#include "../include/lwip/priv/sockets_priv.h"
+#include "../include/lwip/etharp.h"
+#include "../include/lwip/igmp.h"
+#include "../include/lwip/timeouts.h"
 /* needed by default MEMP_NUM_SYS_TIMEOUT */
-#include "netif/ppp/ppp_opts.h"
-#include "lwip/netdb.h"
-#include "lwip/dns.h"
-#include "lwip/priv/nd6_priv.h"
-#include "lwip/ip6_frag.h"
-#include "lwip/mld6.h"
+#include "../include/netif/ppp/ppp_opts.h"
+#include "../include/lwip/netdb.h"
+#include "../include/lwip/dns.h"
+#include "../include/lwip/priv/nd6_priv.h"
+#include "../include/lwip/ip6_frag.h"
+#include "../include/lwip/mld6.h"
 
 #define LWIP_MEMPOOL(name,num,size,desc) LWIP_MEMPOOL_DECLARE(name,num,size,desc)
-#include "lwip/priv/memp_std.h"
+#include "../include/lwip/priv/memp_std.h"
 
 const struct memp_desc *const memp_pools[MEMP_MAX] = {
 #define LWIP_MEMPOOL(name,num,size,desc) &memp_ ## name,
-#include "lwip/priv/memp_std.h"
+#include "../include/lwip/priv/memp_std.h"
 };
 
 #ifdef LWIP_HOOK_FILENAME

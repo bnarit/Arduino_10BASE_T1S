@@ -39,7 +39,7 @@
 #ifndef LWIP_HDR_APPS_SNMP_H
 #define LWIP_HDR_APPS_SNMP_H
 
-#include "lwip/apps/snmp_opts.h"
+#include "../lwip/apps/snmp_opts.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,8 +47,8 @@ extern "C" {
 
 #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/err.h"
-#include "lwip/apps/snmp_core.h"
+#include "../lwip/err.h"
+#include "../lwip/apps/snmp_core.h"
 
 /** SNMP variable binding descriptor (publically needed for traps) */
 struct snmp_varbind

@@ -68,7 +68,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 #if 0 /* UNUSED */
@@ -103,28 +103,28 @@
 #include <time.h>
 #endif /* UNUSED */
 
-#include "netif/ppp/ppp_impl.h"
+#include "../../include/netif/ppp/ppp_impl.h"
 
-#include "netif/ppp/fsm.h"
-#include "netif/ppp/lcp.h"
+#include "../../include/netif/ppp/fsm.h"
+#include "../../include/netif/ppp/lcp.h"
 #if CCP_SUPPORT
-#include "netif/ppp/ccp.h"
+#include "../../include/netif/ppp/ccp.h"
 #endif /* CCP_SUPPORT */
 #if ECP_SUPPORT
-#include "netif/ppp/ecp.h"
+#include "../../include/netif/ppp/ecp.h"
 #endif /* ECP_SUPPORT */
-#include "netif/ppp/ipcp.h"
+#include "../../include/netif/ppp/ipcp.h"
 #if PAP_SUPPORT
-#include "netif/ppp/upap.h"
+#include "../../include/netif/ppp/upap.h"
 #endif /* PAP_SUPPORT */
 #if CHAP_SUPPORT
-#include "netif/ppp/chap-new.h"
+#include "../../include/netif/ppp/chap-new.h"
 #endif /* CHAP_SUPPORT */
 #if EAP_SUPPORT
-#include "netif/ppp/eap.h"
+#include "../../include/netif/ppp/eap.h"
 #endif /* EAP_SUPPORT */
 #if CBCP_SUPPORT
-#include "netif/ppp/cbcp.h"
+#include "../../include/netif/ppp/cbcp.h"
 #endif
 
 #if 0 /* UNUSED */

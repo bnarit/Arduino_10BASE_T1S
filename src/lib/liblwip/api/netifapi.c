@@ -38,14 +38,14 @@
  *
  */
 
-#include "lwip/opt.h"
+#include "../include/lwip/opt.h"
 
 #if LWIP_NETIF_API /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/etharp.h"
-#include "lwip/netifapi.h"
-#include "lwip/memp.h"
-#include "lwip/priv/tcpip_priv.h"
+#include "../include/lwip/etharp.h"
+#include "../include/lwip/netifapi.h"
+#include "../include/lwip/memp.h"
+#include "../include/lwip/priv/tcpip_priv.h"
 
 #include <string.h> /* strncpy */
 

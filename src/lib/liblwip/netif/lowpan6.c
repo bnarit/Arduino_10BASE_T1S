@@ -48,20 +48,20 @@
  * 6LowPAN netif implementation
  */
 
-#include "netif/lowpan6.h"
+#include "../include/netif/lowpan6.h"
 
 #if LWIP_IPV6
 
-#include "lwip/ip.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip_addr.h"
-#include "lwip/netif.h"
-#include "lwip/nd6.h"
-#include "lwip/mem.h"
-#include "lwip/udp.h"
-#include "lwip/tcpip.h"
-#include "lwip/snmp.h"
-#include "netif/ieee802154.h"
+#include "../include/lwip/ip.h"
+#include "../include/lwip/pbuf.h"
+#include "../include/lwip/ip_addr.h"
+#include "../include/lwip/netif.h"
+#include "../include/lwip/nd6.h"
+#include "../include/lwip/mem.h"
+#include "../include/lwip/udp.h"
+#include "../include/lwip/tcpip.h"
+#include "../include/lwip/snmp.h"
+#include "../include/netif/ieee802154.h"
 
 #include <string.h>
 

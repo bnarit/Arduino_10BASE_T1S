@@ -38,10 +38,10 @@
  *  http://www.ietf.org/rfc/rfc1321.txt
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_MD5
 
-#include "netif/ppp/polarssl/md5.h"
+#include "../../../include/netif/ppp/polarssl/md5.h"
 
 #include <string.h>
 

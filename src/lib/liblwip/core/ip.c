@@ -53,12 +53,12 @@
  *
  */
 
-#include "lwip/opt.h"
+#include "../include/lwip/opt.h"
 
 #if LWIP_IPV4 || LWIP_IPV6
 
-#include "lwip/ip_addr.h"
-#include "lwip/ip.h"
+#include "../include/lwip/ip_addr.h"
+#include "../include/lwip/ip.h"
 
 /** Global data for both IPv4 and IPv6 */
 struct ip_globals ip_data;

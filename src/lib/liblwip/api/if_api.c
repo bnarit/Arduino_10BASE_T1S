@@ -39,14 +39,14 @@
  * Author: Joel Cunningham <joel.cunningham@me.com>
  *
  */
-#include "lwip/opt.h"
+#include "../include/lwip/opt.h"
 
 #if LWIP_SOCKET
 
-#include "lwip/errno.h"
-#include "lwip/if_api.h"
-#include "lwip/netifapi.h"
-#include "lwip/priv/sockets_priv.h"
+#include "../include/lwip/errno.h"
+#include "../include/lwip/if_api.h"
+#include "../include/lwip/netifapi.h"
+#include "../include/lwip/priv/sockets_priv.h"
 
 /**
  * @ingroup if_api

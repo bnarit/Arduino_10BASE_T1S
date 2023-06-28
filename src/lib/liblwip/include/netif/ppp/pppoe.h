@@ -67,14 +67,14 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#include "netif/ppp/ppp_opts.h"
+#include "../../netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && PPPOE_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 #ifndef PPP_OE_H
 #define PPP_OE_H
 
 #include "ppp.h"
-#include "lwip/etharp.h"
+#include "../../include/lwip/etharp.h"
 
 #ifdef __cplusplus
 extern "C" {

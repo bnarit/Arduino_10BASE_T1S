@@ -42,19 +42,19 @@
 #ifndef LWIP_HDR_NETIF_ETHARP_H
 #define LWIP_HDR_NETIF_ETHARP_H
 
-#include "lwip/opt.h"
+#include "../lwip/opt.h"
 
 #if LWIP_ARP || LWIP_ETHERNET /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/pbuf.h"
-#include "lwip/ip4_addr.h"
-#include "lwip/netif.h"
-#include "lwip/ip4.h"
-#include "lwip/prot/ethernet.h"
+#include "../lwip/pbuf.h"
+#include "../lwip/ip4_addr.h"
+#include "../lwip/netif.h"
+#include "../lwip/ip4.h"
+#include "../lwip/prot/ethernet.h"
 
 #if LWIP_IPV4 && LWIP_ARP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/prot/etharp.h"
+#include "../lwip/prot/etharp.h"
 
 #ifdef __cplusplus
 extern "C" {

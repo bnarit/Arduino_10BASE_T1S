@@ -37,8 +37,8 @@
 #ifndef LWIP_HDR_MDNS_PRIV_H
 #define LWIP_HDR_MDNS_PRIV_H
 
-#include "lwip/apps/mdns_opts.h"
-#include "lwip/pbuf.h"
+#include "../lwip/apps/mdns_opts.h"
+#include "../lwip/pbuf.h"
 
 #ifdef __cplusplus
 extern "C" {

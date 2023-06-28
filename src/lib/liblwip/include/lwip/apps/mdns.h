@@ -38,8 +38,8 @@
 #ifndef LWIP_HDR_APPS_MDNS_H
 #define LWIP_HDR_APPS_MDNS_H
 
-#include "lwip/apps/mdns_opts.h"
-#include "lwip/netif.h"
+#include "../lwip/apps/mdns_opts.h"
+#include "../lwip/netif.h"
 
 #ifdef __cplusplus
 extern "C" {

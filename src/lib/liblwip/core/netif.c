@@ -48,46 +48,46 @@
  * Author: Adam Dunkels <adam@sics.se>
  */
 
-#include "lwip/opt.h"
+#include "../include/lwip/opt.h"
 
 #include <string.h> /* memset */
 #include <stdlib.h> /* atoi */
 
-#include "lwip/def.h"
-#include "lwip/ip_addr.h"
-#include "lwip/ip6_addr.h"
-#include "lwip/netif.h"
-#include "lwip/priv/tcp_priv.h"
-#include "lwip/udp.h"
-#include "lwip/priv/raw_priv.h"
-#include "lwip/snmp.h"
-#include "lwip/igmp.h"
-#include "lwip/etharp.h"
-#include "lwip/stats.h"
-#include "lwip/sys.h"
-#include "lwip/ip.h"
+#include "../include/lwip/def.h"
+#include "../include/lwip/ip_addr.h"
+#include "../include/lwip/ip6_addr.h"
+#include "../include/lwip/netif.h"
+#include "../include/lwip/priv/tcp_priv.h"
+#include "../include/lwip/udp.h"
+#include "../include/lwip/priv/raw_priv.h"
+#include "../include/lwip/snmp.h"
+#include "../include/lwip/igmp.h"
+#include "../include/lwip/etharp.h"
+#include "../include/lwip/stats.h"
+#include "../include/lwip/sys.h"
+#include "../include/lwip/ip.h"
 #if ENABLE_LOOPBACK
 #if LWIP_NETIF_LOOPBACK_MULTITHREADING
-#include "lwip/tcpip.h"
+#include "../include/lwip/tcpip.h"
 #endif /* LWIP_NETIF_LOOPBACK_MULTITHREADING */
 #endif /* ENABLE_LOOPBACK */
 
-#include "netif/ethernet.h"
+#include "../include/netif/ethernet.h"
 
 #if LWIP_AUTOIP
-#include "lwip/autoip.h"
+#include "../include/lwip/autoip.h"
 #endif /* LWIP_AUTOIP */
 #if LWIP_DHCP
-#include "lwip/dhcp.h"
+#include "../include/lwip/dhcp.h"
 #endif /* LWIP_DHCP */
 #if LWIP_IPV6_DHCP6
-#include "lwip/dhcp6.h"
+#include "../include/lwip/dhcp6.h"
 #endif /* LWIP_IPV6_DHCP6 */
 #if LWIP_IPV6_MLD
-#include "lwip/mld6.h"
+#include "../include/lwip/mld6.h"
 #endif /* LWIP_IPV6_MLD */
 #if LWIP_IPV6
-#include "lwip/nd6.h"
+#include "../include/lwip/nd6.h"
 #endif
 
 #if LWIP_NETIF_STATUS_CALLBACK

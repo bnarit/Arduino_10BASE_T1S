@@ -31,20 +31,20 @@
 *   Original derived from BSD codes.
 *****************************************************************************/
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 #ifndef PPP_H
 #define PPP_H
 
-#include "lwip/def.h"
-#include "lwip/stats.h"
-#include "lwip/mem.h"
-#include "lwip/netif.h"
-#include "lwip/sys.h"
-#include "lwip/timeouts.h"
+#include "../../include/lwip/def.h"
+#include "../../include/lwip/stats.h"
+#include "../../include/lwip/mem.h"
+#include "../../include/lwip/netif.h"
+#include "../../include/lwip/sys.h"
+#include "../../include/lwip/timeouts.h"
 #if PPP_IPV6_SUPPORT
-#include "lwip/ip6_addr.h"
+#include "../../include/lwip/ip6_addr.h"
 #endif /* PPP_IPV6_SUPPORT */
 
 #ifdef __cplusplus

@@ -39,20 +39,20 @@
  * <delamer@inicotech.com>
  */
 
-#include "lwip/opt.h"
+#include "../../include/lwip/opt.h"
 
 #if LWIP_IPV6 && LWIP_ETHERNET
 
-#include "lwip/ethip6.h"
-#include "lwip/nd6.h"
-#include "lwip/pbuf.h"
-#include "lwip/ip6.h"
-#include "lwip/ip6_addr.h"
-#include "lwip/inet_chksum.h"
-#include "lwip/netif.h"
-#include "lwip/icmp6.h"
-#include "lwip/prot/ethernet.h"
-#include "netif/ethernet.h"
+#include "../../include/lwip/ethip6.h"
+#include "../../include/lwip/nd6.h"
+#include "../../include/lwip/pbuf.h"
+#include "../../include/lwip/ip6.h"
+#include "../../include/lwip/ip6_addr.h"
+#include "../../include/lwip/inet_chksum.h"
+#include "../../include/lwip/netif.h"
+#include "../../include/lwip/icmp6.h"
+#include "../../include/lwip/prot/ethernet.h"
+#include "../../include/netif/ethernet.h"
 
 #include <string.h>
 

@@ -56,17 +56,17 @@
  * Author: Dominik Spies <kontakt@dspies.de>
  */
 
-#include "lwip/opt.h"
+#include "../../include/lwip/opt.h"
 
 #if LWIP_IPV4 && LWIP_AUTOIP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/mem.h"
-/* #include "lwip/udp.h" */
-#include "lwip/ip_addr.h"
-#include "lwip/netif.h"
-#include "lwip/autoip.h"
-#include "lwip/etharp.h"
-#include "lwip/prot/autoip.h"
+#include "../../include/lwip/mem.h"
+/* #include "../../include/lwip/udp.h" */
+#include "../../include/lwip/ip_addr.h"
+#include "../../include/lwip/netif.h"
+#include "../../include/lwip/autoip.h"
+#include "../../include/lwip/etharp.h"
+#include "../../include/lwip/prot/autoip.h"
 
 #include <string.h>
 

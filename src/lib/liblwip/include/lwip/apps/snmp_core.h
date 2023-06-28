@@ -36,12 +36,12 @@
 #ifndef LWIP_HDR_APPS_SNMP_CORE_H
 #define LWIP_HDR_APPS_SNMP_CORE_H
 
-#include "lwip/apps/snmp_opts.h"
+#include "../lwip/apps/snmp_opts.h"
 
 #if LWIP_SNMP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/ip_addr.h"
-#include "lwip/err.h"
+#include "../lwip/ip_addr.h"
+#include "../lwip/err.h"
 
 #ifdef __cplusplus
 extern "C" {

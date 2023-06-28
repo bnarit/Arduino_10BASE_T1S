@@ -37,25 +37,25 @@
  *
  */
 
-#include "lwip/opt.h"
+#include "../include/lwip/opt.h"
 
 #if LWIP_SOCKET /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/sockets.h"
-#include "lwip/priv/sockets_priv.h"
-#include "lwip/api.h"
-#include "lwip/igmp.h"
-#include "lwip/inet.h"
-#include "lwip/tcp.h"
-#include "lwip/raw.h"
-#include "lwip/udp.h"
-#include "lwip/memp.h"
-#include "lwip/pbuf.h"
-#include "lwip/netif.h"
-#include "lwip/priv/tcpip_priv.h"
-#include "lwip/mld6.h"
+#include "../include/lwip/sockets.h"
+#include "../include/lwip/priv/sockets_priv.h"
+#include "../include/lwip/api.h"
+#include "../include/lwip/igmp.h"
+#include "../include/lwip/inet.h"
+#include "../include/lwip/tcp.h"
+#include "../include/lwip/raw.h"
+#include "../include/lwip/udp.h"
+#include "../include/lwip/memp.h"
+#include "../include/lwip/pbuf.h"
+#include "../include/lwip/netif.h"
+#include "../include/lwip/priv/tcpip_priv.h"
+#include "../include/lwip/mld6.h"
 #if LWIP_CHECKSUM_ON_COPY
-#include "lwip/inet_chksum.h"
+#include "../include/lwip/inet_chksum.h"
 #endif
 
 #if LWIP_COMPAT_SOCKETS == 2 && LWIP_POSIX_SOCKETS_IO_NAMES

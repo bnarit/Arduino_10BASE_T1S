@@ -38,16 +38,16 @@
  *
  */
 
-#include "lwip/opt.h"
+#include "../../include/lwip/opt.h"
 
 #if LWIP_IPV4
 
-#include "lwip/ip4_frag.h"
-#include "lwip/def.h"
-#include "lwip/inet_chksum.h"
-#include "lwip/netif.h"
-#include "lwip/stats.h"
-#include "lwip/icmp.h"
+#include "../../include/lwip/ip4_frag.h"
+#include "../../include/lwip/def.h"
+#include "../../include/lwip/inet_chksum.h"
+#include "../../include/lwip/netif.h"
+#include "../../include/lwip/stats.h"
+#include "../../include/lwip/icmp.h"
 
 #include <string.h>
 

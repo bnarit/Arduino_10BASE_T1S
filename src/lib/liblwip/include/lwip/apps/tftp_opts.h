@@ -41,8 +41,8 @@
 #ifndef LWIP_HDR_APPS_TFTP_OPTS_H
 #define LWIP_HDR_APPS_TFTP_OPTS_H
 
-#include "lwip/opt.h"
-#include "lwip/prot/iana.h"
+#include "../lwip/opt.h"
+#include "../lwip/prot/iana.h"
 
 /**
  * @defgroup tftp_opts Options

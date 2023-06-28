@@ -41,11 +41,11 @@
 #ifndef LWIP_HDR_APPS_ALTCP_PROXYCONNECT_H
 #define LWIP_HDR_APPS_ALTCP_PROXYCONNECT_H
 
-#include "lwip/opt.h"
+#include "../lwip/opt.h"
 
 #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/ip_addr.h"
+#include "../lwip/ip_addr.h"
 
 #ifdef __cplusplus
 extern "C" {

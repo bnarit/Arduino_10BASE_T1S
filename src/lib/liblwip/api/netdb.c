@@ -35,16 +35,16 @@
  *
  */
 
-#include "lwip/netdb.h"
+#include "../include/lwip/netdb.h"
 
 #if LWIP_DNS && LWIP_SOCKET
 
-#include "lwip/err.h"
-#include "lwip/mem.h"
-#include "lwip/memp.h"
-#include "lwip/ip_addr.h"
-#include "lwip/api.h"
-#include "lwip/dns.h"
+#include "../include/lwip/err.h"
+#include "../include/lwip/mem.h"
+#include "../include/lwip/memp.h"
+#include "../include/lwip/ip_addr.h"
+#include "../include/lwip/api.h"
+#include "../include/lwip/dns.h"
 
 #include <string.h> /* memset */
 #include <stdlib.h> /* atoi */

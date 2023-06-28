@@ -35,11 +35,11 @@
  * $Id: eui64.c,v 1.6 2002/12/04 23:03:32 paulus Exp $
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && PPP_IPV6_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
-#include "netif/ppp/ppp_impl.h"
-#include "netif/ppp/eui64.h"
+#include "../../include/netif/ppp/ppp_impl.h"
+#include "../../include/netif/ppp/eui64.h"
 
 /*
  * eui64_ntoa - Make an ascii representation of an interface identifier

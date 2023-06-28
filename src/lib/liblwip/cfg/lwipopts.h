@@ -42,14 +42,18 @@
  * NO_SYS==1: Provides VERY minimal functionality. Otherwise,
  * use lwIP facilities.
  */
+#ifndef NO_SYS
 #define NO_SYS                          1
+#endif
 
 /**
  * SYS_LIGHTWEIGHT_PROT==1: if you want inter-task protection for certain
  * critical regions during buffer allocation, deallocation and memory
  * allocation and deallocation.
  */
+#ifndef SYS_LIGHTWEIGHT_PROT
 #define SYS_LIGHTWEIGHT_PROT            0
+#endif
 
 /*
    ------------------------------------
@@ -61,19 +65,27 @@
  *    4 byte alignment -> #define MEM_ALIGNMENT 4
  *    2 byte alignment -> #define MEM_ALIGNMENT 2
  */
+#ifndef MEM_ALIGNMENT
 #define MEM_ALIGNMENT                   4
+#endif
 
 
 /**
  * MEM_SIZE: the size of the heap memory. If the application will send
  * a lot of data that needs to be copied, this should be set high.
  */
+#ifndef MEM_SIZE
 #define MEM_SIZE                        0
+#endif
 
 
+#ifndef MEM_LIBC_MALLOC
 #define MEM_LIBC_MALLOC                  1
+#endif
 
+#ifndef LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT
 #define LWIP_ALLOW_MEM_FREE_FROM_OTHER_CONTEXT   0
+#endif
 
 /*
    ------------------------------------------------
@@ -85,38 +97,50 @@
  * If the application sends a lot of data out of ROM (or other static memory),
  * this should be set high.
  */
+#ifndef MEMP_NUM_PBUF
 #define MEMP_NUM_PBUF                   20
+#endif
 
 /**
  * MEMP_NUM_RAW_PCB: Number of raw connection PCBs
  * (requires the LWIP_RAW option)
  */
+#ifndef MEMP_NUM_RAW_PCB
 #define MEMP_NUM_RAW_PCB                4
+#endif
 
 /**
  * MEMP_NUM_UDP_PCB: the number of UDP protocol control blocks. One
  * per active UDP "connection".
  * (requires the LWIP_UDP option)
  */
+#ifndef MEMP_NUM_UDP_PCB
 #define MEMP_NUM_UDP_PCB                4
+#endif
 
 /**
  * MEMP_NUM_TCP_PCB: the number of simultaneously active TCP connections.
  * (requires the LWIP_TCP option)
  */
+#ifndef MEMP_NUM_TCP_PCB
 #define MEMP_NUM_TCP_PCB                0
+#endif
 
 /**
  * MEMP_NUM_TCP_PCB_LISTEN: the number of listening TCP connections.
  * (requires the LWIP_TCP option)
  */
+#ifndef MEMP_NUM_TCP_PCB_LISTEN
 #define MEMP_NUM_TCP_PCB_LISTEN         0
+#endif
 
 /**
  * MEMP_NUM_TCP_SEG: the number of simultaneously queued TCP segments.
  * (requires the LWIP_TCP option)
  */
+#ifndef MEMP_NUM_TCP_SEG
 #define MEMP_NUM_TCP_SEG                0
+#endif
 
 /**
  * MEMP_NUM_ARP_QUEUE: the number of simultaneouslysimultaneously queued outgoing
@@ -124,7 +148,9 @@
  * their destination address) to finish.
  * (requires the ARP_QUEUEING option)
  */
+#ifndef MEMP_NUM_ARP_QUEUE
 #define MEMP_NUM_ARP_QUEUE              6
+#endif
 
 /**
  * MEMP_NUM_SYS_TIMEOUT: the number of simultaneously active timeouts.
@@ -133,38 +159,50 @@
  *
  * To this default value, 1 was added for the snmp_increment timer.
  */
+#ifndef MEMP_NUM_SYS_TIMEOUT
 #define MEMP_NUM_SYS_TIMEOUT            (LWIP_TCP + IP_REASSEMBLY + LWIP_ARP + (2*LWIP_DHCP) + LWIP_AUTOIP + LWIP_IGMP + LWIP_DNS + PPP_SUPPORT + (LWIP_IPV6 ? (1 + LWIP_IPV6_REASS + LWIP_IPV6_MLD) : 0)) + 1
+#endif
 
 /**
  * MEMP_NUM_NETBUF: the number of struct netbufs.
  * (only needed if you use the sequential API, like api_lib.c)
  */
+#ifndef MEMP_NUM_SYS_TIMEOUT
 #define MEMP_NUM_NETBUF                 0
+#endif
 
 /**
  * MEMP_NUM_NETCONN: the number of struct netconns.
  * (only needed if you use the sequential API, like api_lib.c)
  */
+#ifndef MEMP_NUM_NETCONN
 #define MEMP_NUM_NETCONN                0
+#endif
 
 /**
  * MEMP_NUM_TCPIP_MSG_API: the number of struct tcpip_msg, which are used
  * for callback/timeout API communication.
  * (only needed if you use tcpip.c)
  */
+#ifndef MEMP_NUM_TCPIP_MSG_API
 #define MEMP_NUM_TCPIP_MSG_API          0
+#endif
 
 /**
  * MEMP_NUM_TCPIP_MSG_INPKT: the number of struct tcpip_msg, which are used
  * for incoming packets.
  * (only needed if you use tcpip.c)
  */
+#ifndef MEMP_NUM_TCPIP_MSG_INPKT
 #define MEMP_NUM_TCPIP_MSG_INPKT        0
+#endif
 
 /**
  * PBUF_POOL_SIZE: the number of buffers in the pbuf pool.
  */
+#ifndef PBUF_POOL_SIZE
 #define PBUF_POOL_SIZE                  1
+#endif
 
 /*
    ---------------------------------
@@ -174,50 +212,66 @@
 /**
  * LWIP_ARP==1: Enable ARP functionality.
  */
+#ifndef LWIP_ARP
 #define LWIP_ARP                        1
+#endif
 
 /*
    --------------------------------
    ---------- IP options ----------
    --------------------------------
 */
+#ifndef LWIP_IPV4
 #define LWIP_IPV4                       1
+#endif
+#ifndef LWIP_IPV6
 #define LWIP_IPV6                       0
+#endif
 
 /**
  * IP_FORWARD==1: Enables the ability to forward IP packets across network
  * interfaces. If you are going to run lwIP on a device with only one network
  * interface, define this to 0.
  */
+#ifndef IP_FORWARD
 #define IP_FORWARD                      0
+#endif
 
 /**
  * IP_OPTIONS: Defines the behavior for IP options.
  *      IP_OPTIONS==0_ALLOWED: All packets with IP options are dropped.
  *      IP_OPTIONS==1_ALLOWED: IP options are allowed (but not parsed).
  */
+#ifndef IP_OPTIONS_ALLOWED
 #define IP_OPTIONS_ALLOWED              1
+#endif
 
 /**
  * IP_REASSEMBLY==1: Reassemble incoming fragmented IP packets. Note that
  * this option does not affect outgoing packet sizes, which can be controlled
  * via IP_FRAG.
  */
+#ifndef IP_REASSEMBLY
 #define IP_REASSEMBLY                   0
+#endif
 
 /**
  * IP_FRAG==1: Fragment outgoing IP packets if their size exceeds MTU. Note
  * that this option does not affect incoming packet sizes, which can be
  * controlled via IP_REASSEMBLY.
  */
+#ifndef IP_FRAG
 #define IP_FRAG                         0
+#endif
 
 /**
  * IP_REASS_MAXAGE: Maximum time (in multiples of IP_TMR_INTERVAL - so seconds, normally)
  * a fragmented IP packet waits for all fragments to arrive. If not all fragments arrived
  * in this time, the whole packet is discarded.
  */
+#ifndef IP_REASS_MAXAGE
 #define IP_REASS_MAXAGE                 3
+#endif
 
 /**
  * IP_REASS_MAX_PBUFS: Total maximum amount of pbufs waiting to be reassembled.
@@ -225,19 +279,25 @@
  * PBUF_POOL_SIZE > IP_REASS_MAX_PBUFS so that the stack is still able to receive
  * packets even if the maximum amount of fragments is enqueued for reassembly!
  */
+#ifndef IP_REASS_MAX_PBUFS
 #define IP_REASS_MAX_PBUFS              10
+#endif
 
 /**
  * IP_FRAG_USES_STATIC_BUF==1: Use a static MTU-sized buffer for IP
  * fragmentation. Otherwise pbufs are allocated and reference the original
  * packet data to be fragmented.
  */
+#ifndef IP_FRAG_USES_STATIC_BUF
 #define IP_FRAG_USES_STATIC_BUF         0
+#endif
 
 /**
  * IP_DEFAULT_TTL: Default value for Time-To-Live used by transport layers.
  */
+#ifndef IP_DEFAULT_TTL
 #define IP_DEFAULT_TTL                  255
+#endif
 
 /*
    ----------------------------------
@@ -248,12 +308,16 @@
  * LWIP_ICMP==1: Enable ICMP module inside the IP stack.
  * Be careful, disable that make your product non-compliant to RFC1122
  */
+#ifndef LWIP_ICMP
 #define LWIP_ICMP                       1
+#endif
 
 /**
  * ICMP_TTL: Default value for Time-To-Live used by ICMP packets.
  */
+#ifndef ICMP_TTL
 #define ICMP_TTL                       (IP_DEFAULT_TTL)
+#endif
 
 /*
    ---------------------------------
@@ -263,7 +327,9 @@
 /**
  * LWIP_RAW==1: Enable application layer to hook into the IP layer itself.
  */
+#ifndef LWIP_RAW
 #define LWIP_RAW                        1
+#endif
 
 /*
    ----------------------------------
@@ -273,7 +339,9 @@
 /**
  * LWIP_DHCP==1: Enable DHCP module.
  */
+#ifndef LWIP_DHCP
 #define LWIP_DHCP                       0
+#endif
 
 /*
    ------------------------------------
@@ -283,7 +351,9 @@
 /**
  * LWIP_AUTOIP==1: Enable AUTOIP module.
  */
+#ifndef LWIP_AUTOIP
 #define LWIP_AUTOIP                     0
+#endif
 
 /*
    ----------------------------------
@@ -294,9 +364,15 @@
  * LWIP_SNMP==1: Turn on SNMP module. UDP must be available for SNMP
  * transport.
  */
+#ifndef LWIP_SNMP
 #define LWIP_SNMP                       0
+#endif
+#ifndef LWIP_MIB2_CALLBACKS
 #define LWIP_MIB2_CALLBACKS             0
+#endif
+#ifndef MIB2_STATS
 #define MIB2_STATS                      0
+#endif
 
 /*
    ----------------------------------
@@ -306,7 +382,9 @@
 /**
  * LWIP_IGMP==1: Turn on IGMP module.
  */
+#ifndef LWIP_IGMP
 #define LWIP_IGMP                       0
+#endif
 
 /*
    ----------------------------------
@@ -317,7 +395,9 @@
  * LWIP_DNS==1: Turn on DNS module. UDP must be available for DNS
  * transport.
  */
+#ifndef LWIP_DNS
 #define LWIP_DNS                        0
+#endif
 
 /*
    ---------------------------------
@@ -327,17 +407,23 @@
 /**
  * LWIP_UDP==1: Turn on UDP.
  */
+#ifndef LWIP_UDP
 #define LWIP_UDP                        1
+#endif
 
 /**
  * LWIP_UDPLITE==1: Turn on UDP-Lite. (Requires LWIP_UDP)
  */
+#ifndef LWIP_UDPLITE
 #define LWIP_UDPLITE                    0
+#endif
 
 /**
  * UDP_TTL: Default Time-To-Live value.
  */
+#ifndef UDP_TTL
 #define UDP_TTL                         (IP_DEFAULT_TTL)
+#endif
 
 /*
    ---------------------------------
@@ -347,7 +433,9 @@
 /**
  * LWIP_TCP==1: Turn on TCP.
  */
+#ifndef LWIP_TCP
 #define LWIP_TCP                        0
+#endif
 
 /*
    ----------------------------------
@@ -359,7 +447,9 @@
  * link level header. The default is 14, the standard value for
  * Ethernet.
  */
+#ifndef PBUF_LINK_HLEN
 #define PBUF_LINK_HLEN                  14
+#endif
 
 /*
    ------------------------------------
@@ -369,7 +459,9 @@
 /**
  * LWIP_HAVE_LOOPIF==1: Support loop interface (127.0.0.1) and loopif.c
  */
+#ifndef LWIP_HAVE_LOOPIF
 #define LWIP_HAVE_LOOPIF                0
+#endif
 
 
 /*
@@ -381,7 +473,9 @@
 /**
  * LWIP_NETCONN==1: Enable Netconn API (require to use api_lib.c)
  */
+#ifndef LWIP_NETCONN
 #define LWIP_NETCONN                    0
+#endif
 
 /*
    ------------------------------------
@@ -391,7 +485,9 @@
 /**
  * LWIP_SOCKET==1: Enable Socket API (require to use sockets.c)
  */
+#ifndef LWIP_SOCKET
 #define LWIP_SOCKET                     0
+#endif
 
 /*
    ----------------------------------------
@@ -402,21 +498,41 @@
  * LWIP_STATS==1: Enable statistics collection in lwip_stats.
  */
 
+#ifndef LWIP_STATS_DISPLAY
 #define LWIP_STATS_DISPLAY              0
+#endif
+#ifndef LWIP_STATS
 #define LWIP_STATS                      0
+#endif
+#ifndef ETHARP_STATS
 #define ETHARP_STATS                    0
+#endif
+#ifndef IP_STATS
 #define IP_STATS                        0
+#endif
+#ifndef UDP_STATS
 #define UDP_STATS                       0
+#endif
+#ifndef TCP_STATS
 #define TCP_STATS                       0
+#endif
 
 
+#ifndef LWIP_NETIF_STATUS_CALLBACK
 #define LWIP_NETIF_STATUS_CALLBACK      1
+#endif
 
 
 
+#ifndef CHECKSUM_CHECK_IP
 #define CHECKSUM_CHECK_IP               0
+#endif
+#ifndef CHECKSUM_CHECK_UDP
 #define CHECKSUM_CHECK_UDP              0
+#endif
+#ifndef CHECKSUM_CHECK_TCP
 #define CHECKSUM_CHECK_TCP              0
+#endif
 
 /*
  * Hardware Options
@@ -425,7 +541,9 @@
 /*
  * MTU: Maximum Transfer Unit 1500 for a standart Ethernet connection
  */
+#ifndef ETHERNET_MTU
 #define ETHERNET_MTU                    1500
+#endif
 
 /*
    ---------------------------------------

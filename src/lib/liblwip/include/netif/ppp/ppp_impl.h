@@ -33,7 +33,7 @@
 #ifndef LWIP_HDR_PPP_IMPL_H
 #define LWIP_HDR_PPP_IMPL_H
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../netif/ppp/ppp_opts.h"
 
 #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
@@ -46,9 +46,9 @@
 #include <string.h>
 #include <stdlib.h> /* strtol() */
 
-#include "lwip/netif.h"
-#include "lwip/def.h"
-#include "lwip/timeouts.h"
+#include "../../include/lwip/netif.h"
+#include "../../include/lwip/def.h"
+#include "../../include/lwip/timeouts.h"
 
 #include "ppp.h"
 #include "pppdebug.h"

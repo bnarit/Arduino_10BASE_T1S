@@ -40,12 +40,12 @@
 #ifndef LWIP_HDR_ZEPIF_H
 #define LWIP_HDR_ZEPIF_H
 
-#include "lwip/opt.h"
-#include "netif/lowpan6.h"
+#include "../lwip/opt.h"
+#include "../netif/lowpan6.h"
 
 #if LWIP_IPV6 && LWIP_UDP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/netif.h"
+#include "../lwip/netif.h"
 
 #ifdef __cplusplus
 extern "C" {

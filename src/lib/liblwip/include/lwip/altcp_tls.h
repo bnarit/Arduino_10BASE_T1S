@@ -43,13 +43,13 @@
 #ifndef LWIP_HDR_ALTCP_TLS_H
 #define LWIP_HDR_ALTCP_TLS_H
 
-#include "lwip/opt.h"
+#include "../lwip/opt.h"
 
 #if LWIP_ALTCP /* don't build if not configured for use in lwipopts.h */
 
 #if LWIP_ALTCP_TLS
 
-#include "lwip/altcp.h"
+#include "../lwip/altcp.h"
 
 #ifdef __cplusplus
 extern "C" {

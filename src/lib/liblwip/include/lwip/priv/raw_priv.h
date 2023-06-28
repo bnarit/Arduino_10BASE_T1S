@@ -37,11 +37,11 @@
 #ifndef LWIP_HDR_RAW_PRIV_H
 #define LWIP_HDR_RAW_PRIV_H
 
-#include "lwip/opt.h"
+#include "../../lwip/opt.h"
 
 #if LWIP_RAW /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/raw.h"
+#include "../../lwip/raw.h"
 
 #ifdef __cplusplus
 extern "C" {

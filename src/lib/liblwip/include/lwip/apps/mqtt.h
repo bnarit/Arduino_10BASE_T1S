@@ -37,10 +37,10 @@
 #ifndef LWIP_HDR_APPS_MQTT_CLIENT_H
 #define LWIP_HDR_APPS_MQTT_CLIENT_H
 
-#include "lwip/apps/mqtt_opts.h"
-#include "lwip/err.h"
-#include "lwip/ip_addr.h"
-#include "lwip/prot/iana.h"
+#include "../lwip/apps/mqtt_opts.h"
+#include "../lwip/err.h"
+#include "../lwip/ip_addr.h"
+#include "../lwip/prot/iana.h"
 
 #ifdef __cplusplus
 extern "C" {

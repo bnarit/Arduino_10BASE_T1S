@@ -38,24 +38,24 @@
  *
  */
 
-#include "lwip/opt.h"
+#include "../../include/lwip/opt.h"
 
 #if LWIP_IPV4
 
-#include "lwip/ip.h"
-#include "lwip/def.h"
-#include "lwip/mem.h"
-#include "lwip/ip4_frag.h"
-#include "lwip/inet_chksum.h"
-#include "lwip/netif.h"
-#include "lwip/icmp.h"
-#include "lwip/igmp.h"
-#include "lwip/priv/raw_priv.h"
-#include "lwip/udp.h"
-#include "lwip/priv/tcp_priv.h"
-#include "lwip/autoip.h"
-#include "lwip/stats.h"
-#include "lwip/prot/iana.h"
+#include "../../include/lwip/ip.h"
+#include "../../include/lwip/def.h"
+#include "../../include/lwip/mem.h"
+#include "../../include/lwip/ip4_frag.h"
+#include "../../include/lwip/inet_chksum.h"
+#include "../../include/lwip/netif.h"
+#include "../../include/lwip/icmp.h"
+#include "../../include/lwip/igmp.h"
+#include "../../include/lwip/priv/raw_priv.h"
+#include "../../include/lwip/udp.h"
+#include "../../include/lwip/priv/tcp_priv.h"
+#include "../../include/lwip/autoip.h"
+#include "../../include/lwip/stats.h"
+#include "../../include/lwip/prot/iana.h"
 
 #include <string.h>
 

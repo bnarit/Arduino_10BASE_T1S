@@ -33,13 +33,13 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && MPPE_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 #ifndef MPPE_H
 #define MPPE_H
 
-#include "netif/ppp/pppcrypt.h"
+#include "../../netif/ppp/pppcrypt.h"
 
 #ifdef __cplusplus
 extern "C" {

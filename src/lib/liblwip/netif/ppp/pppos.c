@@ -31,25 +31,25 @@
  *
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && PPPOS_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 #include <string.h>
 
-#include "lwip/arch.h"
-#include "lwip/err.h"
-#include "lwip/pbuf.h"
-#include "lwip/sys.h"
-#include "lwip/memp.h"
-#include "lwip/netif.h"
-#include "lwip/snmp.h"
-#include "lwip/priv/tcpip_priv.h"
-#include "lwip/api.h"
-#include "lwip/ip4.h" /* for ip4_input() */
+#include "../../include/lwip/arch.h"
+#include "../../include/lwip/err.h"
+#include "../../include/lwip/pbuf.h"
+#include "../../include/lwip/sys.h"
+#include "../../include/lwip/memp.h"
+#include "../../include/lwip/netif.h"
+#include "../../include/lwip/snmp.h"
+#include "../../include/lwip/priv/tcpip_priv.h"
+#include "../../include/lwip/api.h"
+#include "../../include/lwip/ip4.h" /* for ip4_input() */
 
-#include "netif/ppp/ppp_impl.h"
-#include "netif/ppp/pppos.h"
-#include "netif/ppp/vj.h"
+#include "../../include/netif/ppp/ppp_impl.h"
+#include "../../include/netif/ppp/pppos.h"
+#include "../../include/netif/ppp/vj.h"
 
 /* Memory pool */
 LWIP_MEMPOOL_DECLARE(PPPOS_PCB, MEMP_NUM_PPPOS_INTERFACES, sizeof(pppos_pcb), "PPPOS_PCB")

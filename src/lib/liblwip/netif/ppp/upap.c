@@ -40,7 +40,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && PAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 /*
@@ -52,9 +52,9 @@
 #include <string.h>
 #endif /* UNUSED */
 
-#include "netif/ppp/ppp_impl.h"
+#include "../../include/netif/ppp/ppp_impl.h"
 
-#include "netif/ppp/upap.h"
+#include "../../include/netif/ppp/upap.h"
 
 #if PPP_OPTIONS
 /*

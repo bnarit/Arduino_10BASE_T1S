@@ -58,8 +58,8 @@
  *
  */
 
-#include "lwip/opt.h"
-#include "lwip/def.h"
+#include "../include/lwip/opt.h"
+#include "../include/lwip/def.h"
 
 #include <string.h>
 

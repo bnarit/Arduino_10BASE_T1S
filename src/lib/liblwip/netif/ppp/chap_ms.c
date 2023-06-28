@@ -74,7 +74,7 @@
  *
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && MSCHAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 #if 0 /* UNUSED */
@@ -87,14 +87,14 @@
 #include <unistd.h>
 #endif /* UNUSED */
 
-#include "netif/ppp/ppp_impl.h"
+#include "../../include/netif/ppp/ppp_impl.h"
 
-#include "netif/ppp/chap-new.h"
-#include "netif/ppp/chap_ms.h"
-#include "netif/ppp/pppcrypt.h"
-#include "netif/ppp/magic.h"
+#include "../../include/netif/ppp/chap-new.h"
+#include "../../include/netif/ppp/chap_ms.h"
+#include "../../include/netif/ppp/pppcrypt.h"
+#include "../../include/netif/ppp/magic.h"
 #if MPPE_SUPPORT
-#include "netif/ppp/mppe.h" /* For mppe_sha1_pad*, mppe_set_key() */
+#include "../../include/netif/ppp/mppe.h" /* For mppe_sha1_pad*, mppe_set_key() */
 #endif /* MPPE_SUPPORT */
 
 #define SHA1_SIGNATURE_SIZE	20
@@ -192,8 +192,8 @@ static char *mschap_challenge = NULL;
 static char *mschap2_peer_challenge = NULL;
 #endif
 
-#include "netif/ppp/fsm.h"		/* Need to poke MPPE options */
-#include "netif/ppp/ccp.h"
+#include "../../include/netif/ppp/fsm.h"		/* Need to poke MPPE options */
+#include "../../include/netif/ppp/ccp.h"
 #endif /* MPPE_SUPPORT */
 
 #if PPP_OPTIONS

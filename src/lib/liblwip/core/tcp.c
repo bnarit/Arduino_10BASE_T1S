@@ -97,20 +97,20 @@
  *
  */
 
-#include "lwip/opt.h"
+#include "../include/lwip/opt.h"
 
 #if LWIP_TCP /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/def.h"
-#include "lwip/mem.h"
-#include "lwip/memp.h"
-#include "lwip/tcp.h"
-#include "lwip/priv/tcp_priv.h"
-#include "lwip/debug.h"
-#include "lwip/stats.h"
-#include "lwip/ip6.h"
-#include "lwip/ip6_addr.h"
-#include "lwip/nd6.h"
+#include "../include/lwip/def.h"
+#include "../include/lwip/mem.h"
+#include "../include/lwip/memp.h"
+#include "../include/lwip/tcp.h"
+#include "../include/lwip/priv/tcp_priv.h"
+#include "../include/lwip/debug.h"
+#include "../include/lwip/stats.h"
+#include "../include/lwip/ip6.h"
+#include "../include/lwip/ip6_addr.h"
+#include "../include/lwip/nd6.h"
 
 #include <string.h>
 

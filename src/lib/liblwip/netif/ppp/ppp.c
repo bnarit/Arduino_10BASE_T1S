@@ -85,54 +85,54 @@
  * @verbinclude "ppp.txt"
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/pbuf.h"
-#include "lwip/stats.h"
-#include "lwip/sys.h"
-#include "lwip/tcpip.h"
-#include "lwip/api.h"
-#include "lwip/snmp.h"
-#include "lwip/ip4.h" /* for ip4_input() */
+#include "../../include/lwip/pbuf.h"
+#include "../../include/lwip/stats.h"
+#include "../../include/lwip/sys.h"
+#include "../../include/lwip/tcpip.h"
+#include "../../include/lwip/api.h"
+#include "../../include/lwip/snmp.h"
+#include "../../include/lwip/ip4.h" /* for ip4_input() */
 #if PPP_IPV6_SUPPORT
-#include "lwip/ip6.h" /* for ip6_input() */
+#include "../../include/lwip/ip6.h" /* for ip6_input() */
 #endif /* PPP_IPV6_SUPPORT */
-#include "lwip/dns.h"
+#include "../../include/lwip/dns.h"
 
-#include "netif/ppp/ppp_impl.h"
-#include "netif/ppp/pppos.h"
+#include "../../include/netif/ppp/ppp_impl.h"
+#include "../../include/netif/ppp/pppos.h"
 
-#include "netif/ppp/fsm.h"
-#include "netif/ppp/lcp.h"
-#include "netif/ppp/magic.h"
+#include "../../include/netif/ppp/fsm.h"
+#include "../../include/netif/ppp/lcp.h"
+#include "../../include/netif/ppp/magic.h"
 
 #if PAP_SUPPORT
-#include "netif/ppp/upap.h"
+#include "../../include/netif/ppp/upap.h"
 #endif /* PAP_SUPPORT */
 #if CHAP_SUPPORT
-#include "netif/ppp/chap-new.h"
+#include "../../include/netif/ppp/chap-new.h"
 #endif /* CHAP_SUPPORT */
 #if EAP_SUPPORT
-#include "netif/ppp/eap.h"
+#include "../../include/netif/ppp/eap.h"
 #endif /* EAP_SUPPORT */
 #if CCP_SUPPORT
-#include "netif/ppp/ccp.h"
+#include "../../include/netif/ppp/ccp.h"
 #endif /* CCP_SUPPORT */
 #if MPPE_SUPPORT
-#include "netif/ppp/mppe.h"
+#include "../../include/netif/ppp/mppe.h"
 #endif /* MPPE_SUPPORT */
 #if ECP_SUPPORT
-#include "netif/ppp/ecp.h"
+#include "../../include/netif/ppp/ecp.h"
 #endif /* EAP_SUPPORT */
 #if VJ_SUPPORT
-#include "netif/ppp/vj.h"
+#include "../../include/netif/ppp/vj.h"
 #endif /* VJ_SUPPORT */
 #if PPP_IPV4_SUPPORT
-#include "netif/ppp/ipcp.h"
+#include "../../include/netif/ppp/ipcp.h"
 #endif /* PPP_IPV4_SUPPORT */
 #if PPP_IPV6_SUPPORT
-#include "netif/ppp/ipv6cp.h"
+#include "../../include/netif/ppp/ipv6cp.h"
 #endif /* PPP_IPV6_SUPPORT */
 
 /*************************/

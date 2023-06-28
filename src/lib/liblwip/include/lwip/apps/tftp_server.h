@@ -41,9 +41,9 @@
 #ifndef LWIP_HDR_APPS_TFTP_SERVER_H
 #define LWIP_HDR_APPS_TFTP_SERVER_H
 
-#include "lwip/apps/tftp_opts.h"
-#include "lwip/err.h"
-#include "lwip/pbuf.h"
+#include "../lwip/apps/tftp_opts.h"
+#include "../lwip/err.h"
+#include "../lwip/pbuf.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -41,10 +41,10 @@
  * This file implements an example for an FDB (Forwarding DataBase)
  */
 
-#include "netif/bridgeif.h"
-#include "lwip/sys.h"
-#include "lwip/mem.h"
-#include "lwip/timeouts.h"
+#include "../include/netif/bridgeif.h"
+#include "../include/lwip/sys.h"
+#include "../include/lwip/mem.h"
+#include "../include/lwip/timeouts.h"
 #include <string.h>
 
 #define BRIDGEIF_AGE_TIMER_MS 1000

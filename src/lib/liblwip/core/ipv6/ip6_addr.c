@@ -40,17 +40,17 @@
  * <delamer@inicotech.com>
  */
 
-#include "lwip/opt.h"
+#include "../../include/lwip/opt.h"
 
 #if LWIP_IPV6  /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/ip_addr.h"
-#include "lwip/def.h"
+#include "../../include/lwip/ip_addr.h"
+#include "../../include/lwip/def.h"
 
 #include <string.h>
 
 #if LWIP_IPV4
-#include "lwip/ip4_addr.h" /* for ip6addr_aton to handle IPv4-mapped addresses */
+#include "../../include/lwip/ip4_addr.h" /* for ip6addr_aton to handle IPv4-mapped addresses */
 #endif /* LWIP_IPV4 */
 
 /* used by IP6_ADDR_ANY(6) in ip6_addr.h */

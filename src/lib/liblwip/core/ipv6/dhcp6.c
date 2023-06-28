@@ -55,15 +55,15 @@
  * Author: Simon Goldschmidt <goldsimon@gmx.de>
  */
 
-#include "lwip/opt.h"
+#include "../../include/lwip/opt.h"
 
 #if LWIP_IPV6 && LWIP_IPV6_DHCP6 /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/dhcp6.h"
-#include "lwip/prot/dhcp6.h"
-#include "lwip/def.h"
-#include "lwip/udp.h"
-#include "lwip/dns.h"
+#include "../../include/lwip/dhcp6.h"
+#include "../../include/lwip/prot/dhcp6.h"
+#include "../../include/lwip/def.h"
+#include "../../include/lwip/udp.h"
+#include "../../include/lwip/dns.h"
 
 #include <string.h>
 

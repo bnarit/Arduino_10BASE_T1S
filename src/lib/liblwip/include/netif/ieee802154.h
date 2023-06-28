@@ -37,7 +37,7 @@
 #ifndef LWIP_HDR_NETIF_IEEE802154_H
 #define LWIP_HDR_NETIF_IEEE802154_H
 
-#include "lwip/opt.h"
+#include "../lwip/opt.h"
 
 #ifdef __cplusplus
 extern "C" {

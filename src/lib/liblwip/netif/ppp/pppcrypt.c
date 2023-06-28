@@ -30,12 +30,12 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && MSCHAP_SUPPORT /* don't build if not necessary */
 
-#include "netif/ppp/ppp_impl.h"
+#include "../../include/netif/ppp/ppp_impl.h"
 
-#include "netif/ppp/pppcrypt.h"
+#include "../../include/netif/ppp/pppcrypt.h"
 
 
 static u_char pppcrypt_get_7bits(u_char *input, int startBit) {

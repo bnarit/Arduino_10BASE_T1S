@@ -35,7 +35,7 @@
  * $Id: eui64.h,v 1.6 2002/12/04 23:03:32 paulus Exp $
 */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && PPP_IPV6_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
 #ifndef EUI64_H

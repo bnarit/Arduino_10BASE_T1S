@@ -38,13 +38,13 @@
 #ifndef LWIP_HDR_MEM_PRIV_H
 #define LWIP_HDR_MEM_PRIV_H
 
-#include "lwip/opt.h"
+#include "../../lwip/opt.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "lwip/mem.h"
+#include "../../lwip/mem.h"
 
 #if MEM_OVERFLOW_CHECK || MEMP_OVERFLOW_CHECK
 /* if MEM_OVERFLOW_CHECK or MEMP_OVERFLOW_CHECK is turned on, we reserve some

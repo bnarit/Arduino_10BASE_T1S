@@ -36,14 +36,14 @@
  *
  */
 
-#include "lwip/opt.h"
+#include "../include/lwip/opt.h"
 
 #if LWIP_STATS /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/def.h"
-#include "lwip/stats.h"
-#include "lwip/mem.h"
-#include "lwip/debug.h"
+#include "../include/lwip/def.h"
+#include "../include/lwip/stats.h"
+#include "../include/lwip/mem.h"
+#include "../include/lwip/debug.h"
 
 #include <string.h>
 

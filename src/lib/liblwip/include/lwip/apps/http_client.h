@@ -38,12 +38,12 @@
 #ifndef LWIP_HDR_APPS_HTTP_CLIENT_H
 #define LWIP_HDR_APPS_HTTP_CLIENT_H
 
-#include "lwip/opt.h"
-#include "lwip/ip_addr.h"
-#include "lwip/err.h"
-#include "lwip/altcp.h"
-#include "lwip/prot/iana.h"
-#include "lwip/pbuf.h"
+#include "../lwip/opt.h"
+#include "../lwip/ip_addr.h"
+#include "../lwip/err.h"
+#include "../lwip/altcp.h"
+#include "../lwip/prot/iana.h"
+#include "../lwip/pbuf.h"
 
 #if LWIP_TCP && LWIP_CALLBACK_API
 

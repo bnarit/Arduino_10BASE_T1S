@@ -45,20 +45,20 @@
  *
  */
 
-#include "lwip/opt.h"
+#include "../include/lwip/opt.h"
 
 #if LWIP_RAW /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/def.h"
-#include "lwip/memp.h"
-#include "lwip/ip_addr.h"
-#include "lwip/netif.h"
-#include "lwip/raw.h"
-#include "lwip/priv/raw_priv.h"
-#include "lwip/stats.h"
-#include "lwip/ip6.h"
-#include "lwip/ip6_addr.h"
-#include "lwip/inet_chksum.h"
+#include "../include/lwip/def.h"
+#include "../include/lwip/memp.h"
+#include "../include/lwip/ip_addr.h"
+#include "../include/lwip/netif.h"
+#include "../include/lwip/raw.h"
+#include "../include/lwip/priv/raw_priv.h"
+#include "../include/lwip/stats.h"
+#include "../include/lwip/ip6.h"
+#include "../include/lwip/ip6_addr.h"
+#include "../include/lwip/inet_chksum.h"
 
 #include <string.h>
 

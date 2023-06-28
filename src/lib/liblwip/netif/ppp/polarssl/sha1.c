@@ -38,10 +38,10 @@
  *  http://www.itl.nist.gov/fipspubs/fip180-1.htm
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && LWIP_INCLUDED_POLARSSL_SHA1
 
-#include "netif/ppp/polarssl/sha1.h"
+#include "../../../include/netif/ppp/polarssl/sha1.h"
 
 #include <string.h>
 

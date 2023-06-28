@@ -47,13 +47,13 @@
  *
  */
 
-#include "netif/zepif.h"
+#include "../include/netif/zepif.h"
 
 #if LWIP_IPV6 && LWIP_UDP
 
-#include "netif/lowpan6.h"
-#include "lwip/udp.h"
-#include "lwip/timeouts.h"
+#include "../include/netif/lowpan6.h"
+#include "../include/lwip/udp.h"
+#include "../include/lwip/timeouts.h"
 #include <string.h>
 
 /** Define this to 1 to loop back TX packets for testing */

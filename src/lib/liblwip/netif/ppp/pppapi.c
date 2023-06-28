@@ -31,15 +31,15 @@
  *
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../include/netif/ppp/ppp_opts.h"
 
 #if LWIP_PPP_API /* don't build if not configured for use in lwipopts.h */
 
-#include "netif/ppp/pppapi.h"
-#include "lwip/priv/tcpip_priv.h"
-#include "netif/ppp/pppoe.h"
-#include "netif/ppp/pppol2tp.h"
-#include "netif/ppp/pppos.h"
+#include "../../include/netif/ppp/pppapi.h"
+#include "../../include/lwip/priv/tcpip_priv.h"
+#include "../../include/netif/ppp/pppoe.h"
+#include "../../include/netif/ppp/pppol2tp.h"
+#include "../../include/netif/ppp/pppos.h"
 
 #if LWIP_MPU_COMPATIBLE
 LWIP_MEMPOOL_DECLARE(PPPAPI_MSG, MEMP_NUM_PPP_API_MSG, sizeof(struct pppapi_msg), "PPPAPI_MSG")

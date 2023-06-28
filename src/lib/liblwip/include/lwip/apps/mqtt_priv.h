@@ -37,8 +37,8 @@
 #ifndef LWIP_HDR_APPS_MQTT_PRIV_H
 #define LWIP_HDR_APPS_MQTT_PRIV_H
 
-#include "lwip/apps/mqtt.h"
-#include "lwip/altcp.h"
+#include "../lwip/apps/mqtt.h"
+#include "../lwip/altcp.h"
 
 #ifdef __cplusplus
 extern "C" {

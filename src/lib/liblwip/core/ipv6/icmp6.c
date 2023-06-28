@@ -39,21 +39,21 @@
  * <delamer@inicotech.com>
  */
 
-#include "lwip/opt.h"
+#include "../../include/lwip/opt.h"
 
 #if LWIP_ICMP6 && LWIP_IPV6 /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/icmp6.h"
-#include "lwip/prot/icmp6.h"
-#include "lwip/ip6.h"
-#include "lwip/ip6_addr.h"
-#include "lwip/inet_chksum.h"
-#include "lwip/pbuf.h"
-#include "lwip/netif.h"
-#include "lwip/nd6.h"
-#include "lwip/mld6.h"
-#include "lwip/ip.h"
-#include "lwip/stats.h"
+#include "../../include/lwip/icmp6.h"
+#include "../../include/lwip/prot/icmp6.h"
+#include "../../include/lwip/ip6.h"
+#include "../../include/lwip/ip6_addr.h"
+#include "../../include/lwip/inet_chksum.h"
+#include "../../include/lwip/pbuf.h"
+#include "../../include/lwip/netif.h"
+#include "../../include/lwip/nd6.h"
+#include "../../include/lwip/mld6.h"
+#include "../../include/lwip/ip.h"
+#include "../../include/lwip/stats.h"
 
 #include <string.h>
 

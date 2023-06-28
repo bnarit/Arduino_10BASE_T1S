@@ -43,13 +43,13 @@
  * Based on draft-ietf-pppext-eap-srp-03.txt.
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && EAP_SUPPORT  /* don't build if not configured for use in lwipopts.h */
 
-#include "netif/ppp/ppp_impl.h"
-#include "netif/ppp/eap.h"
-#include "netif/ppp/magic.h"
-#include "netif/ppp/pppcrypt.h"
+#include "../../include/netif/ppp/ppp_impl.h"
+#include "../../include/netif/ppp/eap.h"
+#include "../../include/netif/ppp/magic.h"
+#include "../../include/netif/ppp/pppcrypt.h"
 
 #ifdef USE_SRP
 #include <t_pwd.h>

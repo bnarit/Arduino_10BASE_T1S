@@ -42,12 +42,12 @@
  *
  */
 
-#include "lwip/opt.h"
+#include "../include/lwip/opt.h"
 
 #if LWIP_NETCONN /* don't build if not configured for use in lwipopts.h */
 
-#include "lwip/netbuf.h"
-#include "lwip/memp.h"
+#include "../include/lwip/netbuf.h"
+#include "../include/lwip/memp.h"
 
 #include <string.h>
 

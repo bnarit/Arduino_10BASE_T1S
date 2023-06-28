@@ -37,7 +37,7 @@
 #ifndef LWIP_HDR_PROT_IP_H
 #define LWIP_HDR_PROT_IP_H
 
-#include "lwip/arch.h"
+#include "../../lwip//arch.h"
 
 #ifdef __cplusplus
 extern "C" {

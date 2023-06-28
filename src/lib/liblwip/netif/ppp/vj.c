@@ -28,13 +28,13 @@
  * for a 16 bit processor.
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT && VJ_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
-#include "netif/ppp/ppp_impl.h"
-#include "netif/ppp/pppdebug.h"
+#include "../../include/netif/ppp/ppp_impl.h"
+#include "../../include/netif/ppp/pppdebug.h"
 
-#include "netif/ppp/vj.h"
+#include "../../include/netif/ppp/vj.h"
 
 #include <string.h>
 

@@ -40,7 +40,7 @@
  * OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include "netif/ppp/ppp_opts.h"
+#include "../../include/netif/ppp/ppp_opts.h"
 #if PPP_SUPPORT /* don't build if not configured for use in lwipopts.h */
 
 /*
@@ -53,14 +53,14 @@
 #include <stdlib.h>
 #endif /* UNUSED */
 
-#include "netif/ppp/ppp_impl.h"
+#include "../../include/netif/ppp/ppp_impl.h"
 
-#include "netif/ppp/fsm.h"
-#include "netif/ppp/lcp.h"
+#include "../../include/netif/ppp/fsm.h"
+#include "../../include/netif/ppp/lcp.h"
 #if CHAP_SUPPORT
-#include "netif/ppp/chap-new.h"
+#include "../../include/netif/ppp/chap-new.h"
 #endif /* CHAP_SUPPORT */
-#include "netif/ppp/magic.h"
+#include "../../include/netif/ppp/magic.h"
 
 /*
  * When the link comes up we want to be able to wait for a short while,

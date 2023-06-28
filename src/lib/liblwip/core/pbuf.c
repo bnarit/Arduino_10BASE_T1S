@@ -68,20 +68,20 @@
  *
  */
 
-#include "lwip/opt.h"
+#include "../include/lwip/opt.h"
 
-#include "lwip/pbuf.h"
-#include "lwip/stats.h"
-#include "lwip/def.h"
-#include "lwip/mem.h"
-#include "lwip/memp.h"
-#include "lwip/sys.h"
-#include "lwip/netif.h"
+#include "../include/lwip/pbuf.h"
+#include "../include/lwip/stats.h"
+#include "../include/lwip/def.h"
+#include "../include/lwip/mem.h"
+#include "../include/lwip/memp.h"
+#include "../include/lwip/sys.h"
+#include "../include/lwip/netif.h"
 #if LWIP_TCP && TCP_QUEUE_OOSEQ
-#include "lwip/priv/tcp_priv.h"
+#include "../include/lwip/priv/tcp_priv.h"
 #endif
 #if LWIP_CHECKSUM_ON_COPY
-#include "lwip/inet_chksum.h"
+#include "../include/lwip/inet_chksum.h"
 #endif
 
 #include <string.h>
@@ -100,7 +100,7 @@ pbuf_skip_const(const struct pbuf *in, u16_t in_offset, u16_t *out_offset);
 
 #if !NO_SYS
 #ifndef PBUF_POOL_FREE_OOSEQ_QUEUE_CALL
-#include "lwip/tcpip.h"
+#include "../include/lwip/tcpip.h"
 #define PBUF_POOL_FREE_OOSEQ_QUEUE_CALL()  do { \
   if (tcpip_try_callback(pbuf_free_ooseq_callback, NULL) != ERR_OK) { \
       SYS_ARCH_PROTECT(old_level); \
