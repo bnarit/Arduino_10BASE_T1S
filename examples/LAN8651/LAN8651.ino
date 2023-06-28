@@ -80,12 +80,12 @@ static void OnPlcaStatus(int8_t idx, bool success, bool plcaStatus)
 {
   if (!success)
   {
-    Serial.println("PLCA status register read failed");
+//    Serial.println("PLCA status register read failed");
     return;
   }
-
-  if (plcaStatus)
-    Serial.println("PLCA Mode active");
-  else
-    Serial.println("CSMA/CD fallback");
+//
+//  if (plcaStatus)
+//    Serial.println("PLCA Mode active");
+//  else
+//    Serial.println("CSMA/CD fallback");
 }

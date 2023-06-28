@@ -78,21 +78,20 @@ static SPISettings const LAN865x_SPI_SETTING{1*1000*1000UL, MSBFIRST, SPI_MODE0}
 /*                      DEFINES AND LOCAL VARIABLES                     */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
-typedef struct
-{
-    uint8_t mac[6];
-    uint8_t intIn;
-    uint8_t intOut;
-    uint8_t intReported;
-} Stub_Local_t;
+static size_t constexpr MAC_SIZE = 6;
 
-static Stub_Local_t d = { 0 };
+static uint8_t mac[MAC_SIZE] = {0};
+static volatile uint8_t intIn = 0;
+static volatile uint8_t intOut = 0;
+static volatile uint8_t intReported = 0;
+
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                      PRIVATE FUNCTION PROTOTYPES                     */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
-static bool GetMacAddress(Stub_Local_t *ps);
+static void TC6Stub_ISR();
+static bool GetMacAddress(uint8_t * p_mac);
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                         PUBLIC FUNCTIONS                             */
@@ -100,15 +99,14 @@ static bool GetMacAddress(Stub_Local_t *ps);
 
 bool TC6Stub_Init(uint8_t /* idx */, uint8_t pMac[6])
 {
-    d.intIn = 0;
-    d.intOut = 0;
-    d.intReported = 0;
-
     digitalWrite(CS_PIN, HIGH);
     pinMode(CS_PIN, OUTPUT);
 
-    digitalWrite(RESET_PIN, HIGH);
     pinMode(RESET_PIN, OUTPUT);
+    digitalWrite(RESET_PIN, LOW);
+    delay(100);
+    digitalWrite(RESET_PIN, HIGH);
+    delay(100);
 
     pinMode(IRQ_PIN, INPUT_PULLUP);
 
@@ -126,43 +124,32 @@ bool TC6Stub_Init(uint8_t /* idx */, uint8_t pMac[6])
 #endif
     Wire.begin();
 
-    if (GetMacAddress(&d)) {
-      memcpy(pMac, d.mac, 6u);
+    if (GetMacAddress(mac)) {
+      memcpy(pMac, mac, MAC_SIZE);
     } else {
-      memcpy(pMac, FALLBACK_MAC, 6u);
+      memcpy(pMac, FALLBACK_MAC, MAC_SIZE);
     }
 
-    digitalWrite(RESET_PIN, LOW);
-    delay(100);
-    digitalWrite(RESET_PIN, HIGH);
-    delay(100);
-
-    attachInterrupt(digitalPinToInterrupt(IRQ_PIN),
-                    []() -> void
-                    {
-                      d.intIn++;
-                      Serial.println(d.intIn);
-                    },
-                    FALLING);
+    attachInterrupt(digitalPinToInterrupt(IRQ_PIN), TC6Stub_ISR, FALLING);
 
     return true;
 }
 
+void TC6Stub_ISR()
+{
+  intIn++;
+}
+
 bool TC6Stub_IntActive(uint8_t /* idx */)
 {
-    Serial.println("TC6Stub_IntActive");
-    Stub_Local_t *ps = &d;
-    ps->intReported = ps->intIn;
-    return (ps->intReported != ps->intOut);
+    intReported = intIn;
+    return (intReported != intOut);
 }
 
 void TC6Stub_ReleaseInt(uint8_t /* idx */)
 {
-    Serial.println("TC6Stub_IntActive");
-    Stub_Local_t *ps = &d;
-    if (digitalRead(IRQ_PIN) == HIGH) {
-        ps->intOut = ps->intReported;
-    }
+    if (digitalRead(IRQ_PIN) == HIGH)
+        intOut = intReported;
 }
 
 uint32_t TC6Stub_GetTick(void)
@@ -181,7 +168,7 @@ bool TC6Stub_SpiTransaction(uint8_t idx, uint8_t *pTx, uint8_t *pRx, uint16_t le
     SPI.endTransaction();
     digitalWrite(CS_PIN, HIGH);
 
-#if 1
+#if 0
     Serial.print("TX = ");
     for (size_t b = 0; b < len; b++)
     {
@@ -208,7 +195,7 @@ bool TC6Stub_SpiTransaction(uint8_t idx, uint8_t *pTx, uint8_t *pRx, uint16_t le
 /*                  PRIVATE FUNCTION IMPLEMENTATIONS                    */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
-static bool GetMacAddress(Stub_Local_t *ps)
+static bool GetMacAddress(uint8_t * p_mac)
 {
     uint8_t MAC_EEPROM_I2C_SLAVE_ADDR = 0x58;
     uint8_t MAC_EEPROM_EUI_REG_ADDR = 0x9A;
@@ -218,18 +205,18 @@ static bool GetMacAddress(Stub_Local_t *ps)
     Wire.write(MAC_EEPROM_EUI_REG_ADDR);
     Wire.endTransmission();
 
-    Wire.requestFrom(MAC_EEPROM_I2C_SLAVE_ADDR, sizeof(ps->mac));
+    Wire.requestFrom(MAC_EEPROM_I2C_SLAVE_ADDR, MAC_SIZE);
 
     uint32_t const start = TC6Stub_GetTick();
 
     size_t bytes_read = 0;
-    while (bytes_read < sizeof(ps->mac) && ((TC6Stub_GetTick() - start) < 1000)) {
+    while (bytes_read < MAC_SIZE && ((TC6Stub_GetTick() - start) < 1000)) {
       if (Wire.available()) {
-        ps->mac[bytes_read] = Wire.read();
+        p_mac[bytes_read] = Wire.read();
         bytes_read++;
       }
     }
 
-    success = (bytes_read == sizeof(ps->mac));
+    success = (bytes_read == MAC_SIZE);
     return success;
 }
