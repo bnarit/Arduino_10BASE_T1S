@@ -395,7 +395,7 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
 /*                FUNCTION TO GET SYSTEM TICKS FOR lwIP                 */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
-u32_t sys_now(void)
+extern "C" u32_t sys_now(void)
 {
     return TC6Stub_GetTick();
 }
