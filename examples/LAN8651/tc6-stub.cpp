@@ -168,6 +168,7 @@ bool TC6Stub_SpiTransaction(uint8_t idx, uint8_t *pTx, uint8_t *pRx, uint16_t le
     SPI.endTransaction();
     digitalWrite(CS_PIN, HIGH);
 
+    TC6_SpiBufferDone(0 /* tc6instance */, true /* success */);
 #if 0
     Serial.print("TX = ");
     for (size_t b = 0; b < len; b++)
