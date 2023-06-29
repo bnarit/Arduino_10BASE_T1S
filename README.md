@@ -25,9 +25,15 @@ make
 [  +0,000236] LAN867X Rev.B1 usb-001:014:00: attached PHY driver (mii_bus:phy_addr=usb-001:014:00, irq=191)
 [  +0,001013] smsc95xx_t1s 1-2.2:1.0 eth1: register 'smsc95xx_t1s' at usb-0000:00:14.0-2.2, smsc95xx USB 2.0 Ethernet, 00:1e:c0:d1:b9:4b
 ```
-* You can take a look at the registered Etherned device via `ip link show eth1`:  
+* You can take a look at the registered Ethernet device via `ip link show eth1`:
 ```bash
 ip link show eth1
 3: eth1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
     link/ether 3c:e1:a1:b8:e9:76 brd ff:ff:ff:ff:ff:ff
+```
+
+### How-to-`iperf`
+```bash
+iperf -c 192.168.0.100 -u -b 10M
+iperf -s 192.168.0.100 -u -b 10M
 ```
