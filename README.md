@@ -1,5 +1,6 @@
 `Arduino_10BASE_T1S`
 ====================
+**Note**: This library works for Arduino [Nano 33 IoT](https://store.arduino.cc/products/arduino-nano-33-iot).
 
 ### How-to-[`EVB-LAN8670-USB`](https://www.microchip.com/en-us/development-tool/EV08L38A)
 **Note**: Keep [this application note](https://microchip.my.site.com/s/article/EVB-LAN8670-USB-Enablement-for-Debian-Ubuntu-Raspbian) in mind when building for Debian based systems. You may need to revert back to legacy network configuration tools.
