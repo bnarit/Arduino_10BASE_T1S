@@ -20,6 +20,7 @@ void setup()
 {
   Serial.begin(115200);
   while (!Serial) { }
+  delay(1000);
 
   lwip_idx = TC6LwIP_Init(IP,
                           T1S_PLCA_ENABLE,
