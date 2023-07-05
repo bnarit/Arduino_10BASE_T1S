@@ -3,12 +3,6 @@
 #include "tc6-stub.h"
 #include "tc6-lwip.h"
 
-/*
- *  arduino-cli compile -b arduino:samd:nano_33_iot -v examples/LAN8651
- * or
- *  arduino-cli compile -b rp2040:rp2040:rpipico -v examples/LAN8651
- */
-
 static bool    const T1S_PLCA_ENABLE      = true;
 static uint8_t const T1S_PLCA_NODE_ID     = 1;
 static uint8_t const T1S_PLCA_NODE_COUNT  = 8;
