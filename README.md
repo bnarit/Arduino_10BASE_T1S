@@ -15,7 +15,7 @@ arduino-cli compile -b arduino:samd:nano_33_iot -v examples/LAN8651 -u -p /dev/t
 
 * Build kernel driver:
 ```bash
-cd extras/evb-lan8670-usb-linux-5.19
+cd extras/evb-lan8670-usb-linux-5.15.84
 make
 ```
 * Load kernel driver (configuration of 10BASE-T1S PHY within `load.sh`):
@@ -36,9 +36,10 @@ make
 ```
 * You can take a look at the registered Ethernet device via `ip link show eth1`:
 ```bash
-ip link show eth1
-3: eth1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+3: eth1: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc fq_codel state DOWN group default qlen 1000
     link/ether 3c:e1:a1:b8:e9:76 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.42.100/24 scope global eth1
+       valid_lft forever preferred_lft forever
 ```
 
 ### How-to-`iperf`
