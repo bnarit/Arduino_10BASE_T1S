@@ -9,9 +9,8 @@
  *  arduino-cli compile -b rp2040:rp2040:rpipico -v examples/LAN8651
  */
 
-static uint8_t const BOARD_INSTANCE       = 0;
 static bool    const T1S_PLCA_ENABLE      = true;
-static uint8_t const T1S_PLCA_NODE_ID     = BOARD_INSTANCE + 1;
+static uint8_t const T1S_PLCA_NODE_ID     = 1;
 static uint8_t const T1S_PLCA_NODE_COUNT  = 8;
 static uint8_t const T1S_PLCA_BURST_COUNT = 0;
 static uint8_t const T1S_PLCA_BURST_TIMER = 0x80;
@@ -19,7 +18,7 @@ static bool    const MAC_PROMISCUOUS_MODE = false;
 static bool    const MAC_TX_CUT_THROUGH   = false;
 static bool    const MAC_RX_CUT_THROUGH   = false;
 
-static uint8_t const IP[] = {192, 168, 0, 100 + BOARD_INSTANCE};
+static uint8_t const IP[] = {192, 168, 0, 100 + T1S_PLCA_NODE_ID};
 
 int8_t lwip_idx = -1;
 
