@@ -12,7 +12,7 @@ static bool    const MAC_PROMISCUOUS_MODE = false;
 static bool    const MAC_TX_CUT_THROUGH   = false;
 static bool    const MAC_RX_CUT_THROUGH   = false;
 
-static uint8_t const IP[] = {192, 168, 0, 100 + T1S_PLCA_NODE_ID};
+static uint8_t const IP[] = {192, 168, 42, 100 + T1S_PLCA_NODE_ID};
 
 int8_t lwip_idx = -1;
 
