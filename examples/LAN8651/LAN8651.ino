@@ -55,7 +55,29 @@ void setup()
     return;
   }
 
-  Serial.println("setup complete.");
+  char board_info_msg[256] = {0};
+  snprintf(board_info_msg,
+           sizeof(board_info_msg),
+           "\tIP\t%d.%d.%d.%d\n" \
+           "\tPLCA\n" \
+           "\t\tnode id     : %d\n" \
+           "\t\tnode count  : %d\n" \
+           "\t\tburst count : %d\n" \
+           "\t\tburst timer : %d\n" \
+           "\tMAC\n" \
+           "\t\tpromisc. mode : %d\n" \
+           "\t\ttx cut through: %d\n" \
+           "\t\trx cut through: %d",
+           IP[0], IP[1], IP[2], IP[3],
+           T1S_PLCA_NODE_ID,
+           T1S_PLCA_NODE_COUNT,
+           T1S_PLCA_BURST_COUNT,
+           T1S_PLCA_BURST_TIMER,
+           MAC_PROMISCUOUS_MODE,
+           MAC_TX_CUT_THROUGH,
+           MAC_RX_CUT_THROUGH);
+
+  Serial.println(board_info_msg);
 }
 
 void loop()
