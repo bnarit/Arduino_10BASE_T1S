@@ -37,10 +37,14 @@ void setup()
     return;
   }
 
+  uint8_t MAC[6] = {0};
+  TC6LwIP_GetMac(lwip_idx, reinterpret_cast<uint8_t **>(&MAC));
+
   char board_info_msg[256] = {0};
   snprintf(board_info_msg,
            sizeof(board_info_msg),
            "\tIP\t%d.%d.%d.%d\n" \
+           "\tMAC\t%02X:%02X:%02X:%02X:%02X:%02X\n" \
            "\tPLCA\n" \
            "\t\tnode id     : %d\n" \
            "\t\tnode count  : %d\n" \
@@ -51,6 +55,7 @@ void setup()
            "\t\ttx cut through: %d\n" \
            "\t\trx cut through: %d",
            IP[0], IP[1], IP[2], IP[3],
+           MAC[0], MAC[1], MAC[2], MAC[3], MAC[4], MAC[5],
            T1S_PLCA_NODE_ID,
            T1S_PLCA_NODE_COUNT,
            T1S_PLCA_BURST_COUNT,
