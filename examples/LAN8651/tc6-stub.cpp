@@ -72,7 +72,7 @@ static int const CS_PIN    =  5;
 # error "No pins defined for your board"
 #endif
 
-static SPISettings const LAN865x_SPI_SETTING{1*1000*1000UL, MSBFIRST, SPI_MODE0};
+static SPISettings const LAN865x_SPI_SETTING{8*1000*1000UL, MSBFIRST, SPI_MODE0};
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                      DEFINES AND LOCAL VARIABLES                     */
