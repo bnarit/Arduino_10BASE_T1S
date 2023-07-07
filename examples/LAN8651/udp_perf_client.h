@@ -34,14 +34,15 @@
 extern "C" {
 #endif
 
-#include "lwipopts.h"
-#include "lwip/ip_addr.h"
-#include "lwip/err.h"
-#include "lwip/udp.h"
-#include "lwip/inet.h"
-#include "lwip/sockets.h"
-#include "lwip/sys.h"
+//#include "lwipopts.h"
+//#include "lwip/ip_addr.h"
+//#include "lwip/err.h"
+//#include "lwip/udp.h"
+//#include "lwip/inet.h"
+//#include "lwip/sockets.h"
+//#include "lwip/sys.h"
 #include "errno.h"
+#include <Arduino_10BASE_T1S.h>
 
 /* used as indices into kLabel[] */
 enum {

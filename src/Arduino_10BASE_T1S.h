@@ -32,3 +32,4 @@
 #include "lib/liblwip/include/netif/etharp.h"
 #include "lib/liblwip/include/lwip/mem.h"
 #include "lib/liblwip/include/lwip/memp.h"
+#include "lib/liblwip/include/lwip/udp.h"

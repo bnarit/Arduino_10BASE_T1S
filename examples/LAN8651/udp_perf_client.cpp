@@ -32,15 +32,16 @@
 #include <stdbool.h>
 #include <string.h>
 #include <assert.h>
-#include "lwip/udp.h"
+//#include "lwip/udp.h"
 #include "udp_perf_client.h"
-#include "peripheral/systick/plib_systick.h"
+//#include "peripheral/systick/plib_systick.h"
 #include "tc6-lwip.h" /* For performance improvement addon */
+#include <Arduino.h>
 
 #define START_DELAY  (10)
 
-extern SYSTICK_OBJECT systick; /* Instanced in plib_systick.c */
-#define GET_TICKS() (systick.tickCounter)
+//extern SYSTICK_OBJECT systick; /* Instanced in plib_systick.c */
+#define GET_TICKS() (millis())
 
 static uint32_t startDelay = 0;
 static bool running = false;
