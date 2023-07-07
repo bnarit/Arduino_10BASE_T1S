@@ -3,6 +3,8 @@
 #include "tc6-stub.h"
 #include "tc6-lwip.h"
 
+#include "udp_perf_client.h"
+
 static bool    const T1S_PLCA_ENABLE      = true;
 static uint8_t const T1S_PLCA_NODE_ID     = 1;
 static uint8_t const T1S_PLCA_NODE_COUNT  = 8;
@@ -65,6 +67,10 @@ void setup()
            MAC_RX_CUT_THROUGH);
 
   Serial.println(board_info_msg);
+
+  iperf_init();
+  iperf_print_app_header();
+  iperf_start_application();
 }
 
 void loop()
@@ -73,6 +79,8 @@ void loop()
    * Must be called cyclic. The faster the better.
    */
   TC6LwIP_Service();
+
+  iperf_service();
 
   static unsigned long prev_beacon_check = 0;
 
