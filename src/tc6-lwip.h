@@ -111,7 +111,7 @@ bool TC6LwIP_SendWouldBlock(int8_t idx);
  *  \param idx - The instance number as returned from the TC6LwIP_Init() function.
  *  \param mac - Pointer to an 6 Byte array. The MAC address will be written to that.
  */
-void TC6LwIP_GetMac(int8_t idx, uint8_t *mac[6]);
+void TC6LwIP_GetMac(int8_t idx, uint8_t *mac);
 
 /** \brief Sets the PLCA Node ID and the PLCA Node Count and can enable/disable PLCA.
  *  \param idx - The instance number as returned from the TC6LwIP_Init() function.

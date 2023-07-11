@@ -30,10 +30,6 @@
 #ifndef __UDP_PERF_CLIENT_H_
 #define __UDP_PERF_CLIENT_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 //#include "lwipopts.h"
 //#include "lwip/ip_addr.h"
 //#include "lwip/err.h"
@@ -43,6 +39,10 @@ extern "C" {
 //#include "lwip/sys.h"
 #include "errno.h"
 #include <Arduino_10BASE_T1S.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* used as indices into kLabel[] */
 enum {

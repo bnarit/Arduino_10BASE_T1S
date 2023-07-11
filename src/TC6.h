@@ -22,16 +22,42 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "TC6.h"
+#include <cstdint>
 
-#include "lib/libtc6/inc/tc6.h"
-#include "lib/libtc6/inc/tc6-regs.h"
-#include "lib/libtc6/cfg-example/tc6-conf.h"
+#include <array>
 
-#include "lib/liblwip/include/lwip/netif.h"
-#include "lib/liblwip/include/lwip/init.h"
-#include "lib/liblwip/include/lwip/timeouts.h"
-#include "lib/liblwip/include/netif/etharp.h"
-#include "lib/liblwip/include/lwip/mem.h"
-#include "lib/liblwip/include/lwip/memp.h"
-#include "lib/liblwip/include/lwip/udp.h"
+/**************************************************************************************
+ * CLASS DECLARATION
+ **************************************************************************************/
+
+class TC6
+{
+public:
+  TC6();
+  ~TC6();
+
+
+  bool begin(uint8_t const ip[4],
+             bool const enable_plca,
+             uint8_t const node_id,
+             uint8_t const node_count,
+             uint8_t const burst_count,
+             uint8_t const burst_timer,
+             bool const mac_promiscuous_mode,
+             bool const mac_tx_cut_through,
+             bool const mac_rx_cut_through);
+
+  void service();
+
+  typedef void (*OnPlcaStatusFunc)(bool success, bool plcaStatus);
+  bool getPlcaStatus(OnPlcaStatusFunc on_plca_status);
+
+  bool sendWouldBlock();
+
+  typedef std::array<uint8_t, 6> MACAddr;
+  MACAddr getMacAddr();
+
+
+private:
+  int8_t _idx;
+};

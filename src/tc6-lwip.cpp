@@ -249,11 +249,11 @@ bool TC6LwIP_SendWouldBlock(int8_t idx)
     return wouldBlock;
 }
 
-void TC6LwIP_GetMac(int8_t idx, uint8_t *mac[6])
+void TC6LwIP_GetMac(int8_t idx, uint8_t *mac)
 {
     if (mac && (idx < TC6_MAX_INSTANCES)) {
         TC6LwIP_t *lw = &mlw[idx];
-        *mac = lw->ip.mac;
+        memcpy(mac, lw->ip.mac, sizeof(lw->ip.mac));
     }
 }
 

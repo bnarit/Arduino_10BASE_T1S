@@ -1,8 +1,5 @@
 #include <Arduino_10BASE_T1S.h>
 
-#include "tc6-stub.h"
-#include "tc6-lwip.h"
-
 #include "udp_perf_client.h"
 
 static bool    const T1S_PLCA_ENABLE      = true;
@@ -16,7 +13,7 @@ static bool    const MAC_RX_CUT_THROUGH   = false;
 
 static uint8_t const IP[] = {192, 168, 42, 100 + T1S_PLCA_NODE_ID};
 
-int8_t lwip_idx = -1;
+TC6 tc6_inst;
 
 void setup()
 {
@@ -24,23 +21,21 @@ void setup()
   while (!Serial) { }
   delay(1000);
 
-  lwip_idx = TC6LwIP_Init(IP,
-                          T1S_PLCA_ENABLE,
-                          T1S_PLCA_NODE_ID,
-                          T1S_PLCA_NODE_COUNT,
-                          T1S_PLCA_BURST_COUNT,
-                          T1S_PLCA_BURST_TIMER,
-                          MAC_PROMISCUOUS_MODE,
-                          MAC_TX_CUT_THROUGH,
-                          MAC_RX_CUT_THROUGH);
-
-  if (lwip_idx < 0) {
-    Serial.println("'TC6LwIP_Init' failed.");
+  if (!tc6_inst.begin(IP,
+                      T1S_PLCA_ENABLE,
+                      T1S_PLCA_NODE_ID,
+                      T1S_PLCA_NODE_COUNT,
+                      T1S_PLCA_BURST_COUNT,
+                      T1S_PLCA_BURST_TIMER,
+                      MAC_PROMISCUOUS_MODE,
+                      MAC_TX_CUT_THROUGH,
+                      MAC_RX_CUT_THROUGH))
+  {
+    Serial.println("'TC6::begin(...)' failed.");
     return;
   }
 
-  uint8_t MAC[6] = {0};
-  TC6LwIP_GetMac(lwip_idx, reinterpret_cast<uint8_t **>(&MAC));
+  auto const MAC = tc6_inst.getMacAddr();
 
   char board_info_msg[256] = {0};
   snprintf(board_info_msg,
@@ -78,7 +73,7 @@ void loop()
   /* Services the hardware and the protocol stack.
    * Must be called cyclic. The faster the better.
    */
-  TC6LwIP_Service();
+  tc6_inst.service();
 
   iperf_service();
 
@@ -89,12 +84,12 @@ void loop()
   if ((now - prev_beacon_check) > 1000)
   {
     prev_beacon_check = now;
-    TC6LwIP_GetPlcaStatus(lwip_idx, OnPlcaStatus);
+    tc6_inst.getPlcaStatus(OnPlcaStatus);
   }
 }
 
 
-static void OnPlcaStatus(int8_t idx, bool success, bool plcaStatus)
+static void OnPlcaStatus(bool success, bool plcaStatus)
 {
   if (!success)
   {
