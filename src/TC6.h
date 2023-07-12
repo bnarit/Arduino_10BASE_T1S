@@ -24,6 +24,8 @@
 
 #include <cstdint>
 
+#include <IPAddress.h>
+
 #include "MacAddress.h"
 #include "T1SMacSettings.h"
 #include "T1SPlcaSettings.h"
@@ -39,7 +41,7 @@ public:
   ~TC6();
 
 
-  bool begin(uint8_t const ip[4],
+  bool begin(IPAddress const ip_addr,
              T1SPlcaSettings const t1s_plca_settings,
              T1SMacSettings const t1s_mac_settings);
 
