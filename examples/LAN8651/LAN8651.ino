@@ -31,8 +31,6 @@ void setup()
     return;
   }
 
-  auto const MAC = tc6_inst.getMacAddr();
-
   char board_info_msg[256] = {0};
   snprintf(board_info_msg,
            sizeof(board_info_msg),
@@ -40,7 +38,7 @@ void setup()
            IP[0], IP[1], IP[2], IP[3]);
 
   Serial.println(board_info_msg);
-  Serial.println(MAC);
+  Serial.println(tc6_inst.getMacAddr());
   Serial.println(t1s_plca_settings);
   Serial.println(t1s_mac_settings);
 
