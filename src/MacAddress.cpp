@@ -16,43 +16,40 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#pragma once
-
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <cstdint>
-
 #include "MacAddress.h"
-#include "T1SMacSettings.h"
-#include "T1SPlcaSettings.h"
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class TC6
+//MacAddress::MacAddress()
+//{
+//
+//}
+
+/**************************************************************************************
+ * PUBLIC MEMBER FUNCTIONS
+ **************************************************************************************/
+
+size_t MacAddress::printTo(Print & p) const
 {
-public:
-  TC6();
-  ~TC6();
+  char msg[32] = {0};
 
+  uint8_t const * const ptr_mac = (this->data());
 
-  bool begin(uint8_t const ip[4],
-             T1SPlcaSettings const t1s_plca_settings,
-             T1SMacSettings const t1s_mac_settings);
+  snprintf(msg,
+           sizeof(msg),
+           "MAC\t%02X:%02X:%02X:%02X:%02X:%02X",
+           ptr_mac[0],
+           ptr_mac[1],
+           ptr_mac[2],
+           ptr_mac[3],
+           ptr_mac[4],
+           ptr_mac[5]);
 
-  void service();
-
-  typedef void (*OnPlcaStatusFunc)(bool success, bool plcaStatus);
-  bool getPlcaStatus(OnPlcaStatusFunc on_plca_status);
-
-  bool sendWouldBlock();
-
-  MacAddress getMacAddr();
-
-
-private:
-  int8_t _idx;
-};
+  return p.write(msg);
+}

@@ -89,9 +89,9 @@ bool TC6::sendWouldBlock()
   return TC6LwIP_SendWouldBlock(_idx);
 }
 
-TC6::MACAddr TC6::getMacAddr()
+MacAddress TC6::getMacAddr()
 {
-  MACAddr mac = {0};
+  MacAddress mac;
   TC6LwIP_GetMac(_idx, mac.data());
   return mac;
 }

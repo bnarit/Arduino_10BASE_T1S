@@ -36,12 +36,11 @@ void setup()
   char board_info_msg[256] = {0};
   snprintf(board_info_msg,
            sizeof(board_info_msg),
-           "\tIP\t%d.%d.%d.%d\n" \
-           "\tMAC\t%02X:%02X:%02X:%02X:%02X:%02X\n",
-           IP[0], IP[1], IP[2], IP[3],
-           MAC[0], MAC[1], MAC[2], MAC[3], MAC[4], MAC[5]);
+           "\tIP\t%d.%d.%d.%d\n",
+           IP[0], IP[1], IP[2], IP[3]);
 
   Serial.println(board_info_msg);
+  Serial.println(MAC);
   Serial.println(t1s_plca_settings);
   Serial.println(t1s_mac_settings);
 

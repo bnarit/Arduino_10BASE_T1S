@@ -24,35 +24,24 @@
 
 #include <cstdint>
 
-#include "MacAddress.h"
-#include "T1SMacSettings.h"
-#include "T1SPlcaSettings.h"
+#include <array>
+
+#include <Print.h>
+#include <Printable.h>
+
+/**************************************************************************************
+ * CONSTANTS
+ **************************************************************************************/
+
+static size_t constexpr MAC_ADDRESS_NUM_BYTES = 6;
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class TC6
+class MacAddress : public arduino::Printable
+                 , public std::array<uint8_t, MAC_ADDRESS_NUM_BYTES>
 {
-public:
-  TC6();
-  ~TC6();
-
-
-  bool begin(uint8_t const ip[4],
-             T1SPlcaSettings const t1s_plca_settings,
-             T1SMacSettings const t1s_mac_settings);
-
-  void service();
-
-  typedef void (*OnPlcaStatusFunc)(bool success, bool plcaStatus);
-  bool getPlcaStatus(OnPlcaStatusFunc on_plca_status);
-
-  bool sendWouldBlock();
-
-  MacAddress getMacAddr();
-
-
 private:
-  int8_t _idx;
+  virtual size_t printTo(Print & p) const override;
 };
