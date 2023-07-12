@@ -38,23 +38,17 @@ Microchip or any third party.
     This file acts as a bridge between the TC6 library and the lwIP TCP/IP stack
 *******************************************************************************/
 
-#include <stdint.h>
-#include <stdbool.h>
 #include <stdarg.h>
 #include <string.h>
-#include <assert.h>
-//#include "lwip/netif.h"
-//#include "lwip/init.h"
-//#include "lwip/timeouts.h"
-//#include "netif/etharp.h"
-//#include "lwip/mem.h"
-//#include "lwip/memp.h"
-#include <Arduino.h>
-//#include <lwIP_Arduino.h>
-#include <Arduino_10BASE_T1S.h>
-//#include "tc6-conf.h"
-//#include "tc6-regs.h"
-//#include "tc6.h"
+
+#include "lib/liblwip/include/lwip/netif.h"
+#include "lib/liblwip/include/lwip/init.h"
+#include "lib/liblwip/include/lwip/timeouts.h"
+#include "lib/liblwip/include/netif/etharp.h"
+
+#include "lib/libtc6/inc/tc6-regs.h"
+#include "lib/libtc6/cfg-example/tc6-conf.h"
+
 #include "tc6-stub.h"
 #include "tc6-lwip.h"
 

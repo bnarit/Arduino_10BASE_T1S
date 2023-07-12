@@ -46,13 +46,13 @@ Microchip or any third party.
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
-//#include "definitions.h"
-//#include "tc6-conf.h"
-//#include "tc6.h"
+
+#include "lib/libtc6/inc/tc6.h"
+#include "lib/libtc6/inc/tc6-regs.h"
+#include "lib/libtc6/cfg-example/tc6-conf.h"
+
 #include <SPI.h>
 #include <Wire.h>
-#include <Arduino.h>
-#include <Arduino_10BASE_T1S.h>
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                          USER ADJUSTABLE                             */

@@ -43,8 +43,8 @@ Microchip or any third party.
 
 #include <stdint.h>
 #include <stdbool.h>
-//#include "tc6.h"
-#include <Arduino_10BASE_T1S.h>
+
+#include "lib/libtc6/inc/tc6.h"
 
 #ifdef __cplusplus
 extern "C" {
