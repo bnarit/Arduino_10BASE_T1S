@@ -46,10 +46,10 @@ size_t T1SMacSettings::printTo(Print & p) const
 
   snprintf(msg,
            sizeof(msg),
-           "\tMAC\n" \
-           "\t\tpromisc. mode : %d\n" \
-           "\t\ttx cut through: %d\n" \
-           "\t\trx cut through: %d",
+           "MAC\n" \
+           "\tpromisc. mode : %d\n" \
+           "\ttx cut through: %d\n" \
+           "\trx cut through: %d",
            _mac_promiscuous_mode,
            _mac_tx_cut_through,
            _mac_rx_cut_through);

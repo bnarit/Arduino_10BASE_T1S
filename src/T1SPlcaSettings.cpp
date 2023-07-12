@@ -47,11 +47,11 @@ size_t T1SPlcaSettings::printTo(Print & p) const
   char msg[128] = {0};
   snprintf(msg,
            sizeof(msg),
-           "\tPLCA\n" \
-           "\t\tnode id     : %d\n" \
-           "\t\tnode count  : %d\n" \
-           "\t\tburst count : %d\n" \
-           "\t\tburst timer : %d",
+           "PLCA\n" \
+           "\tnode id     : %d\n" \
+           "\tnode count  : %d\n" \
+           "\tburst count : %d\n" \
+           "\tburst timer : %d",
            _node_id,
            _node_count,
            _burst_count,

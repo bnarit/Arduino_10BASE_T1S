@@ -36,7 +36,7 @@ void setup()
   char board_info_msg[256] = {0};
   snprintf(board_info_msg,
            sizeof(board_info_msg),
-           "\tIP\t%d.%d.%d.%d\n",
+           "IP\t%d.%d.%d.%d\n",
            IP[0], IP[1], IP[2], IP[3]);
 
   Serial.println(board_info_msg);
