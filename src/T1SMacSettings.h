@@ -24,37 +24,28 @@
 
 #include <cstdint>
 
-#include <array>
-
-#include "T1SMacSettings.h"
-#include "T1SPlcaSettings.h"
+#include <Print.h>
+#include <Printable.h>
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class TC6
+class T1SMacSettings : public arduino::Printable
 {
-public:
-  TC6();
-  ~TC6();
-
-
-  bool begin(uint8_t const ip[4],
-             T1SPlcaSettings const t1s_plca_settings,
-             T1SMacSettings const t1s_mac_settings);
-
-  void service();
-
-  typedef void (*OnPlcaStatusFunc)(bool success, bool plcaStatus);
-  bool getPlcaStatus(OnPlcaStatusFunc on_plca_status);
-
-  bool sendWouldBlock();
-
-  typedef std::array<uint8_t, 6> MACAddr;
-  MACAddr getMacAddr();
-
-
 private:
-  int8_t _idx;
+  bool const _mac_promiscuous_mode;
+  bool const _mac_tx_cut_through;
+  bool const _mac_rx_cut_through;
+
+public:
+  T1SMacSettings(bool const mac_promiscuous_mode,
+                 bool const mac_tx_cut_through,
+                 bool const mac_rx_cut_through);
+
+  virtual size_t printTo(Print & p) const override;
+
+  uint8_t mac_promiscuous_mode() const { return _mac_promiscuous_mode; }
+  uint8_t mac_tx_cut_through()   const { return _mac_tx_cut_through; }
+  uint8_t mac_rx_cut_through()   const { return _mac_rx_cut_through; }
 };

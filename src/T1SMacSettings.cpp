@@ -16,45 +16,43 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#pragma once
-
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <cstdint>
-
-#include <array>
-
 #include "T1SMacSettings.h"
-#include "T1SPlcaSettings.h"
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * CTOR/DTOR
  **************************************************************************************/
 
-class TC6
+T1SMacSettings::T1SMacSettings(bool const mac_promiscuous_mode,
+                               bool const mac_tx_cut_through,
+                               bool const mac_rx_cut_through)
+: _mac_promiscuous_mode{mac_promiscuous_mode}
+, _mac_tx_cut_through{mac_tx_cut_through}
+, _mac_rx_cut_through{mac_rx_cut_through}
 {
-public:
-  TC6();
-  ~TC6();
 
+}
 
-  bool begin(uint8_t const ip[4],
-             T1SPlcaSettings const t1s_plca_settings,
-             T1SMacSettings const t1s_mac_settings);
+/**************************************************************************************
+ * PUBLIC MEMBER FUNCTIONS
+ **************************************************************************************/
 
-  void service();
+size_t T1SMacSettings::printTo(Print & p) const
+{
+  char msg[128] = {0};
 
-  typedef void (*OnPlcaStatusFunc)(bool success, bool plcaStatus);
-  bool getPlcaStatus(OnPlcaStatusFunc on_plca_status);
+  snprintf(msg,
+           sizeof(msg),
+           "\tMAC\n" \
+           "\t\tpromisc. mode : %d\n" \
+           "\t\ttx cut through: %d\n" \
+           "\t\trx cut through: %d",
+           _mac_promiscuous_mode,
+           _mac_tx_cut_through,
+           _mac_rx_cut_through);
 
-  bool sendWouldBlock();
-
-  typedef std::array<uint8_t, 6> MACAddr;
-  MACAddr getMacAddr();
-
-
-private:
-  int8_t _idx;
-};
+  return p.write(msg);
+}

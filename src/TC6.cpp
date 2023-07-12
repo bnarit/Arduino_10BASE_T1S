@@ -49,9 +49,7 @@ TC6::~TC6()
 
 bool TC6::begin(uint8_t const ip[4],
                 T1SPlcaSettings const t1s_plca_settings,
-                bool const mac_promiscuous_mode,
-                bool const mac_tx_cut_through,
-                bool const mac_rx_cut_through)
+                T1SMacSettings const t1s_mac_settings)
 {
   _idx = TC6LwIP_Init(ip,
                       true /* enable_plca */,
@@ -59,9 +57,9 @@ bool TC6::begin(uint8_t const ip[4],
                       t1s_plca_settings.node_count(),
                       t1s_plca_settings.burst_count(),
                       t1s_plca_settings.burst_timer(),
-                      mac_promiscuous_mode,
-                      mac_tx_cut_through,
-                      mac_rx_cut_through);
+                      t1s_mac_settings.mac_promiscuous_mode(),
+                      t1s_mac_settings.mac_tx_cut_through(),
+                      t1s_mac_settings.mac_rx_cut_through());
   return (_idx >= 0);
 }
 

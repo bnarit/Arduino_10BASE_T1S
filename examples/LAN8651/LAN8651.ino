@@ -13,6 +13,7 @@ static bool    const MAC_RX_CUT_THROUGH   = false;
 static uint8_t const IP[] = {192, 168, 42, 100 + T1S_PLCA_NODE_ID};
 
 static T1SPlcaSettings const t1s_plca_settings{T1S_PLCA_NODE_ID, T1S_PLCA_NODE_COUNT, T1S_PLCA_BURST_COUNT, T1S_PLCA_BURST_TIMER};
+static T1SMacSettings const t1s_mac_settings{MAC_PROMISCUOUS_MODE, MAC_TX_CUT_THROUGH, MAC_RX_CUT_THROUGH};
 
 TC6 tc6_inst;
 
@@ -24,9 +25,7 @@ void setup()
 
   if (!tc6_inst.begin(IP,
                       t1s_plca_settings,
-                      MAC_PROMISCUOUS_MODE,
-                      MAC_TX_CUT_THROUGH,
-                      MAC_RX_CUT_THROUGH))
+                      t1s_mac_settings))
   {
     Serial.println("'TC6::begin(...)' failed.");
     return;
@@ -38,19 +37,13 @@ void setup()
   snprintf(board_info_msg,
            sizeof(board_info_msg),
            "\tIP\t%d.%d.%d.%d\n" \
-           "\tMAC\t%02X:%02X:%02X:%02X:%02X:%02X\n" \
-           "\tMAC\n" \
-           "\t\tpromisc. mode : %d\n" \
-           "\t\ttx cut through: %d\n" \
-           "\t\trx cut through: %d",
+           "\tMAC\t%02X:%02X:%02X:%02X:%02X:%02X\n",
            IP[0], IP[1], IP[2], IP[3],
-           MAC[0], MAC[1], MAC[2], MAC[3], MAC[4], MAC[5],
-           MAC_PROMISCUOUS_MODE,
-           MAC_TX_CUT_THROUGH,
-           MAC_RX_CUT_THROUGH);
+           MAC[0], MAC[1], MAC[2], MAC[3], MAC[4], MAC[5]);
 
   Serial.println(board_info_msg);
   Serial.println(t1s_plca_settings);
+  Serial.println(t1s_mac_settings);
 
   iperf_init();
   iperf_print_app_header();
