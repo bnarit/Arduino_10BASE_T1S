@@ -40,7 +40,6 @@ public:
 
 
   bool begin(uint8_t const ip[4],
-             bool const enable_plca,
              T1SPlcaSettings const t1s_plca_settings,
              bool const mac_promiscuous_mode,
              bool const mac_tx_cut_through,

@@ -2,7 +2,6 @@
 
 #include "udp_perf_client.h"
 
-static bool    const T1S_PLCA_ENABLE      = true;
 static uint8_t const T1S_PLCA_NODE_ID     = 1;
 static uint8_t const T1S_PLCA_NODE_COUNT  = 8;
 static uint8_t const T1S_PLCA_BURST_COUNT = 0;
@@ -24,7 +23,6 @@ void setup()
   delay(1000);
 
   if (!tc6_inst.begin(IP,
-                      T1S_PLCA_ENABLE,
                       t1s_plca_settings,
                       MAC_PROMISCUOUS_MODE,
                       MAC_TX_CUT_THROUGH,
