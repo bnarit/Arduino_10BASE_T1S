@@ -24,39 +24,31 @@
 
 #include <cstdint>
 
-#include <array>
-
-#include "T1SPlcaSettings.h"
+#include <Print.h>
+#include <Printable.h>
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class TC6
+class T1SPlcaSettings : public arduino::Printable
 {
-public:
-  TC6();
-  ~TC6();
-
-
-  bool begin(uint8_t const ip[4],
-             bool const enable_plca,
-             T1SPlcaSettings const t1s_plca_settings,
-             bool const mac_promiscuous_mode,
-             bool const mac_tx_cut_through,
-             bool const mac_rx_cut_through);
-
-  void service();
-
-  typedef void (*OnPlcaStatusFunc)(bool success, bool plcaStatus);
-  bool getPlcaStatus(OnPlcaStatusFunc on_plca_status);
-
-  bool sendWouldBlock();
-
-  typedef std::array<uint8_t, 6> MACAddr;
-  MACAddr getMacAddr();
-
-
 private:
-  int8_t _idx;
+  uint8_t const _node_id;
+  uint8_t const _node_count;
+  uint8_t const _burst_count;
+  uint8_t const _burst_timer;
+
+public:
+  T1SPlcaSettings(uint8_t const node_id,
+                  uint8_t const node_count,
+                  uint8_t const burst_count,
+                  uint8_t const burst_timer);
+
+  virtual size_t printTo(Print & p) const override;
+
+  uint8_t node_id()     const { return _node_id; }
+  uint8_t node_count()  const { return _node_count; }
+  uint8_t burst_count() const { return _burst_count; }
+  uint8_t burst_timer() const { return _burst_timer; }
 };

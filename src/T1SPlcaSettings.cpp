@@ -16,47 +16,46 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#pragma once
-
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <cstdint>
-
-#include <array>
-
 #include "T1SPlcaSettings.h"
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * CTOR/DTOR
  **************************************************************************************/
 
-class TC6
+T1SPlcaSettings::T1SPlcaSettings(uint8_t const node_id,
+                                 uint8_t const node_count,
+                                 uint8_t const burst_count,
+                                 uint8_t const burst_timer)
+: _node_id{node_id}
+, _node_count{node_count}
+, _burst_count{burst_count}
+, _burst_timer{burst_timer}
 {
-public:
-  TC6();
-  ~TC6();
 
+}
 
-  bool begin(uint8_t const ip[4],
-             bool const enable_plca,
-             T1SPlcaSettings const t1s_plca_settings,
-             bool const mac_promiscuous_mode,
-             bool const mac_tx_cut_through,
-             bool const mac_rx_cut_through);
+/**************************************************************************************
+ * PUBLIC MEMBER FUNCTIONS
+ **************************************************************************************/
 
-  void service();
+size_t T1SPlcaSettings::printTo(Print & p) const
+{
+  char msg[128] = {0};
+  snprintf(msg,
+           sizeof(msg),
+           "\tPLCA\n" \
+           "\t\tnode id     : %d\n" \
+           "\t\tnode count  : %d\n" \
+           "\t\tburst count : %d\n" \
+           "\t\tburst timer : %d",
+           _node_id,
+           _node_count,
+           _burst_count,
+           _burst_timer);
 
-  typedef void (*OnPlcaStatusFunc)(bool success, bool plcaStatus);
-  bool getPlcaStatus(OnPlcaStatusFunc on_plca_status);
-
-  bool sendWouldBlock();
-
-  typedef std::array<uint8_t, 6> MACAddr;
-  MACAddr getMacAddr();
-
-
-private:
-  int8_t _idx;
-};
+  return p.write(msg);
+}

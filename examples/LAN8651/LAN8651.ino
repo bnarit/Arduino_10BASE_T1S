@@ -13,6 +13,8 @@ static bool    const MAC_RX_CUT_THROUGH   = false;
 
 static uint8_t const IP[] = {192, 168, 42, 100 + T1S_PLCA_NODE_ID};
 
+static T1SPlcaSettings const t1s_plca_settings{T1S_PLCA_NODE_ID, T1S_PLCA_NODE_COUNT, T1S_PLCA_BURST_COUNT, T1S_PLCA_BURST_TIMER};
+
 TC6 tc6_inst;
 
 void setup()
@@ -23,10 +25,7 @@ void setup()
 
   if (!tc6_inst.begin(IP,
                       T1S_PLCA_ENABLE,
-                      T1S_PLCA_NODE_ID,
-                      T1S_PLCA_NODE_COUNT,
-                      T1S_PLCA_BURST_COUNT,
-                      T1S_PLCA_BURST_TIMER,
+                      t1s_plca_settings,
                       MAC_PROMISCUOUS_MODE,
                       MAC_TX_CUT_THROUGH,
                       MAC_RX_CUT_THROUGH))
@@ -42,26 +41,18 @@ void setup()
            sizeof(board_info_msg),
            "\tIP\t%d.%d.%d.%d\n" \
            "\tMAC\t%02X:%02X:%02X:%02X:%02X:%02X\n" \
-           "\tPLCA\n" \
-           "\t\tnode id     : %d\n" \
-           "\t\tnode count  : %d\n" \
-           "\t\tburst count : %d\n" \
-           "\t\tburst timer : %d\n" \
            "\tMAC\n" \
            "\t\tpromisc. mode : %d\n" \
            "\t\ttx cut through: %d\n" \
            "\t\trx cut through: %d",
            IP[0], IP[1], IP[2], IP[3],
            MAC[0], MAC[1], MAC[2], MAC[3], MAC[4], MAC[5],
-           T1S_PLCA_NODE_ID,
-           T1S_PLCA_NODE_COUNT,
-           T1S_PLCA_BURST_COUNT,
-           T1S_PLCA_BURST_TIMER,
            MAC_PROMISCUOUS_MODE,
            MAC_TX_CUT_THROUGH,
            MAC_RX_CUT_THROUGH);
 
   Serial.println(board_info_msg);
+  Serial.println(t1s_plca_settings);
 
   iperf_init();
   iperf_print_app_header();
