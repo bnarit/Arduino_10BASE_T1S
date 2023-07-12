@@ -1,6 +1,14 @@
+/**************************************************************************************
+ * INCLUDE
+ **************************************************************************************/
+
 #include <Arduino_10BASE_T1S.h>
 
 #include "udp_perf_client.h"
+
+/**************************************************************************************
+ * CONSTANTS
+ **************************************************************************************/
 
 static uint8_t const T1S_PLCA_NODE_ID     = 1;
 static uint8_t const T1S_PLCA_NODE_COUNT  = 8;
@@ -15,7 +23,15 @@ static IPAddress const ip_addr{192, 168, 42, 100 + T1S_PLCA_NODE_ID};
 static T1SPlcaSettings const t1s_plca_settings{T1S_PLCA_NODE_ID, T1S_PLCA_NODE_COUNT, T1S_PLCA_BURST_COUNT, T1S_PLCA_BURST_TIMER};
 static T1SMacSettings const t1s_mac_settings{MAC_PROMISCUOUS_MODE, MAC_TX_CUT_THROUGH, MAC_RX_CUT_THROUGH};
 
+/**************************************************************************************
+ * GLOBAL VARIABLES
+ **************************************************************************************/
+
 TC6 tc6_inst;
+
+/**************************************************************************************
+ * SETUP/LOOP
+ **************************************************************************************/
 
 void setup()
 {
