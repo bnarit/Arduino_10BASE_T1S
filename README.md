@@ -35,7 +35,7 @@ sudo insmod microchip_t1s.ko enable=1 node_id=0 node_count=8 max_bc=0 burst_time
 [  +0,000176] LAN867X Rev.B1 usb-001:025:00: attached PHY driver (mii_bus:phy_addr=usb-001:025:00, irq=190)
 [  +0,000285] smsc95xx 1-2.3:1.0 eth2: register 'smsc95xx' at usb-0000:00:14.0-2.3, smsc95xx USB 2.0 Ethernet, 00:1e:c0:d1:b9:4b
 ```
-* Configure IP address for `eth1`:
+* Configure IP address for `eth1`: (*Note*: it could also be another `eth` interface, you need to check and compare MAC address against `dmesg` output). 
 ```bash
 sudo ip addr add dev eth1 192.168.42.100/24
 ```
@@ -58,8 +58,13 @@ eth1: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
         TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
 ```
 
+### How-to-`tcpdump`
+```bash
+tcpdump -i eth1
+```
+
 ### How-to-`iperf`
 ```bash
-iperf -c 192.168.0.100 -u -b 10M
-iperf -s 192.168.0.100 -u -b 10M
+iperf -c 192.168.42.100 -u -b 10M
+iperf -s 192.168.42.100 -u -b 10M
 ```
