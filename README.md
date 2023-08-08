@@ -13,6 +13,7 @@ arduino-cli compile -b arduino:samd:nano_33_iot -v examples/LAN8651 -u -p /dev/t
 ### How-to-[`EVB-LAN8670-USB`](https://www.microchip.com/en-us/development-tool/EV08L38A)
 **Note**: Keep [this application note](https://microchip.my.site.com/s/article/EVB-LAN8670-USB-Enablement-for-Debian-Ubuntu-Raspbian) in mind when building for Debian based systems. You may need to revert back to legacy network configuration tools.
 
+* Disconnect `EVB-LAN8670-USB`, if it is already connected.
 * Build kernel driver:
 ```bash
 cd extras/evb-lan8670-usb-linux-6.1.21
