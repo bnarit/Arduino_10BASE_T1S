@@ -3,7 +3,6 @@ ifndef KDIR
 endif
 
 obj-m := microchip_t1s.o
-obj-m += smsc95xx_t1s.o
 
 all:
 	$(MAKE) -C $(KDIR) M=$(PWD) modules

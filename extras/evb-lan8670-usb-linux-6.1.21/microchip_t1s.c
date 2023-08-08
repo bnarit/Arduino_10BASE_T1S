@@ -20,6 +20,12 @@
 
 #define LAN867x_RESET_COMPLETE_STS BIT(11)
 
+#define LAN867X_REG_STRAP0		0x12
+#define LAN867X_IF_TYPE			GENMASK(8, 7)
+#define LAN867X_RMII_IF_TYPE		0x1
+#define LAN867X_REG_RMII_FIXUP		0x0093
+#define LAN867X_RMII_FIXUP_Value	0x06E9
+
 #define LAN865X_REG_CFGPARAM_ADDR 0x00D8
 #define LAN865X_REG_CFGPARAM_DATA 0x00D9
 #define LAN865X_REG_CFGPARAM_CTRL 0x00DA
@@ -117,24 +123,20 @@ static const u16 lan865x_revb0_fixup_cfg_regs[5] = {
 };
 
 /* LAN867x Rev.C1 configuration parameters from AN1699 */
-static const u32 lan867x_revc_fixup_registers[20] = {
+static const u32 lan867x_revc_fixup_registers[9] = {
 	0x00D0, 0x00E0, 0x00E9, 0x00F5,
-	0x00F4, 0x00F8, 0x00F9, 0x00B0,
-	0x00B1, 0x00B2, 0x00B3, 0x00B4,
-	0x00B5, 0x00B6, 0x00B7, 0x00B8,
-	0x00B9, 0x00BA, 0x00BB, 0X0081,
+	0x00F4, 0x00F8, 0x00F9, 0x0081,
+	0x0091,
 };
 
-static const u16 lan867x_revc_fixup_values[20] = {
+static const u16 lan867x_revc_fixup_values[9] = {
 	0x3F31, 0xC000, 0x9E50, 0x1CF8,
-	0xC020, 0x9B00, 0x4E53, 0x0103,
-	0x0910, 0x1D26, 0x002A, 0x0103,
-	0x070D, 0x1720, 0x0027, 0x0509,
-	0x0E13, 0x1C25, 0x002B, 0x0080,
+	0xC020, 0x9B00, 0x4E53, 0x0080,
+	0x9660,
 };
 
-static const u16 lan867x_revc_fixup_cfg_regs[5] = {
-	0x0084, 0x008A, 0x00AD, 0x00AE, 0x00AF
+static const u16 lan867x_revc_fixup_cfg_regs[2] = {
+	0x0084, 0x008A,
 };
 
 static int lan86xx_configure_plca(struct phy_device *phydev)
@@ -207,7 +209,6 @@ static int lan865x_generate_cfg_offsets(struct phy_device *phydev, s8 offsets[2]
 {
 	const u16 fixup_regs[2] = {0x0004, 0x0008};
 	int ret;
-	int i;
 
 	ret = lan865x_revb0_indirect_read(phydev, 0x0005);
 	if (ret < 0)
@@ -217,7 +218,7 @@ static int lan865x_generate_cfg_offsets(struct phy_device *phydev, s8 offsets[2]
 		return -ENODEV;
 	}
 
-	for (i = 0; i < ARRAY_SIZE(fixup_regs); i++) {
+	for (int i = 0; i < ARRAY_SIZE(fixup_regs); i++) {
 		ret = lan865x_revb0_indirect_read(phydev, fixup_regs[i]);
 		if (ret < 0)
 			return ret;
@@ -234,9 +235,8 @@ static int lan865x_generate_cfg_offsets(struct phy_device *phydev, s8 offsets[2]
 static int lan865x_read_cfg_params(struct phy_device *phydev, u16 cfg_params[])
 {
 	int ret;
-	int i;
 
-	for (i = 0; i < ARRAY_SIZE(lan865x_revb0_fixup_cfg_regs); i++) {
+	for (int i = 0; i < ARRAY_SIZE(lan865x_revb0_fixup_cfg_regs); i++) {
 		ret = phy_read_mmd(phydev, MDIO_MMD_VEND2,
 				   lan865x_revb0_fixup_cfg_regs[i]);
 		if (ret < 0)
@@ -250,9 +250,8 @@ static int lan865x_read_cfg_params(struct phy_device *phydev, u16 cfg_params[])
 static int lan865x_write_cfg_params(struct phy_device *phydev, u16 cfg_params[])
 {
 	int ret;
-	int i;
 
-	for (i = 0; i < ARRAY_SIZE(lan865x_revb0_fixup_cfg_regs); i++) {
+	for (int i = 0; i < ARRAY_SIZE(lan865x_revb0_fixup_cfg_regs); i++) {
 		ret = phy_write_mmd(phydev, MDIO_MMD_VEND2,
 				    lan865x_revb0_fixup_cfg_regs[i],
 				    cfg_params[i]);
@@ -278,15 +277,20 @@ static int lan865x_setup_cfgparam(struct phy_device *phydev)
 	if (ret)
 		return ret;
 
-	cfg_results[0] = (cfg_params[0] & 0x000F) | (((9 + offsets[0]) << 10) |
-			  ((14 + offsets[0]) << 4));
-	cfg_results[1] = (cfg_params[1] & 0x03FF) | ((40 + offsets[1]) << 10);
-	cfg_results[2] = (cfg_params[2] & 0xC0C0) | (((5 + offsets[0]) << 8) |
-			  (9 + offsets[0]));
-	cfg_results[3] = (cfg_params[3] & 0xC0C0) | (((9 + offsets[0]) << 8) |
-			  (14 + offsets[0]));
-	cfg_results[4] = (cfg_params[4] & 0xC0C0) | (((17 + offsets[0]) << 8) |
-			  (22 + offsets[0]));
+	cfg_results[0] = (cfg_params[0] & 0x000F) |
+			  FIELD_PREP(GENMASK(15, 10), 9 + offsets[0]) |
+			  FIELD_PREP(GENMASK(15, 4), 14 + offsets[0]);
+	cfg_results[1] = (cfg_params[1] & 0x03FF) |
+			  FIELD_PREP(GENMASK(15, 10), 40 + offsets[1]);
+	cfg_results[2] = (cfg_params[2] & 0xC0C0) |
+			  FIELD_PREP(GENMASK(15, 8), 5 + offsets[0]) |
+			  (9 + offsets[0]);
+	cfg_results[3] = (cfg_params[3] & 0xC0C0) |
+			  FIELD_PREP(GENMASK(15, 8), 9 + offsets[0]) |
+			  (14 + offsets[0]);
+	cfg_results[4] = (cfg_params[4] & 0xC0C0) |
+			  FIELD_PREP(GENMASK(15, 8), 17 + offsets[0]) |
+			  (22 + offsets[0]);
 
 	return lan865x_write_cfg_params(phydev, cfg_results);
 }
@@ -295,7 +299,6 @@ static int lan867x_revc_generate_cfg_offsets(struct phy_device *phydev, s8 offse
 {
 	const u16 fixup_regs[2] = {0x0004, 0x0008};
 	int ret;
-	int i;
 
 	ret = lan865x_revb0_indirect_read(phydev, 0x0005);
 	if (ret < 0)
@@ -305,7 +308,7 @@ static int lan867x_revc_generate_cfg_offsets(struct phy_device *phydev, s8 offse
 		return -ENODEV;
 	}
 
-	for (i = 0; i < ARRAY_SIZE(fixup_regs); i++) {
+	for (int i = 0; i < ARRAY_SIZE(fixup_regs); i++) {
 		ret = lan865x_revb0_indirect_read(phydev, fixup_regs[i]);
 		if (ret < 0)
 			return ret;
@@ -327,9 +330,8 @@ static int lan867x_revc_generate_cfg_offsets(struct phy_device *phydev, s8 offse
 static int lan867x_revc_write_cfg_params(struct phy_device *phydev, u16 cfg_params[])
 {
 	int ret;
-	int i;
 
-	for (i = 0; i < ARRAY_SIZE(lan867x_revc_fixup_cfg_regs); i++) {
+	for (int i = 0; i < ARRAY_SIZE(lan867x_revc_fixup_cfg_regs); i++) {
 		ret = phy_write_mmd(phydev, MDIO_MMD_VEND2,
 				    lan867x_revc_fixup_cfg_regs[i],
 				    cfg_params[i]);
@@ -350,12 +352,9 @@ static int lan867x_revc_setup_cfgparam(struct phy_device *phydev)
 	if (ret)
 		return ret;
 
-	cfg_params[0] = ((9 + offsets[0]) << 10) | ((14 + offsets[0]) << 4) |
-			 0x0003;
-	cfg_params[1] = (40 + offsets[1]) << 10;
-	cfg_params[2] = ((5 + offsets[0]) << 8) | (9 + offsets[0]);
-	cfg_params[3] = ((9 + offsets[0]) << 8) | (14 + offsets[0]);
-	cfg_params[4] = ((17 + offsets[0]) << 8) | (22 + offsets[0]);
+	cfg_params[0] = FIELD_PREP(GENMASK(15, 10), 9 + offsets[0]) |
+			FIELD_PREP(GENMASK(15, 4), 14 + offsets[0]) | 0x0003;
+	cfg_params[1] = FIELD_PREP(GENMASK(15, 10), 40 + offsets[1]);
 
 	return lan867x_revc_write_cfg_params(phydev, cfg_params);
 }
@@ -363,12 +362,11 @@ static int lan867x_revc_setup_cfgparam(struct phy_device *phydev)
 static int lan865x_revb0_config_init(struct phy_device *phydev)
 {
 	int ret;
-	int i;
 
 	/* Reference to AN1760
 	 * https://ww1.microchip.com/downloads/aemDocuments/documents/AIS/ProductDocuments/SupportingCollateral/AN-LAN8650-1-Configuration-60001760.pdf
 	 */
-	for (i = 0; i < ARRAY_SIZE(lan865x_revb0_fixup_registers); i++) {
+	for (int i = 0; i < ARRAY_SIZE(lan865x_revb0_fixup_registers); i++) {
 		ret = phy_write_mmd(phydev, MDIO_MMD_VEND2,
 				    lan865x_revb0_fixup_registers[i],
 				    lan865x_revb0_fixup_values[i]);
@@ -400,7 +398,6 @@ static int lan867x_revb1_config_init(struct phy_device *phydev)
 	 */
 
 	int err;
-	int i;
 
 	/* Read STS2 register and check for the Reset Complete status to do the
 	 * init configuration. If the Reset Complete is not set, wait for 5us
@@ -429,7 +426,7 @@ static int lan867x_revb1_config_init(struct phy_device *phydev)
 	 * new_val = new_val OR value // Set bits
 	 * write_register(mmd, addr, new_val) // Write back updated register value
 	 */
-	for (i = 0; i < ARRAY_SIZE(lan867x_revb1_fixup_registers); i++) {
+	for (int i = 0; i < ARRAY_SIZE(lan867x_revb1_fixup_registers); i++) {
 		err = phy_modify_mmd(phydev, MDIO_MMD_VEND2,
 				     lan867x_revb1_fixup_registers[i],
 				     lan867x_revb1_fixup_masks[i],
@@ -444,7 +441,6 @@ static int lan867x_revb1_config_init(struct phy_device *phydev)
 static int lan867x_revc_config_init(struct phy_device *phydev)
 {
 	int ret;
-	int i;
 
 	ret = phy_read_mmd(phydev, MDIO_MMD_VEND2, LAN867X_REG_STS2);
 	if (ret < 0)
@@ -461,10 +457,25 @@ static int lan867x_revc_config_init(struct phy_device *phydev)
 		}
 	}
 
-	for (i = 0; i < ARRAY_SIZE(lan867x_revc_fixup_registers); i++) {
+	for (int i = 0; i < ARRAY_SIZE(lan867x_revc_fixup_registers); i++) {
 		ret = phy_write_mmd(phydev, MDIO_MMD_VEND2,
 				    lan867x_revc_fixup_registers[i],
 				    lan867x_revc_fixup_values[i]);
+		if (ret)
+			return ret;
+	}
+
+	/* As per LAN867x Rev.C1 AN1699 configuration note, if the PHY interface
+	 * type is RMII then the below configuration to be done. This is also
+	 * applicable for LAN867x Rev.C0.
+	 */
+	ret = phy_read(phydev, LAN867X_REG_STRAP0);
+	if (ret < 0)
+		return ret;
+	if (FIELD_GET(LAN867X_IF_TYPE, ret) == LAN867X_RMII_IF_TYPE) {
+		ret = phy_write_mmd(phydev, MDIO_MMD_VEND2,
+				    LAN867X_REG_RMII_FIXUP,
+				    LAN867X_RMII_FIXUP_Value);
 		if (ret)
 			return ret;
 	}
