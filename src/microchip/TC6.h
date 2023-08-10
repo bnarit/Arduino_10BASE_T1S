@@ -26,9 +26,9 @@
 
 #include <IPAddress.h>
 
-#include "MacAddress.h"
-#include "T1SMacSettings.h"
-#include "T1SPlcaSettings.h"
+#include "../MacAddress.h"
+#include "../T1SMacSettings.h"
+#include "../T1SPlcaSettings.h"
 
 /**************************************************************************************
  * CLASS DECLARATION

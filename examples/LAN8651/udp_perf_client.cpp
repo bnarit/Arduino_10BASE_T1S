@@ -35,7 +35,7 @@
 //#include "lwip/udp.h"
 #include "udp_perf_client.h"
 //#include "peripheral/systick/plib_systick.h"
-#include "tc6-lwip.h" /* For performance improvement addon */
+#include "microchip/tc6-lwip.h" /* For performance improvement addon */
 #include <Arduino.h>
 
 #define START_DELAY  (10)

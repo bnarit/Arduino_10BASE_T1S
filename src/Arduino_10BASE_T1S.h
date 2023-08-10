@@ -22,7 +22,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "TC6.h"
+#include "microchip/TC6.h"
 
 #include "lib/liblwip/include/lwip/netif.h"
 #include "lib/liblwip/include/lwip/init.h"
