@@ -41,5 +41,9 @@ public:
   virtual bool spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const len) = 0;
   virtual bool get_mac_address(uint8_t * p_mac) = 0;
 
-  uint32_t get_tick() const { return millis(); }
+  virtual void onInterrupt() = 0;
+
+  uint32_t get_tick() const {
+    return millis();
+  }
 };

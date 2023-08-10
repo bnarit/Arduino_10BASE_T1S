@@ -103,7 +103,7 @@ typedef struct
 
 static TC6LwIP_t mlw[TC6_MAX_INSTANCES];
 
-static std::unique_ptr<TC6_Io_Base> priv_tc6_io;
+static std::shared_ptr<TC6_Io_Base> priv_tc6_io;
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                      PRIVATE FUNCTION PROTOTYPES                     */
@@ -128,9 +128,9 @@ static void OnRawTx(TC6_t *pInst, const uint8_t *pTx, uint16_t len, void *pTag, 
 /*                         PUBLIC FUNCTIONS                             */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
-int8_t TC6LwIP_Init(std::unique_ptr<TC6_Io_Base> && tc6_io, const uint8_t ip[4], bool enablePlca, uint8_t nodeId, uint8_t nodeCount, uint8_t burstCount, uint8_t burstTimer, bool promiscuous, bool txCutThrough, bool rxCutThrough)
+int8_t TC6LwIP_Init(std::shared_ptr<TC6_Io_Base> const tc6_io, const uint8_t ip[4], bool enablePlca, uint8_t nodeId, uint8_t nodeCount, uint8_t burstCount, uint8_t burstTimer, bool promiscuous, bool txCutThrough, bool rxCutThrough)
 {
-  priv_tc6_io = std::move(tc6_io);
+  priv_tc6_io = tc6_io;
 
     TC6LwIP_t *lw = NULL;
     uint8_t i;

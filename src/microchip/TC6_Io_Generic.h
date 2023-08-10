@@ -31,6 +31,7 @@
 class TC6_Io_Generic : public TC6_Io_Base
 {
 public:
+  TC6_Io_Generic();
   virtual ~TC6_Io_Generic() { }
 
   virtual bool init(uint8_t pMac[6]) override;
@@ -40,4 +41,12 @@ public:
 
   virtual bool spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const len) override;
   virtual bool get_mac_address(uint8_t * p_mac) override;
+
+  virtual void onInterrupt() override;
+
+
+private:
+  volatile uint8_t _int_in;
+  volatile uint8_t _int_out;
+  volatile uint8_t _int_reported;
 };

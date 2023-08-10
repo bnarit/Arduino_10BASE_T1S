@@ -53,13 +53,18 @@ static SPISettings const LAN865x_SPI_SETTING{8*1000*1000UL, MSBFIRST, SPI_MODE0}
 
 static size_t constexpr MAC_SIZE = 6;
 static uint8_t mac[MAC_SIZE] = {0};
-static volatile uint8_t intIn = 0;
-static volatile uint8_t intOut = 0;
-static volatile uint8_t intReported = 0;
 
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
+
+TC6_Io_Generic::TC6_Io_Generic()
+: _int_in{0}
+, _int_out{0}
+, _int_reported{0}
+{
+
+}
 
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
@@ -75,8 +80,6 @@ bool TC6_Io_Generic::init(uint8_t pMac[6])
   delay(100);
   digitalWrite(RESET_PIN, HIGH);
   delay(100);
-
-  pinMode(IRQ_PIN, INPUT_PULLUP);
 
 #if defined(ARDUINO_RASPBERRY_PI_PICO)
   SPI.setSCK(2);
@@ -98,23 +101,19 @@ bool TC6_Io_Generic::init(uint8_t pMac[6])
     memcpy(pMac, FALLBACK_MAC, MAC_SIZE);
   }
 
-  attachInterrupt(digitalPinToInterrupt(IRQ_PIN),
-                  []() { intIn++; },
-                  FALLING);
-
   return true;
 }
 
 bool TC6_Io_Generic::is_interrupt_active()
 {
-  intReported = intIn;
-  return (intReported != intOut);
+  _int_reported = _int_in;
+  return (_int_reported != _int_out);
 }
 
 void TC6_Io_Generic::release_interrupt()
 {
   if (digitalRead(IRQ_PIN) == HIGH)
-    intOut = intReported;
+    _int_out = _int_reported;
 }
 
 bool TC6_Io_Generic::spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const len)
@@ -176,4 +175,9 @@ bool TC6_Io_Generic::get_mac_address(uint8_t * p_mac)
 
   success = (bytes_read == MAC_SIZE);
   return success;
+}
+
+void TC6_Io_Generic::onInterrupt()
+{
+  _int_in++;
 }

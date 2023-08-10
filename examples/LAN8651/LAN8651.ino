@@ -23,12 +23,14 @@ static IPAddress const ip_addr{192, 168, 42, 100 + T1S_PLCA_NODE_ID};
 static T1SPlcaSettings const t1s_plca_settings{T1S_PLCA_NODE_ID, T1S_PLCA_NODE_COUNT, T1S_PLCA_BURST_COUNT, T1S_PLCA_BURST_TIMER};
 static T1SMacSettings const t1s_mac_settings{MAC_PROMISCUOUS_MODE, MAC_TX_CUT_THROUGH, MAC_RX_CUT_THROUGH};
 
+static int const IRQ_PIN   =  2;
+
 /**************************************************************************************
  * GLOBAL VARIABLES
  **************************************************************************************/
 
 TC6 tc6_inst;
-std::unique_ptr<TC6_Io_Base> tc6_io(new TC6_Io_Generic());
+std::shared_ptr<TC6_Io_Base> tc6_io(new TC6_Io_Generic());
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -40,7 +42,15 @@ void setup()
   while (!Serial) { }
   delay(1000);
 
-  if (!tc6_inst.begin(std::move(tc6_io),
+
+  pinMode(IRQ_PIN, INPUT_PULLUP);
+
+
+  attachInterrupt(digitalPinToInterrupt(IRQ_PIN),
+                  []() { tc6_io->onInterrupt(); },
+                  FALLING);
+
+  if (!tc6_inst.begin(tc6_io,
                       ip_addr,
                       t1s_plca_settings,
                       t1s_mac_settings))

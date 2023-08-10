@@ -45,7 +45,7 @@ public:
   ~TC6();
 
 
-  bool begin(std::unique_ptr<TC6_Io_Base> && tc6_io,
+  bool begin(std::shared_ptr<TC6_Io_Base> const tc6_io,
              IPAddress const ip_addr,
              T1SPlcaSettings const t1s_plca_settings,
              T1SMacSettings const t1s_mac_settings);
