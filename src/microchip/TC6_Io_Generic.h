@@ -22,44 +22,22 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <cstdint>
-
-#include <memory>
-
-#include <IPAddress.h>
-
-#include "../MacAddress.h"
-#include "../T1SMacSettings.h"
-#include "../T1SPlcaSettings.h"
-
-#include "TC6_Io_Generic.h"
+#include "TC6_Io_Base.h"
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class TC6
+class TC6_Io_Generic : public TC6_Io_Base
 {
 public:
-  TC6();
-  ~TC6();
+  virtual ~TC6_Io_Generic() { }
 
+  virtual bool init(uint8_t pMac[6]) override;
 
-  bool begin(std::unique_ptr<TC6_Io_Base> && tc6_io,
-             IPAddress const ip_addr,
-             T1SPlcaSettings const t1s_plca_settings,
-             T1SMacSettings const t1s_mac_settings);
+  virtual bool is_interrupt_active() override;
+  virtual void release_interrupt() override;
 
-  void service();
-
-  typedef void (*OnPlcaStatusFunc)(bool success, bool plcaStatus);
-  bool getPlcaStatus(OnPlcaStatusFunc on_plca_status);
-
-  bool sendWouldBlock();
-
-  MacAddress getMacAddr();
-
-
-private:
-  int8_t _idx;
+  virtual bool spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const len) override;
+  virtual bool get_mac_address(uint8_t * p_mac) override;
 };

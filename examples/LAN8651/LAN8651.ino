@@ -28,6 +28,7 @@ static T1SMacSettings const t1s_mac_settings{MAC_PROMISCUOUS_MODE, MAC_TX_CUT_TH
  **************************************************************************************/
 
 TC6 tc6_inst;
+std::unique_ptr<TC6_Io_Base> tc6_io(new TC6_Io_Generic());
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -39,7 +40,8 @@ void setup()
   while (!Serial) { }
   delay(1000);
 
-  if (!tc6_inst.begin(ip_addr,
+  if (!tc6_inst.begin(std::move(tc6_io),
+                      ip_addr,
                       t1s_plca_settings,
                       t1s_mac_settings))
   {

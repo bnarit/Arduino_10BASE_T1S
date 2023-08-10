@@ -47,7 +47,8 @@ TC6::~TC6()
   on_plca_status_func_map.erase(on_plca_status_func_map.find(_idx));
 }
 
-bool TC6::begin(IPAddress const ip_addr,
+bool TC6::begin(std::unique_ptr<TC6_Io_Base> && tc6_io,
+                IPAddress const ip_addr,
                 T1SPlcaSettings const t1s_plca_settings,
                 T1SMacSettings const t1s_mac_settings)
 {
@@ -56,7 +57,8 @@ bool TC6::begin(IPAddress const ip_addr,
     ip_addr[0], ip_addr[1], ip_addr[2], ip_addr[3]
   };
 
-  _idx = TC6LwIP_Init(tc6_ip_addr,
+  _idx = TC6LwIP_Init(std::move(tc6_io),
+                      tc6_ip_addr,
                       true /* enable_plca */,
                       t1s_plca_settings.node_id(),
                       t1s_plca_settings.node_count(),

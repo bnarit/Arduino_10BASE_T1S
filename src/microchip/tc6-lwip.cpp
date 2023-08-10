@@ -49,7 +49,6 @@ Microchip or any third party.
 #include "lib/libtc6/inc/tc6-regs.h"
 #include "lib/libtc6/cfg-example/tc6-conf.h"
 
-#include "tc6-stub.h"
 #include "tc6-lwip.h"
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
@@ -104,6 +103,8 @@ typedef struct
 
 static TC6LwIP_t mlw[TC6_MAX_INSTANCES];
 
+static std::unique_ptr<TC6_Io_Base> priv_tc6_io;
+
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                      PRIVATE FUNCTION PROTOTYPES                     */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
@@ -127,8 +128,10 @@ static void OnRawTx(TC6_t *pInst, const uint8_t *pTx, uint16_t len, void *pTag, 
 /*                         PUBLIC FUNCTIONS                             */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
-int8_t TC6LwIP_Init(const uint8_t ip[4], bool enablePlca, uint8_t nodeId, uint8_t nodeCount, uint8_t burstCount, uint8_t burstTimer, bool promiscuous, bool txCutThrough, bool rxCutThrough)
+int8_t TC6LwIP_Init(std::unique_ptr<TC6_Io_Base> && tc6_io, const uint8_t ip[4], bool enablePlca, uint8_t nodeId, uint8_t nodeCount, uint8_t burstCount, uint8_t burstTimer, bool promiscuous, bool txCutThrough, bool rxCutThrough)
 {
+  priv_tc6_io = std::move(tc6_io);
+
     TC6LwIP_t *lw = NULL;
     uint8_t i;
     ip4_addr_t ipAddr;
@@ -155,7 +158,7 @@ int8_t TC6LwIP_Init(const uint8_t ip[4], bool enablePlca, uint8_t nodeId, uint8_
         }
     }
     if (success) {
-        success = TC6Stub_Init(lw->idx, lw->ip.mac);
+        success = priv_tc6_io->init(lw->ip.mac);
     }
     if (success) {
         lw->tc.tc6 = TC6_Init(lw);
@@ -205,9 +208,9 @@ void TC6LwIP_Service(void)
     for (idx = 0; idx < TC6_MAX_INSTANCES; idx++) {
         TC6LwIP_t *lw = &mlw[idx];
         if (LWIP_TC6_MAGIC == lw->magic) {
-            if (TC6Stub_IntActive(lw->idx)) {
+            if (priv_tc6_io->is_interrupt_active()) {
                 if (TC6_Service(lw->tc.tc6, false)) {
-                    TC6Stub_ReleaseInt(lw->idx);
+                  priv_tc6_io->release_interrupt();
                 }
             } else if (lw->tc.tc6NeedService) {
                 lw->tc.tc6NeedService = false;
@@ -285,7 +288,7 @@ static void PrintRateLimited(const char *statement, ...)
 {
     static uint32_t cnt_ = 0;
     static uint32_t t0_;
-    uint32_t now = TC6Stub_GetTick();
+    uint32_t now = priv_tc6_io->get_tick();
 
     if (t0_ && ((now - t0_) >= PRINT_RATE_TIMEOUT)) {
         if (cnt_ > PRINT_RATE_THRESHOLD) {
@@ -391,7 +394,7 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
 
 extern "C" u32_t sys_now(void)
 {
-    return TC6Stub_GetTick();
+    return priv_tc6_io->get_tick();
 }
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
@@ -573,7 +576,7 @@ void TC6_CB_OnError(TC6_t *pInst, TC6_Error_t err, void *pGlobalTag)
 
 uint32_t TC6Regs_CB_GetTicksMs(void)
 {
-    return TC6Stub_GetTick();
+    return priv_tc6_io->get_tick();
 }
 
  void TC6Regs_CB_OnEvent(TC6_t *pInst, TC6Regs_Event_t event, void *pTag)
@@ -712,5 +715,5 @@ static void OnPlcaStatus(TC6_t *pInst, bool success, uint32_t addr, uint32_t val
 
 bool TC6_CB_OnSpiTransaction(uint8_t tc6instance, uint8_t *pTx, uint8_t *pRx, uint16_t len, void *pGlobalTag)
 {
-    return TC6Stub_SpiTransaction(tc6instance, pTx, pRx, len);
+    return priv_tc6_io->spi_transaction(pTx, pRx, len);
 }

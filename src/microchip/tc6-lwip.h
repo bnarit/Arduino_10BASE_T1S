@@ -44,6 +44,10 @@ Microchip or any third party.
 #include <stdint.h>
 #include <stdbool.h>
 
+#include <memory>
+
+#include "TC6_Io_Base.h"
+
 #include "lib/libtc6/inc/tc6.h"
 
 #ifdef __cplusplus
@@ -77,7 +81,7 @@ extern "C" {
  *  \rxCutThrough - true, when RX cut through shall be active, this helps improving speed further. Note that in that case the MCU/MPU must be able to receive at full network speed. false, activates RX store and forward mode.
  *  \return The instance number of the current TC6LwIP driver. Starting at 0 and incrementing by one for any further call. Returns -1 when a instance can not be initialized, increase TC6_MAX_INSTANCES.
  */
-int8_t TC6LwIP_Init(const uint8_t ip[4], bool enablePlca, uint8_t nodeId, uint8_t nodeCount, uint8_t burstCount, uint8_t burstTimer, bool promiscuous, bool txCutThrough, bool rxCutThrough);
+int8_t TC6LwIP_Init(std::unique_ptr<TC6_Io_Base> && tc6_io, const uint8_t ip[4], bool enablePlca, uint8_t nodeId, uint8_t nodeCount, uint8_t burstCount, uint8_t burstTimer, bool promiscuous, bool txCutThrough, bool rxCutThrough);
 
 /** \brief Services the hardware and the protocol stack.
  *  \note Must be called cyclic. The faster the better.
