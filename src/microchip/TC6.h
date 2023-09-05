@@ -28,11 +28,7 @@
 
 #include <memory>
 
-#include <IPAddress.h>
-
 #include "../MacAddress.h"
-#include "../T1SMacSettings.h"
-#include "../T1SPlcaSettings.h"
 
 #include "TC6_Io_Generic.h"
 
@@ -44,12 +40,13 @@ class TC6 : public Arduino_10BASE_T1S_UDP
 {
 public:
   TC6(std::shared_ptr<TC6_Io_Base> const tc6_io);
-  ~TC6();
+  virtual ~TC6();
 
 
-  bool begin(IPAddress const ip_addr,
-             T1SPlcaSettings const t1s_plca_settings,
-             T1SMacSettings const t1s_mac_settings);
+  virtual bool begin(IPAddress const ip_addr,
+                     T1SPlcaSettings const t1s_plca_settings,
+                     T1SMacSettings const t1s_mac_settings) override;
+
 
   void service();
 

@@ -24,11 +24,21 @@
 
 #include <api/Udp.h>
 
+#include <api/IPAddress.h>
+
+#include "T1SMacSettings.h"
+#include "T1SPlcaSettings.h"
+
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
 class Arduino_10BASE_T1S_UDP /* : public UDP */
 {
+public:
+  virtual ~Arduino_10BASE_T1S_UDP() { }
 
+  virtual bool begin(IPAddress const ip_addr,
+                     T1SPlcaSettings const t1s_plca_settings,
+                     T1SMacSettings const t1s_mac_settings) = 0;
 };
