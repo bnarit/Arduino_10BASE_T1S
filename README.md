@@ -62,9 +62,3 @@ eth1: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
 ```bash
 tcpdump -i eth1
 ```
-
-### How-to-`iperf`
-```bash
-iperf -c 192.168.42.100 -u -b 10M
-iperf -s 192.168.42.100 -u -b 10M
-```
