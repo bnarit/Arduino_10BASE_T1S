@@ -16,37 +16,26 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#pragma once
-
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include <Arduino.h>
+#include "TC6_Io_Base.h"
+
+#include <cstring>
 
 /**************************************************************************************
- * CLASS DECLARATION
+ * STATIC MEMBER DEFINITION
  **************************************************************************************/
 
-class TC6_Io_Base
+size_t  const TC6_Io_Base::MAC_SIZE;
+uint8_t const TC6_Io_Base::FALLBACK_MAC[TC6_Io_Base::MAC_SIZE];
+
+/**************************************************************************************
+ * PUBLIC MEMBER FUNCTIONS
+ **************************************************************************************/
+
+bool TC6_Io_Base::get_mac_address(uint8_t * p_mac)
 {
-public:
-  static size_t  constexpr MAC_SIZE = 6;
-  static uint8_t constexpr FALLBACK_MAC[MAC_SIZE] = {0x00u, 0x80u, 0xC2u, 0x00u, 0x01u, 0xCCu};
-
-  virtual ~TC6_Io_Base() { }
-
-  virtual bool init(uint8_t pMac[6]) = 0;
-
-  virtual bool is_interrupt_active() = 0;
-  virtual void release_interrupt() = 0;
-
-  virtual bool spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const len) = 0;
-  virtual bool get_mac_address(uint8_t * p_mac);
-
-  virtual void onInterrupt() = 0;
-
-  uint32_t get_tick() const {
-    return millis();
-  }
-};
+  memcpy(p_mac, FALLBACK_MAC, MAC_SIZE);
+}

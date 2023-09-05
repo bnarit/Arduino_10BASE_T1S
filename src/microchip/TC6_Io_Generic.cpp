@@ -28,16 +28,7 @@
  * CONSTANTS
  **************************************************************************************/
 
-static const uint8_t FALLBACK_MAC[] = {0x00u, 0x80u, 0xC2u, 0x00u, 0x01u, 0xCCu};
-
 static SPISettings const LAN865x_SPI_SETTING{8*1000*1000UL, MSBFIRST, SPI_MODE0};
-
-/**************************************************************************************
- * VARIABLES
- **************************************************************************************/
-
-static size_t constexpr MAC_SIZE = 6;
-static uint8_t mac[MAC_SIZE] = {0};
 
 /**************************************************************************************
  * CTOR/DTOR
@@ -75,6 +66,7 @@ bool TC6_Io_Generic::init(uint8_t pMac[6])
 
   _wire.begin();
 
+  uint8_t mac[MAC_SIZE] = {0};
   if (get_mac_address(mac)) {
     memcpy(pMac, mac, MAC_SIZE);
   } else {
