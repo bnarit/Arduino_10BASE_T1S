@@ -36,8 +36,9 @@ static std::map<int8_t, TC6::OnPlcaStatusFunc> on_plca_status_func_map;
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6::TC6()
-: _idx(-1)
+TC6::TC6(std::shared_ptr<TC6_Io_Base> const tc6_io)
+: _tc6_io{tc6_io}
+, _idx(-1)
 {
 
 }
@@ -47,8 +48,7 @@ TC6::~TC6()
   on_plca_status_func_map.erase(on_plca_status_func_map.find(_idx));
 }
 
-bool TC6::begin(std::shared_ptr<TC6_Io_Base> const tc6_io,
-                IPAddress const ip_addr,
+bool TC6::begin(IPAddress const ip_addr,
                 T1SPlcaSettings const t1s_plca_settings,
                 T1SMacSettings const t1s_mac_settings)
 {
@@ -57,7 +57,7 @@ bool TC6::begin(std::shared_ptr<TC6_Io_Base> const tc6_io,
     ip_addr[0], ip_addr[1], ip_addr[2], ip_addr[3]
   };
 
-  _idx = TC6LwIP_Init(tc6_io,
+  _idx = TC6LwIP_Init(_tc6_io,
                       tc6_ip_addr,
                       true /* enable_plca */,
                       t1s_plca_settings.node_id(),

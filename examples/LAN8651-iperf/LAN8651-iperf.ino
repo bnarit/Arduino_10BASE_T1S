@@ -47,13 +47,13 @@ static int const IRQ_PIN   =  2;
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-TC6 tc6_inst;
 std::shared_ptr<TC6_Io_Base> const tc6_io = std::make_shared<TC6_Io_Generic>
   ( SPI
   , Wire
   , CS_PIN
   , RESET_PIN
   , IRQ_PIN);
+auto const tc6_inst = std::make_shared<TC6>(tc6_io);
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -71,10 +71,9 @@ void setup()
                   []() { tc6_io->onInterrupt(); },
                   FALLING);
 
-  if (!tc6_inst.begin(tc6_io,
-                      ip_addr,
-                      t1s_plca_settings,
-                      t1s_mac_settings))
+  if (!tc6_inst->begin(ip_addr,
+                       t1s_plca_settings,
+                       t1s_mac_settings))
   {
     Serial.println("'TC6::begin(...)' failed.");
     return;
@@ -82,7 +81,7 @@ void setup()
 
   Serial.print("IP\t");
   Serial.println(ip_addr);
-  Serial.println(tc6_inst.getMacAddr());
+  Serial.println(tc6_inst->getMacAddr());
   Serial.println(t1s_plca_settings);
   Serial.println(t1s_mac_settings);
 
@@ -96,7 +95,7 @@ void loop()
   /* Services the hardware and the protocol stack.
    * Must be called cyclic. The faster the better.
    */
-  tc6_inst.service();
+  tc6_inst->service();
 
   iperf_service();
 
@@ -107,7 +106,7 @@ void loop()
   if ((now - prev_beacon_check) > 1000)
   {
     prev_beacon_check = now;
-    tc6_inst.getPlcaStatus(OnPlcaStatus);
+    tc6_inst->getPlcaStatus(OnPlcaStatus);
   }
 }
 

@@ -41,12 +41,11 @@
 class TC6
 {
 public:
-  TC6();
+  TC6(std::shared_ptr<TC6_Io_Base> const tc6_io);
   ~TC6();
 
 
-  bool begin(std::shared_ptr<TC6_Io_Base> const tc6_io,
-             IPAddress const ip_addr,
+  bool begin(IPAddress const ip_addr,
              T1SPlcaSettings const t1s_plca_settings,
              T1SMacSettings const t1s_mac_settings);
 
@@ -61,5 +60,6 @@ public:
 
 
 private:
+  std::shared_ptr<TC6_Io_Base> const _tc6_io;
   int8_t _idx;
 };
