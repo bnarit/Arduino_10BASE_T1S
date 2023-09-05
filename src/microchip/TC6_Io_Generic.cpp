@@ -30,14 +30,6 @@
 
 static const uint8_t FALLBACK_MAC[] = {0x00u, 0x80u, 0xC2u, 0x00u, 0x01u, 0xCCu};
 
-#if defined(ARDUINO_SAMD_NANO_33_IOT)
-static int const IRQ_PIN   =  2;
-static int const RESET_PIN =  9;
-static int const CS_PIN    = 10;
-#else
-# error "No pins defined for your board"
-#endif
-
 static SPISettings const LAN865x_SPI_SETTING{8*1000*1000UL, MSBFIRST, SPI_MODE0};
 
 /**************************************************************************************
@@ -51,9 +43,12 @@ static uint8_t mac[MAC_SIZE] = {0};
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6_Io_Generic::TC6_Io_Generic(HardwareSPI & spi, HardwareI2C & wire)
+TC6_Io_Generic::TC6_Io_Generic(HardwareSPI & spi, HardwareI2C & wire, int const cs_pin, int const reset_pin, int const irq_pin)
 : _spi{spi}
 , _wire{wire}
+, _cs_pin{cs_pin}
+, _reset_pin{reset_pin}
+, _irq_pin{irq_pin}
 , _int_in{0}
 , _int_out{0}
 , _int_reported{0}
@@ -67,13 +62,13 @@ TC6_Io_Generic::TC6_Io_Generic(HardwareSPI & spi, HardwareI2C & wire)
 
 bool TC6_Io_Generic::init(uint8_t pMac[6])
 {
-  digitalWrite(CS_PIN, HIGH);
-  pinMode(CS_PIN, OUTPUT);
+  digitalWrite(_cs_pin, HIGH);
+  pinMode(_cs_pin, OUTPUT);
 
-  pinMode(RESET_PIN, OUTPUT);
-  digitalWrite(RESET_PIN, LOW);
+  pinMode(_reset_pin, OUTPUT);
+  digitalWrite(_reset_pin, LOW);
   delay(100);
-  digitalWrite(RESET_PIN, HIGH);
+  digitalWrite(_reset_pin, HIGH);
   delay(100);
 
   _spi.begin();
@@ -97,20 +92,20 @@ bool TC6_Io_Generic::is_interrupt_active()
 
 void TC6_Io_Generic::release_interrupt()
 {
-  if (digitalRead(IRQ_PIN) == HIGH)
+  if (digitalRead(_irq_pin) == HIGH)
     _int_out = _int_reported;
 }
 
 bool TC6_Io_Generic::spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const len)
 {
-  digitalWrite(CS_PIN, LOW);
+  digitalWrite(_cs_pin, LOW);
   _spi.beginTransaction(LAN865x_SPI_SETTING);
 
   for (size_t b = 0; b < len; b++)
     pRx[b] = _spi.transfer(pTx[b]);
 
   _spi.endTransaction();
-  digitalWrite(CS_PIN, HIGH);
+  digitalWrite(_cs_pin, HIGH);
 
   TC6_SpiBufferDone(0 /* tc6instance */, true /* success */);
 #if 0

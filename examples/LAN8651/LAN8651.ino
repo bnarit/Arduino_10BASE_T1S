@@ -26,14 +26,25 @@ static IPAddress const ip_addr{192, 168, 42, 100 + T1S_PLCA_NODE_ID};
 static T1SPlcaSettings const t1s_plca_settings{T1S_PLCA_NODE_ID, T1S_PLCA_NODE_COUNT, T1S_PLCA_BURST_COUNT, T1S_PLCA_BURST_TIMER};
 static T1SMacSettings const t1s_mac_settings{MAC_PROMISCUOUS_MODE, MAC_TX_CUT_THROUGH, MAC_RX_CUT_THROUGH};
 
+#if defined(ARDUINO_SAMD_NANO_33_IOT)
+static int const CS_PIN    = 10;
+static int const RESET_PIN =  9;
 static int const IRQ_PIN   =  2;
+#else
+# error "No pins defined for your board"
+#endif
 
 /**************************************************************************************
  * GLOBAL VARIABLES
  **************************************************************************************/
 
 TC6 tc6_inst;
-std::shared_ptr<TC6_Io_Base> const tc6_io = std::make_shared<TC6_Io_Generic>(SPI, Wire);
+std::shared_ptr<TC6_Io_Base> const tc6_io = std::make_shared<TC6_Io_Generic>
+  ( SPI
+  , Wire
+  , CS_PIN
+  , RESET_PIN
+  , IRQ_PIN);
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -47,8 +58,6 @@ void setup()
 
 
   pinMode(IRQ_PIN, INPUT_PULLUP);
-
-
   attachInterrupt(digitalPinToInterrupt(IRQ_PIN),
                   []() { tc6_io->onInterrupt(); },
                   FALLING);

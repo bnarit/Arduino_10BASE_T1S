@@ -35,7 +35,10 @@ class TC6_Io_Generic : public TC6_Io_Base
 {
 public:
   TC6_Io_Generic(HardwareSPI & spi,
-                 HardwareI2C & wire);
+                 HardwareI2C & wire,
+                 int const cs_pin,
+                 int const reset_pin,
+                 int const irq_pin);
   virtual ~TC6_Io_Generic() { }
 
   virtual bool init(uint8_t pMac[6]) override;
@@ -52,6 +55,9 @@ public:
 private:
   HardwareSPI & _spi;
   HardwareI2C & _wire;
+  int const _cs_pin;
+  int const _reset_pin;
+  int const _irq_pin;
   volatile uint8_t _int_in;
   volatile uint8_t _int_out;
   volatile uint8_t _int_reported;
