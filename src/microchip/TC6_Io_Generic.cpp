@@ -22,7 +22,6 @@
 
 #include "TC6_Io_Generic.h"
 
-#include <SPI.h>
 #include <Wire.h>
 
 #include "lib/libtc6/inc/tc6.h"
@@ -58,8 +57,9 @@ static uint8_t mac[MAC_SIZE] = {0};
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6_Io_Generic::TC6_Io_Generic()
-: _int_in{0}
+TC6_Io_Generic::TC6_Io_Generic(HardwareSPI & spi)
+: _spi{spi}
+, _int_in{0}
 , _int_out{0}
 , _int_reported{0}
 {
@@ -87,7 +87,7 @@ bool TC6_Io_Generic::init(uint8_t pMac[6])
     SPI.setRX (4);
     SPI.setCS (5);
 #endif
-  SPI.begin();
+  _spi.begin();
 
 #if defined(ARDUINO_RASPBERRY_PI_PICO)
   Wire.setSDA(0);
@@ -119,12 +119,12 @@ void TC6_Io_Generic::release_interrupt()
 bool TC6_Io_Generic::spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const len)
 {
   digitalWrite(CS_PIN, LOW);
-  SPI.beginTransaction(LAN865x_SPI_SETTING);
+  _spi.beginTransaction(LAN865x_SPI_SETTING);
 
   for (size_t b = 0; b < len; b++)
-    pRx[b] = SPI.transfer(pTx[b]);
+    pRx[b] = _spi.transfer(pTx[b]);
 
-  SPI.endTransaction();
+  _spi.endTransaction();
   digitalWrite(CS_PIN, HIGH);
 
   TC6_SpiBufferDone(0 /* tc6instance */, true /* success */);

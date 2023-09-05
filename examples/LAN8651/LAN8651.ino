@@ -4,6 +4,8 @@
 
 #include <Arduino_10BASE_T1S.h>
 
+#include <SPI.h>
+
 #include "udp_perf_client.h"
 
 /**************************************************************************************
@@ -30,7 +32,7 @@ static int const IRQ_PIN   =  2;
  **************************************************************************************/
 
 TC6 tc6_inst;
-std::shared_ptr<TC6_Io_Base> tc6_io(new TC6_Io_Generic());
+std::shared_ptr<TC6_Io_Base> tc6_io(new TC6_Io_Generic(SPI));
 
 /**************************************************************************************
  * SETUP/LOOP
