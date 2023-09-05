@@ -22,46 +22,13 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "../Arduino_10BASE_T1S_UDP.h"
-
-#include <cstdint>
-
-#include <memory>
-
-#include <IPAddress.h>
-
-#include "../MacAddress.h"
-#include "../T1SMacSettings.h"
-#include "../T1SPlcaSettings.h"
-
-#include "TC6_Io_Generic.h"
+#include <api/Udp.h>
 
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class TC6 : public Arduino_10BASE_T1S_UDP
+class Arduino_10BASE_T1S_UDP /* : public UDP */
 {
-public:
-  TC6(std::shared_ptr<TC6_Io_Base> const tc6_io);
-  ~TC6();
 
-
-  bool begin(IPAddress const ip_addr,
-             T1SPlcaSettings const t1s_plca_settings,
-             T1SMacSettings const t1s_mac_settings);
-
-  void service();
-
-  typedef void (*OnPlcaStatusFunc)(bool success, bool plcaStatus);
-  bool getPlcaStatus(OnPlcaStatusFunc on_plca_status);
-
-  bool sendWouldBlock();
-
-  MacAddress getMacAddr();
-
-
-private:
-  std::shared_ptr<TC6_Io_Base> const _tc6_io;
-  int8_t _idx;
 };
