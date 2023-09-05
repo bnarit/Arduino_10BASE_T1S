@@ -47,7 +47,7 @@ static int const IRQ_PIN   =  2;
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-std::shared_ptr<TC6_Io_Base> const tc6_io = std::make_shared<TC6_Io_Generic>
+auto const tc6_io = std::make_shared<TC6_Io_Generic>
   ( SPI
   , Wire
   , CS_PIN
