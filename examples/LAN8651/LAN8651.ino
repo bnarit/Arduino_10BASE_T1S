@@ -33,7 +33,7 @@ static int const IRQ_PIN   =  2;
  **************************************************************************************/
 
 TC6 tc6_inst;
-std::shared_ptr<TC6_Io_Base> tc6_io(new TC6_Io_Generic(SPI, Wire));
+std::shared_ptr<TC6_Io_Base> const tc6_io = std::make_shared<TC6_Io_Generic>(SPI, Wire);
 
 /**************************************************************************************
  * SETUP/LOOP
