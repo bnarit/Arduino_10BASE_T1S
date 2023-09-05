@@ -36,10 +36,6 @@ static const uint8_t FALLBACK_MAC[] = {0x00u, 0x80u, 0xC2u, 0x00u, 0x01u, 0xCCu}
 static int const IRQ_PIN   =  2;
 static int const RESET_PIN =  9;
 static int const CS_PIN    = 10;
-#elif defined(ARDUINO_RASPBERRY_PI_PICO)
-static int const IRQ_PIN   = 15;
-static int const RESET_PIN = 14;
-static int const CS_PIN    =  5;
 #else
 # error "No pins defined for your board"
 #endif
@@ -81,18 +77,8 @@ bool TC6_Io_Generic::init(uint8_t pMac[6])
   digitalWrite(RESET_PIN, HIGH);
   delay(100);
 
-#if defined(ARDUINO_RASPBERRY_PI_PICO)
-  SPI.setSCK(2);
-    SPI.setTX (3);
-    SPI.setRX (4);
-    SPI.setCS (5);
-#endif
   _spi.begin();
 
-#if defined(ARDUINO_RASPBERRY_PI_PICO)
-  Wire.setSDA(0);
-    Wire.setSCL(1);
-#endif
   Wire.begin();
 
   if (get_mac_address(mac)) {
