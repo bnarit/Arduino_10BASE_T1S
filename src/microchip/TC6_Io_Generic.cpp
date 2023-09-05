@@ -51,7 +51,7 @@ TC6_Io_Generic::TC6_Io_Generic(HardwareSPI & spi, HardwareI2C & wire, int const 
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-bool TC6_Io_Generic::init(uint8_t pMac[6])
+bool TC6_Io_Generic::init()
 {
   digitalWrite(_cs_pin, HIGH);
   pinMode(_cs_pin, OUTPUT);
@@ -63,15 +63,7 @@ bool TC6_Io_Generic::init(uint8_t pMac[6])
   delay(100);
 
   _spi.begin();
-
   _wire.begin();
-
-  uint8_t mac[MAC_SIZE] = {0};
-  if (get_mac_address(mac)) {
-    memcpy(pMac, mac, MAC_SIZE);
-  } else {
-    memcpy(pMac, FALLBACK_MAC, MAC_SIZE);
-  }
 
   return true;
 }

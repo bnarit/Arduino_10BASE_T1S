@@ -158,7 +158,11 @@ int8_t TC6LwIP_Init(std::shared_ptr<TC6_Io_Base> const tc6_io, const uint8_t ip[
         }
     }
     if (success) {
-        success = priv_tc6_io->init(lw->ip.mac);
+        success = priv_tc6_io->init();
+
+        if (!priv_tc6_io->get_mac_address(lw->ip.mac)) {
+          memcpy(lw->ip.mac, TC6_Io_Base::FALLBACK_MAC, sizeof(lw->ip.mac));
+        }
     }
     if (success) {
         lw->tc.tc6 = TC6_Init(lw);

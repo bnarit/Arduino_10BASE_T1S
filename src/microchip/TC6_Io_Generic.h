@@ -41,7 +41,7 @@ public:
                  int const irq_pin);
   virtual ~TC6_Io_Generic() { }
 
-  virtual bool init(uint8_t pMac[6]) override;
+  virtual bool init() override;
 
   virtual bool is_interrupt_active() override;
   virtual void release_interrupt() override;

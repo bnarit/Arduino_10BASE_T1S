@@ -36,7 +36,7 @@ public:
 
   virtual ~TC6_Io_Base() { }
 
-  virtual bool init(uint8_t pMac[6]) = 0;
+  virtual bool init() = 0;
 
   virtual bool is_interrupt_active() = 0;
   virtual void release_interrupt() = 0;
