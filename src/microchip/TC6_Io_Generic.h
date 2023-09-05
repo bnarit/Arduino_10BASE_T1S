@@ -25,6 +25,7 @@
 #include "TC6_Io_Base.h"
 
 #include <api/HardwareSPI.h>
+#include <api/HardwareI2C.h>
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -33,7 +34,8 @@
 class TC6_Io_Generic : public TC6_Io_Base
 {
 public:
-  TC6_Io_Generic(HardwareSPI & spi);
+  TC6_Io_Generic(HardwareSPI & spi,
+                 HardwareI2C & wire);
   virtual ~TC6_Io_Generic() { }
 
   virtual bool init(uint8_t pMac[6]) override;
@@ -49,6 +51,7 @@ public:
 
 private:
   HardwareSPI & _spi;
+  HardwareI2C & _wire;
   volatile uint8_t _int_in;
   volatile uint8_t _int_out;
   volatile uint8_t _int_reported;

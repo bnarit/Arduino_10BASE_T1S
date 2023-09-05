@@ -22,8 +22,6 @@
 
 #include "TC6_Io_Generic.h"
 
-#include <Wire.h>
-
 #include "lib/libtc6/inc/tc6.h"
 
 /**************************************************************************************
@@ -53,8 +51,9 @@ static uint8_t mac[MAC_SIZE] = {0};
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6_Io_Generic::TC6_Io_Generic(HardwareSPI & spi)
+TC6_Io_Generic::TC6_Io_Generic(HardwareSPI & spi, HardwareI2C & wire)
 : _spi{spi}
+, _wire{wire}
 , _int_in{0}
 , _int_out{0}
 , _int_reported{0}
@@ -79,7 +78,7 @@ bool TC6_Io_Generic::init(uint8_t pMac[6])
 
   _spi.begin();
 
-  Wire.begin();
+  _wire.begin();
 
   if (get_mac_address(mac)) {
     memcpy(pMac, mac, MAC_SIZE);
@@ -143,18 +142,18 @@ bool TC6_Io_Generic::get_mac_address(uint8_t * p_mac)
   uint8_t MAC_EEPROM_EUI_REG_ADDR = 0x9A;
   bool success = false;
 
-  Wire.beginTransmission(MAC_EEPROM_I2C_SLAVE_ADDR);
-  Wire.write(MAC_EEPROM_EUI_REG_ADDR);
-  Wire.endTransmission();
+  _wire.beginTransmission(MAC_EEPROM_I2C_SLAVE_ADDR);
+  _wire.write(MAC_EEPROM_EUI_REG_ADDR);
+  _wire.endTransmission();
 
-  Wire.requestFrom(MAC_EEPROM_I2C_SLAVE_ADDR, MAC_SIZE);
+  _wire.requestFrom(MAC_EEPROM_I2C_SLAVE_ADDR, MAC_SIZE);
 
   uint32_t const start = get_tick();
 
   size_t bytes_read = 0;
   while (bytes_read < MAC_SIZE && ((get_tick() - start) < 1000)) {
-    if (Wire.available()) {
-      p_mac[bytes_read] = Wire.read();
+    if (_wire.available()) {
+      p_mac[bytes_read] = _wire.read();
       bytes_read++;
     }
   }
