@@ -323,14 +323,14 @@ extern void TC6_CB_OnExtendedStatus(TC6_t *pInst, void *pGlobalTag);
 /**
  * \brief Users implementation of SPI transfer function.
  * \note The implementation may be synchronous or asynchronous. But in any case the TC6_SpiBufferDone() must be called, when the SPI transaction is over!
- * \param tc6instance - The instance number of the hardware. Starting with 0 for the first.
+ * \param pInst - The pointer returned by TC6_Init.
  * \param pTx - Pointer to the MOSI data. The pointer stays valid until user calls TC6_SpiBufferDone()
  * \param pRx - Pointer to the MISO Buffer. The pointer stays valid until user calls TC6_SpiBufferDone()
  * \param len - The length of both buffers (pTx and pRx). The entire length must be transfered via SPI.
  * \param pGlobalTag - The exact same pointer, which was given along with the TC6_Init() function.
  * \return true, if the SPI data was enqueued/transfered. false, there was an error.
  */
-extern bool TC6_CB_OnSpiTransaction(uint8_t tc6instance, uint8_t *pTx, uint8_t *pRx, uint16_t len, void *pGlobalTag);
+extern bool TC6_CB_OnSpiTransaction(TC6_t *pInst, uint8_t *pTx, uint8_t *pRx, uint16_t len, void *pGlobalTag);
 
 #ifdef __cplusplus
 }

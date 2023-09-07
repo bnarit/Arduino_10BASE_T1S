@@ -85,7 +85,7 @@ void setup()
   Serial.println(t1s_plca_settings);
   Serial.println(t1s_mac_settings);
 
-  iperf_init();
+  iperf_init(tc6_inst);
   iperf_print_app_header();
   iperf_start_application();
 }
@@ -111,7 +111,7 @@ void loop()
 }
 
 
-static void OnPlcaStatus(bool success, bool plcaStatus)
+static void OnPlcaStatus(int8_t idx, bool success, bool plcaStatus)
 {
   if (!success)
   {

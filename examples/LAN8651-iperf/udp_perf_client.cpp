@@ -35,7 +35,7 @@
 //#include "lwip/udp.h"
 #include "udp_perf_client.h"
 //#include "peripheral/systick/plib_systick.h"
-#include "microchip/tc6-lwip.h" /* For performance improvement addon */
+//#include "microchip/tc6-lwip.h" /* For performance improvement addon */
 #include <Arduino.h>
 
 #define START_DELAY  (10)
@@ -67,6 +67,8 @@ const char kLabel[] =
     'M',
     'G'
 };
+
+std::shared_ptr<TC6> priv_tc6_inst;
 
 void iperf_print_app_header(void)
 {
@@ -154,7 +156,7 @@ static void reset_stats(void)
 static int udp_packet_send(u8_t finished)
 {
     int32_t i, *payload;
-    for (i = 0; !TC6LwIP_SendWouldBlock(0) && (i < NUM_OF_PARALLEL_CLIENTS); i++) {
+    for (i = 0; !priv_tc6_inst->sendWouldBlock() && (i < NUM_OF_PARALLEL_CLIENTS); i++) {
         struct pbuf *send_buf;
         int32_t result;
         send_buf = pbuf_alloc(PBUF_TRANSPORT, iPayloadSize, PBUF_RAM);
@@ -270,8 +272,10 @@ static void PrintServerStats(void)
     }
 }
 
-void iperf_init(void)
+void iperf_init(std::shared_ptr<TC6> const tc6_inst)
 {
+    priv_tc6_inst = tc6_inst;
+
     uint32_t i;
     memset(&server, 0, sizeof(server));
 

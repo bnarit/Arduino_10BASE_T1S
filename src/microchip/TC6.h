@@ -28,9 +28,43 @@
 
 #include <memory>
 
+#include "lib/liblwip/include/lwip/netif.h"
+
+#include "microchip/lib/libtc6/inc/tc6.h"
+
 #include "../MacAddress.h"
 
 #include "TC6_Io_Generic.h"
+
+/**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+typedef void (*TC6LwIP_On_PlcaStatus)(int8_t idx, bool success, bool plcaStatus);
+
+typedef struct
+{
+  TC6_t *tc6;
+  struct pbuf *pbuf;
+  TC6LwIP_On_PlcaStatus pStatusCallback;
+  uint16_t rxLen;
+  bool rxInvalid;
+  bool tc6NeedService;
+} TC6Lib_t;
+
+typedef struct
+{
+  char ipAddr[16];
+  struct netif netint;
+  uint8_t mac[6];
+} LwIp_t;
+
+typedef struct
+{
+  TC6Lib_t tc;
+  LwIp_t ip;
+  std::shared_ptr<TC6_Io_Base> io;
+} TC6LwIP_t;
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -50,8 +84,7 @@ public:
 
   void service();
 
-  typedef void (*OnPlcaStatusFunc)(bool success, bool plcaStatus);
-  bool getPlcaStatus(OnPlcaStatusFunc on_plca_status);
+  bool getPlcaStatus(TC6LwIP_On_PlcaStatus on_plca_status);
 
   bool sendWouldBlock();
 
@@ -61,4 +94,6 @@ public:
 private:
   std::shared_ptr<TC6_Io_Base> const _tc6_io;
   int8_t _idx;
+
+  TC6LwIP_t _lw;
 };

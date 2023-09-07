@@ -127,10 +127,10 @@ bool TC6_Io_Generic::get_mac_address(uint8_t * p_mac)
 
   _wire.requestFrom(MAC_EEPROM_I2C_SLAVE_ADDR, MAC_SIZE);
 
-  uint32_t const start = get_tick();
+  uint32_t const start = millis();
 
   size_t bytes_read = 0;
-  while (bytes_read < MAC_SIZE && ((get_tick() - start) < 1000)) {
+  while (bytes_read < MAC_SIZE && ((millis() - start) < 1000)) {
     if (_wire.available()) {
       p_mac[bytes_read] = _wire.read();
       bytes_read++;

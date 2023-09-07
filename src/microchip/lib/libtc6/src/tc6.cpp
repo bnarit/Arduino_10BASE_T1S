@@ -690,7 +690,7 @@ static bool serviceControl(TC6_t *g)
 
             g->currentOp = SPI_OP_REG;
             sentControl = true;
-            if (!TC6_CB_OnSpiTransaction(g->instance, reg_op->tx_buf, reg_op->rx_buf, reg_op->length, g->gTag)) {
+            if (!TC6_CB_OnSpiTransaction(g, reg_op->tx_buf, reg_op->rx_buf, reg_op->length, g->gTag)) {
                 g->currentOp = SPI_OP_INVALID;
                 sentControl = false;
                 regop_stage5_send_undo(&g->regop_q);
@@ -708,7 +708,7 @@ static bool serviceControl(TC6_t *g)
             TC6_ASSERT(SPI_OP_INVALID == g->currentOp);
             g->currentOp = SPI_OP_REG;
             sentControl = true;
-            if (!TC6_CB_OnSpiTransaction(g->instance, reg_op->tx_buf, reg_op->rx_buf, reg_op->length, g->gTag)) {
+            if (!TC6_CB_OnSpiTransaction(g, reg_op->tx_buf, reg_op->rx_buf, reg_op->length, g->gTag)) {
                 g->currentOp = SPI_OP_INVALID;
                 sentControl = false;
                 regop_stage2_send_undo(&g->regop_q);
@@ -724,7 +724,7 @@ static bool spiTransaction(TC6_t *g, uint8_t *pTx, uint8_t *pRx, uint16_t len, S
     bool success = false;
     if (g->currentOp == SPI_OP_INVALID) {
         g->currentOp = op;
-        success = TC6_CB_OnSpiTransaction(g->instance, pTx, pRx, len, g->gTag);
+        success = TC6_CB_OnSpiTransaction(g, pTx, pRx, len, g->gTag);
         if (!success) {
             g->currentOp = SPI_OP_INVALID;
         }
