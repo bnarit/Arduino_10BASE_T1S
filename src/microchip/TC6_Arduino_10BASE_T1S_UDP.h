@@ -91,7 +91,7 @@ public:
                      T1SMacSettings const t1s_mac_settings) override;
 
 
-  void service();
+  virtual void service() override;
 
   bool getPlcaStatus(TC6LwIP_On_PlcaStatus on_plca_status);
 

@@ -45,4 +45,6 @@ public:
                      MacAddress const mac_addr,
                      T1SPlcaSettings const t1s_plca_settings,
                      T1SMacSettings const t1s_mac_settings) = 0;
+
+  virtual void service() = 0;
 };
