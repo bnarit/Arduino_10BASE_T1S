@@ -86,7 +86,7 @@ static void OnPlcaStatus(TC6_t *pInst, bool success, uint32_t addr, uint32_t val
     if (success) {
       status = (0u != ((1u << 15) & value));
     }
-    lw->tc.pStatusCallback(/* lw->idx */ 0 /* FIXME: no more index available */, success, status);
+    lw->tc.pStatusCallback(success, status);
   }
 }
 

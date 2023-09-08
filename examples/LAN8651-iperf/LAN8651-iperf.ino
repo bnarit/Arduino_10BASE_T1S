@@ -115,7 +115,7 @@ void loop()
 }
 
 
-static void OnPlcaStatus(int8_t idx, bool success, bool plcaStatus)
+static void OnPlcaStatus(bool success, bool plcaStatus)
 {
   if (!success)
   {

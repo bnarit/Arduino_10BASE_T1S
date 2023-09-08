@@ -40,7 +40,7 @@
  * TYPEDEF
  **************************************************************************************/
 
-typedef void (*TC6LwIP_On_PlcaStatus)(int8_t idx, bool success, bool plcaStatus);
+typedef void (*TC6LwIP_On_PlcaStatus)(bool success, bool plcaStatus);
 
 typedef struct
 {
