@@ -333,7 +333,7 @@ bool TC6_CB_OnSpiTransaction(TC6_t *pInst, uint8_t *pTx, uint8_t *pRx, uint16_t 
 {
   TC6LwIP_t *lw = GetContextTC6(pInst);
   bool const success = lw->io->spi_transaction(pTx, pRx, len);
-  TC6_SpiBufferDone(0 /* tc6instance */, true /* success */);
+  TC6_SpiBufferDone(pInst /* tc6instance */, true /* success */);
   return success;
 }
 

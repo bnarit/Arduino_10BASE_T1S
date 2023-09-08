@@ -232,10 +232,10 @@ void TC6_UnlockExtendedStatus(TC6_t *pInst);
 /**
  * \brief The user must call this function once the SPI transaction is finished.
  * \note This function may be called direct in the implementation of TC6_CB_OnSpiTransaction, or any timer later and also from interrupt context.
- * \param tc6instance - The instance number of the hardware. Starting with 0 for the first.
+ * \param pInst - The pointer returned by TC6_Init.
  * \param success - true, if SPI transaction was successful. false, otherwise.
  */
-void TC6_SpiBufferDone(uint8_t tc6instance, bool success);
+void TC6_SpiBufferDone(TC6_t *pInst, bool success);
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                      PUBLIC API  (optional)                          */

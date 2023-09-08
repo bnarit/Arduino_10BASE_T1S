@@ -1399,12 +1399,9 @@ static void update_credit_cnt(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
 /*
  * This function might be called from the interrupt.
  */
-void TC6_SpiBufferDone(uint8_t tc6instance, bool success)
+void TC6_SpiBufferDone(TC6_t *g, bool success)
 {
-    TC6_t *g;
-    if (tc6instance < TC6_MAX_INSTANCES) {
         struct qspibuf *entry;
-        g = &m_tc6[tc6instance];
         g->intContext = true;
         if (!success) {
             signal_rx_error(g, TC6Error_SpiError);
@@ -1436,7 +1433,4 @@ void TC6_SpiBufferDone(uint8_t tc6instance, bool success)
         g->currentOp = SPI_OP_INVALID;
         g->intContext = false;
         TC6_CB_OnNeedService(g, g->gTag);
-    } else {
-        TC6_ASSERT(false);
-    }
 }
