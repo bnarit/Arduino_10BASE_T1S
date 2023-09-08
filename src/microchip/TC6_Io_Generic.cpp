@@ -22,8 +22,6 @@
 
 #include "TC6_Io_Generic.h"
 
-#include "lib/libtc6/inc/tc6.h"
-
 /**************************************************************************************
  * CONSTANTS
  **************************************************************************************/
@@ -90,8 +88,6 @@ bool TC6_Io_Generic::spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_
 
   _spi.endTransaction();
   digitalWrite(_cs_pin, HIGH);
-
-  TC6_SpiBufferDone(0 /* tc6instance */, true /* success */);
 
   return true;
 }

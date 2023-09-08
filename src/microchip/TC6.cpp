@@ -332,7 +332,9 @@ uint32_t TC6Regs_CB_GetTicksMs(void)
 bool TC6_CB_OnSpiTransaction(TC6_t *pInst, uint8_t *pTx, uint8_t *pRx, uint16_t len, void *pGlobalTag)
 {
   TC6LwIP_t *lw = GetContextTC6(pInst);
-  return lw->io->spi_transaction(pTx, pRx, len);
+  bool const success = lw->io->spi_transaction(pTx, pRx, len);
+  TC6_SpiBufferDone(0 /* tc6instance */, true /* success */);
+  return success;
 }
 
 void TC6_CB_OnRxEthernetSlice(TC6_t *pInst, const uint8_t *pRx, uint16_t offset, uint16_t len, void *pGlobalTag)
