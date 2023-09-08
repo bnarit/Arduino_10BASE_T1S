@@ -68,7 +68,7 @@ const char kLabel[] =
     'G'
 };
 
-std::shared_ptr<TC6_Arduino_10BASE_T1S_UDP> priv_tc6_inst;
+std::shared_ptr<TC6::TC6_Arduino_10BASE_T1S_UDP> priv_tc6_inst;
 
 void iperf_print_app_header(void)
 {
@@ -272,7 +272,7 @@ static void PrintServerStats(void)
     }
 }
 
-void iperf_init(std::shared_ptr<TC6_Arduino_10BASE_T1S_UDP> const tc6_inst)
+void iperf_init(std::shared_ptr<TC6::TC6_Arduino_10BASE_T1S_UDP> const tc6_inst)
 {
     priv_tc6_inst = tc6_inst;
 

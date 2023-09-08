@@ -55,7 +55,7 @@ auto const tc6_io = std::make_shared<TC6_Io_Generic>
   , CS_PIN
   , RESET_PIN
   , IRQ_PIN);
-auto const tc6_inst = std::make_shared<TC6_Arduino_10BASE_T1S_UDP>(tc6_io);
+auto const tc6_inst = std::make_shared<TC6::TC6_Arduino_10BASE_T1S_UDP>(tc6_io);
 
 /**************************************************************************************
  * SETUP/LOOP
