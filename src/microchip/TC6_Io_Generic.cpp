@@ -92,25 +92,6 @@ bool TC6_Io_Generic::spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_
   digitalWrite(_cs_pin, HIGH);
 
   TC6_SpiBufferDone(0 /* tc6instance */, true /* success */);
-#if 0
-  Serial.print("TX = ");
-    for (size_t b = 0; b < len; b++)
-    {
-      char msg[8] = {0};
-      snprintf(msg, sizeof(msg), "%02X ", pTx[b]);
-      Serial.print(msg);
-    }
-    Serial.println();
-
-    Serial.print("RX = ");
-    for (size_t b = 0; b < len; b++)
-    {
-      char msg[8] = {0};
-      snprintf(msg, sizeof(msg), "%02X ", pRx[b]);
-      Serial.print(msg);
-    }
-    Serial.println();
-#endif
 
   return true;
 }
