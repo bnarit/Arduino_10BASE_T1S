@@ -43,9 +43,6 @@
  * GLOBAL CONSTANTS
  **************************************************************************************/
 
-//static std::map<struct netif *, TC6LwIP_t *> NETIF_LWIP_MAP; /* C function pointers suck big time. */
-//static std::map<TC6_t *, TC6LwIP_t *> TC6_LWIP_MAP; /* C function pointers suck big time. */
-
 static std::list<TC6LwIP_t *> T6_LWIP_INSTANCE_LIST;
 
 /**************************************************************************************
