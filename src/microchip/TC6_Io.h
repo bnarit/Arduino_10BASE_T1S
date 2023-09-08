@@ -22,7 +22,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "TC6_Io_Base.h"
+#include <Arduino.h>
 
 #include <api/HardwareSPI.h>
 
@@ -30,23 +30,24 @@
  * CLASS DECLARATION
  **************************************************************************************/
 
-class TC6_Io_Generic : public TC6_Io_Base
+class TC6_Io
 {
 public:
-  TC6_Io_Generic(HardwareSPI & spi,
-                 int const cs_pin,
-                 int const reset_pin,
-                 int const irq_pin);
-  virtual ~TC6_Io_Generic() { }
+  static size_t  constexpr MAC_SIZE = 6;
+  static uint8_t constexpr FALLBACK_MAC[MAC_SIZE] = {0x00u, 0x80u, 0xC2u, 0x00u, 0x01u, 0xCCu};
 
-  virtual bool init() override;
+  TC6_Io(HardwareSPI & spi,
+         int const cs_pin,
+         int const reset_pin,
+         int const irq_pin);
 
-  virtual bool is_interrupt_active() override;
-  virtual void release_interrupt() override;
+  virtual bool init();
 
-  virtual bool spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const len) override;
+  void onInterrupt();
+  bool is_interrupt_active();
+  void release_interrupt();
 
-  virtual void onInterrupt() override;
+  bool spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const len);
 
 
 private:

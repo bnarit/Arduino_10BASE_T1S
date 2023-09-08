@@ -32,7 +32,7 @@
 
 #include "microchip/lib/libtc6/inc/tc6.h"
 
-#include "TC6_Io_Generic.h"
+#include "TC6_Io.h"
 
 /**************************************************************************************
  * TYPEDEF
@@ -61,7 +61,7 @@ typedef struct
 {
   TC6Lib_t tc;
   LwIp_t ip;
-  std::shared_ptr <TC6_Io_Base> io;
+  std::shared_ptr<TC6_Io> io;
 } TC6LwIP_t;
 
 /**************************************************************************************
@@ -78,7 +78,7 @@ namespace TC6
 class TC6_Arduino_10BASE_T1S_UDP : public Arduino_10BASE_T1S_UDP
 {
 public:
-  TC6_Arduino_10BASE_T1S_UDP(std::shared_ptr <TC6_Io_Base> const tc6_io);
+  TC6_Arduino_10BASE_T1S_UDP(std::shared_ptr<TC6_Io> const tc6_io);
 
   virtual ~TC6_Arduino_10BASE_T1S_UDP();
 
@@ -99,7 +99,7 @@ public:
 
 
 private:
-  std::shared_ptr <TC6_Io_Base> const _tc6_io;
+  std::shared_ptr<TC6_Io> const _tc6_io;
   TC6LwIP_t _lw;
 };
 

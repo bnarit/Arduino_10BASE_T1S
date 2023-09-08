@@ -20,7 +20,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "TC6_Io_Generic.h"
+#include "TC6_Io.h"
 
 /**************************************************************************************
  * CONSTANTS
@@ -29,10 +29,17 @@
 static SPISettings const LAN865x_SPI_SETTING{8*1000*1000UL, MSBFIRST, SPI_MODE0};
 
 /**************************************************************************************
+ * STATIC MEMBER DEFINITION
+ **************************************************************************************/
+
+size_t  const TC6_Io::MAC_SIZE;
+uint8_t const TC6_Io::FALLBACK_MAC[TC6_Io::MAC_SIZE];
+
+/**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6_Io_Generic::TC6_Io_Generic(HardwareSPI & spi, int const cs_pin, int const reset_pin, int const irq_pin)
+TC6_Io::TC6_Io(HardwareSPI & spi, int const cs_pin, int const reset_pin, int const irq_pin)
 : _spi{spi}
 , _cs_pin{cs_pin}
 , _reset_pin{reset_pin}
@@ -48,7 +55,7 @@ TC6_Io_Generic::TC6_Io_Generic(HardwareSPI & spi, int const cs_pin, int const re
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-bool TC6_Io_Generic::init()
+bool TC6_Io::init()
 {
   digitalWrite(_cs_pin, HIGH);
   pinMode(_cs_pin, OUTPUT);
@@ -64,19 +71,24 @@ bool TC6_Io_Generic::init()
   return true;
 }
 
-bool TC6_Io_Generic::is_interrupt_active()
+void TC6_Io::onInterrupt()
+{
+  _int_in++;
+}
+
+bool TC6_Io::is_interrupt_active()
 {
   _int_reported = _int_in;
   return (_int_reported != _int_out);
 }
 
-void TC6_Io_Generic::release_interrupt()
+void TC6_Io::release_interrupt()
 {
   if (digitalRead(_irq_pin) == HIGH)
     _int_out = _int_reported;
 }
 
-bool TC6_Io_Generic::spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const len)
+bool TC6_Io::spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const len)
 {
   digitalWrite(_cs_pin, LOW);
   _spi.beginTransaction(LAN865x_SPI_SETTING);
@@ -88,9 +100,4 @@ bool TC6_Io_Generic::spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_
   digitalWrite(_cs_pin, HIGH);
 
   return true;
-}
-
-void TC6_Io_Generic::onInterrupt()
-{
-  _int_in++;
 }

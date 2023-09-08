@@ -105,7 +105,7 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p);
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6_Arduino_10BASE_T1S_UDP::TC6_Arduino_10BASE_T1S_UDP(std::shared_ptr <TC6_Io_Base> const tc6_io)
+TC6_Arduino_10BASE_T1S_UDP::TC6_Arduino_10BASE_T1S_UDP(std::shared_ptr<TC6_Io> const tc6_io)
 : _tc6_io{tc6_io}
 {
   _lw.io = tc6_io;

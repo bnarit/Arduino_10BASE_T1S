@@ -49,7 +49,7 @@ static int const IRQ_PIN   =  2;
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-auto const tc6_io = std::make_shared<TC6_Io_Generic>
+auto const tc6_io = std::make_shared<TC6_Io>
   ( SPI
   , CS_PIN
   , RESET_PIN
@@ -83,7 +83,7 @@ void setup()
   /* Initialize IO module. */
   if (!tc6_io->init())
   {
-    Serial.println("'TC6_Io_Generic::init(...)' failed.");
+    Serial.println("'TC6_Io::init(...)' failed.");
     for (;;) { }
   }
 
@@ -94,7 +94,7 @@ void setup()
   if (!get_mac_address(mac_addr.data()))
   {
     Serial.println("'get_mac_address(...)' failed, using fallback MAC address.");
-    memcpy(mac_addr.data(), TC6_Io_Base::FALLBACK_MAC, MAC_ADDRESS_NUM_BYTES);
+    memcpy(mac_addr.data(), TC6_Io::FALLBACK_MAC, MAC_ADDRESS_NUM_BYTES);
   }
 
   if (!tc6_inst->begin(  ip_addr
