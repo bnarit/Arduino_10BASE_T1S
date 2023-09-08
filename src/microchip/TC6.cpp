@@ -279,14 +279,9 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
       , seg
       , p->tot_len
       , 0
-      , +[](TC6_t *pInst, const uint8_t *pTx, uint16_t len, void *pTag, void *pGlobalTag) -> void
+      , +[](TC6_t * /* pInst */, const uint8_t * /* pTx */, uint16_t /* len */, void *pTag, void * /* pGlobalTag */) -> void
         {
           struct pbuf *p = (struct pbuf *)pTag;
-          (void)pInst;
-          (void)pTx;
-          (void)len;
-          (void)pTag;
-          (void)pGlobalTag;
 //  TC6_ASSERT(GetContextTC6(pInst));
 //  TC6_ASSERT(pTx == p->payload);
 //  TC6_ASSERT(len == p->tot_len);
