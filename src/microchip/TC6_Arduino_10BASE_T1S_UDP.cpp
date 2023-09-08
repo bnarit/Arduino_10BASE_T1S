@@ -20,7 +20,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "TC6.h"
+#include "TC6_Arduino_10BASE_T1S_UDP.h"
 
 #include <map>
 #include <list>
@@ -97,14 +97,14 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p);
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6::TC6(std::shared_ptr<TC6_Io_Base> const tc6_io)
+TC6_Arduino_10BASE_T1S_UDP::TC6_Arduino_10BASE_T1S_UDP(std::shared_ptr<TC6_Io_Base> const tc6_io)
 : _tc6_io{tc6_io}
 , _idx(-1)
 {
   _lw.io = tc6_io;
 }
 
-TC6::~TC6()
+TC6_Arduino_10BASE_T1S_UDP::~TC6_Arduino_10BASE_T1S_UDP()
 {
 
 }
@@ -113,7 +113,7 @@ TC6::~TC6()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-bool TC6::begin(IPAddress const ip_addr,
+bool TC6_Arduino_10BASE_T1S_UDP::begin(IPAddress const ip_addr,
                 IPAddress const network_mask,
                 IPAddress const gateway,
                 MacAddress const mac_addr,
@@ -183,7 +183,7 @@ bool TC6::begin(IPAddress const ip_addr,
   return true;
 }
 
-void TC6::service()
+void TC6_Arduino_10BASE_T1S_UDP::service()
 {
   sys_check_timeouts(); /* LWIP timers - ARP, DHCP, TCP, etc. */
 
@@ -202,13 +202,13 @@ void TC6::service()
   TC6Regs_CheckTimers();
 }
 
-bool TC6::getPlcaStatus(TC6LwIP_On_PlcaStatus on_plca_status)
+bool TC6_Arduino_10BASE_T1S_UDP::getPlcaStatus(TC6LwIP_On_PlcaStatus on_plca_status)
 {
   _lw.tc.pStatusCallback = on_plca_status;
   return TC6_ReadRegister(_lw.tc.tc6, 0x0004CA03, true, OnPlcaStatus, &_lw); /* PLCA_status_register.plca_status */
 }
 
-bool TC6::sendWouldBlock()
+bool TC6_Arduino_10BASE_T1S_UDP::sendWouldBlock()
 {
   TC6_RawTxSegment *dummySeg;
   uint8_t const segCount = TC6_GetRawSegments(_lw.tc.tc6, &dummySeg);

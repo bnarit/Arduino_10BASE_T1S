@@ -68,11 +68,11 @@ typedef struct
  * CLASS DECLARATION
  **************************************************************************************/
 
-class TC6 : public Arduino_10BASE_T1S_UDP
+class TC6_Arduino_10BASE_T1S_UDP : public Arduino_10BASE_T1S_UDP
 {
 public:
-  TC6(std::shared_ptr<TC6_Io_Base> const tc6_io);
-  virtual ~TC6();
+  TC6_Arduino_10BASE_T1S_UDP(std::shared_ptr<TC6_Io_Base> const tc6_io);
+  virtual ~TC6_Arduino_10BASE_T1S_UDP();
 
 
   virtual bool begin(IPAddress const ip_addr,
