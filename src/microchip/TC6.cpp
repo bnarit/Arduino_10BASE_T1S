@@ -38,8 +38,6 @@
 
 #define TC6LwIP_HOSTNAME            "tc6"
 #define TC6LwIP_MTU                 (1536u)
-#define TC6LwIP_NETMASK             "255.255.255.0"
-#define TC6LwIP_GATEWAY             "192.168.42.100"
 
 /**************************************************************************************
  * GLOBAL CONSTANTS
@@ -120,6 +118,8 @@ TC6::~TC6()
  **************************************************************************************/
 
 bool TC6::begin(IPAddress const ip_addr,
+                IPAddress const network_mask,
+                IPAddress const gateway,
                 T1SPlcaSettings const t1s_plca_settings,
                 T1SMacSettings const t1s_mac_settings)
 {
@@ -165,25 +165,23 @@ bool TC6::begin(IPAddress const ip_addr,
     TC6_Service(_lw.tc.tc6, true);
 
   /* Assign IP address, network mask and gateway. */
-  uint8_t const tc6_ip_addr[4] =
-  {
-    ip_addr[0], ip_addr[1], ip_addr[2], ip_addr[3]
-  };
-  (void)snprintf(_lw.ip.ipAddr, sizeof(_lw.ip.ipAddr), "%d.%d.%d.%d", tc6_ip_addr[0], tc6_ip_addr[1], tc6_ip_addr[2], tc6_ip_addr[3]);
+  auto const ip_addr_str = ip_addr.toString();
+  auto const network_mask_str = network_mask.toString();
+  auto const gateway_str = gateway.toString();
 
-  ip4_addr_t ipAddr;
-  ip4_addr_t nm;
-  ip4_addr_t gw;
+  ip4_addr_t lwip_ip_addr;
+  ip4_addr_t lwip_network_mask;
+  ip4_addr_t lwip_gateway;
 
-  ipaddr_aton(_lw.ip.ipAddr, &ipAddr);
-  ipaddr_aton(TC6LwIP_NETMASK, &nm);
-  ipaddr_aton(TC6LwIP_GATEWAY, &gw);
+  ipaddr_aton(ip_addr_str.c_str(), &lwip_ip_addr);
+  ipaddr_aton(network_mask_str.c_str(), &lwip_network_mask);
+  ipaddr_aton(gateway_str.c_str(), &lwip_gateway);
 
   /* Bring up the interface. */
   if (!netif_add(  &_lw.ip.netint
-                 , &ipAddr
-                 , &nm
-                 , &gw
+                 , &lwip_ip_addr
+                 , &lwip_network_mask
+                 , &lwip_gateway
                  , &_lw
                  , lwIpInit
                  , ethernet_input))

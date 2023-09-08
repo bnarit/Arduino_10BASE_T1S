@@ -78,6 +78,8 @@ public:
 
 
   virtual bool begin(IPAddress const ip_addr,
+                     IPAddress const network_mask,
+                     IPAddress const gateway,
                      T1SPlcaSettings const t1s_plca_settings,
                      T1SMacSettings const t1s_mac_settings) override;
 

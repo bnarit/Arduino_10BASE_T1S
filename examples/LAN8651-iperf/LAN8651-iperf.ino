@@ -30,7 +30,9 @@ static bool    const MAC_PROMISCUOUS_MODE = false;
 static bool    const MAC_TX_CUT_THROUGH   = false;
 static bool    const MAC_RX_CUT_THROUGH   = false;
 
-static IPAddress const ip_addr{192, 168, 42, 100 + T1S_PLCA_NODE_ID};
+static IPAddress const ip_addr     {192, 168,  42, 100 + T1S_PLCA_NODE_ID};
+static IPAddress const network_mask{255, 255, 255,   0};
+static IPAddress const gateway     {192, 168,  42, 100};
 
 static T1SPlcaSettings const t1s_plca_settings{T1S_PLCA_NODE_ID, T1S_PLCA_NODE_COUNT, T1S_PLCA_BURST_COUNT, T1S_PLCA_BURST_TIMER};
 static T1SMacSettings const t1s_mac_settings{MAC_PROMISCUOUS_MODE, MAC_TX_CUT_THROUGH, MAC_RX_CUT_THROUGH};
@@ -71,9 +73,11 @@ void setup()
                   []() { tc6_io->onInterrupt(); },
                   FALLING);
 
-  if (!tc6_inst->begin(ip_addr,
-                       t1s_plca_settings,
-                       t1s_mac_settings))
+  if (!tc6_inst->begin(  ip_addr
+                       , network_mask
+                       , gateway
+                       , t1s_plca_settings
+                       , t1s_mac_settings))
   {
     Serial.println("'TC6::begin(...)' failed.");
     return;
