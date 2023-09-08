@@ -22,7 +22,6 @@
 
 #include "TC6_Arduino_10BASE_T1S_UDP.h"
 
-#include <map>
 #include <list>
 #include <functional>
 
@@ -100,7 +99,6 @@ static void OnPlcaStatus(TC6_t *pInst, bool success, uint32_t addr, uint32_t val
 }
 
 static err_t lwIpInit(struct netif *netif);
-
 static err_t lwIpOut(struct netif *netif, struct pbuf *p);
 
 /**************************************************************************************
@@ -108,7 +106,7 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p);
  **************************************************************************************/
 
 TC6_Arduino_10BASE_T1S_UDP::TC6_Arduino_10BASE_T1S_UDP(std::shared_ptr <TC6_Io_Base> const tc6_io)
-  : _tc6_io{tc6_io}, _idx(-1)
+: _tc6_io{tc6_io}
 {
   _lw.io = tc6_io;
 }
@@ -148,10 +146,17 @@ bool TC6_Arduino_10BASE_T1S_UDP::begin(IPAddress const ip_addr,
   T6_LWIP_INSTANCE_LIST.push_back(&_lw);
 
   /* Initialize TC6 registers. */
-  if (!TC6Regs_Init(_lw.tc.tc6, &_lw, _lw.ip.mac, true /* enable_plca */
-    , t1s_plca_settings.node_id(), t1s_plca_settings.node_count(), t1s_plca_settings.burst_count(),
-                    t1s_plca_settings.burst_timer(), t1s_mac_settings.mac_promiscuous_mode(),
-                    t1s_mac_settings.mac_tx_cut_through(), t1s_mac_settings.mac_rx_cut_through()))
+  if (!TC6Regs_Init(  _lw.tc.tc6
+                    , &_lw
+                    , _lw.ip.mac
+                    , true /* enable_plca */
+                    , t1s_plca_settings.node_id()
+                    , t1s_plca_settings.node_count()
+                    , t1s_plca_settings.burst_count()
+                    , t1s_plca_settings.burst_timer()
+                    , t1s_mac_settings.mac_promiscuous_mode()
+                    , t1s_mac_settings.mac_tx_cut_through()
+                    , t1s_mac_settings.mac_rx_cut_through()))
     return false;
 
   /* Complete initialisation. */

@@ -100,8 +100,6 @@ public:
 
 private:
   std::shared_ptr <TC6_Io_Base> const _tc6_io;
-  int8_t _idx;
-
   TC6LwIP_t _lw;
 };
 
