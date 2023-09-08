@@ -41,7 +41,7 @@ public:
          int const reset_pin,
          int const irq_pin);
 
-  virtual bool init();
+  virtual bool begin();
 
   void onInterrupt();
   bool is_interrupt_active();

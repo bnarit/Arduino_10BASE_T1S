@@ -81,9 +81,9 @@ void setup()
                   FALLING);
 
   /* Initialize IO module. */
-  if (!tc6_io->init())
+  if (!tc6_io->begin())
   {
-    Serial.println("'TC6_Io::init(...)' failed.");
+    Serial.println("'TC6_Io::begin(...)' failed.");
     for (;;) { }
   }
 

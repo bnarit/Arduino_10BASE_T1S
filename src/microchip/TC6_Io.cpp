@@ -55,7 +55,7 @@ TC6_Io::TC6_Io(HardwareSPI & spi, int const cs_pin, int const reset_pin, int con
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-bool TC6_Io::init()
+bool TC6_Io::begin()
 {
   digitalWrite(_cs_pin, HIGH);
   pinMode(_cs_pin, OUTPUT);
