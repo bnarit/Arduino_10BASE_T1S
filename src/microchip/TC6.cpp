@@ -116,6 +116,7 @@ TC6::~TC6()
 bool TC6::begin(IPAddress const ip_addr,
                 IPAddress const network_mask,
                 IPAddress const gateway,
+                MacAddress const mac_addr,
                 T1SPlcaSettings const t1s_plca_settings,
                 T1SMacSettings const t1s_mac_settings)
 {
@@ -126,14 +127,8 @@ bool TC6::begin(IPAddress const ip_addr,
     is_lwip_init = true;
   }
 
-  /* Initialize IO module. */
-  if (!_tc6_io->init())
-    return false;
-
-  /* Obtain MAC address and store it to LWIP. */
-  if (!_tc6_io->get_mac_address(_lw.ip.mac)) {
-    memcpy(_lw.ip.mac, TC6_Io_Base::FALLBACK_MAC, sizeof(_lw.ip.mac));
-  }
+  /* Store MAC address to LWIP. */
+  memcpy(_lw.ip.mac, mac_addr.data(), sizeof(_lw.ip.mac));
 
   /* Initialize the TC6 library and pass a global tag. */
   if (_lw.tc.tc6 = TC6_Init(&_lw);
@@ -220,13 +215,6 @@ bool TC6::sendWouldBlock()
   bool const wouldBlock = (0u == segCount);
 
   return wouldBlock;
-}
-
-MacAddress TC6::getMacAddr()
-{
-  MacAddress mac;
-  memcpy(mac.data(), _lw.ip.mac, sizeof(_lw.ip.mac));
-  return mac;
 }
 
 /**************************************************************************************

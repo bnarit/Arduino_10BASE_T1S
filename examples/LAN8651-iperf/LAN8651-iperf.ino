@@ -67,25 +67,45 @@ void setup()
   while (!Serial) { }
   delay(1000);
 
-
+  /* Initialize digital IO interface for interfacing
+   * with the LAN8651.
+   */
   pinMode(IRQ_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(IRQ_PIN),
                   []() { tc6_io->onInterrupt(); },
                   FALLING);
 
+  /* Initialize IO module. */
+  if (!tc6_io->init())
+  {
+    Serial.println("'TC6_Io_Generic::init(...)' failed.");
+    for (;;) { }
+  }
+
+  /* Obtain MAC address stored on EEPROM of Mikroe
+   * Two-Wire ETH Click board.
+   */
+  MacAddress mac_addr;
+  if (!tc6_io->get_mac_address(mac_addr.data()))
+  {
+    Serial.println("'TC6_Io_Generic::get_mac_address(...)' failed, using fallback MAC address.");
+    memcpy(mac_addr.data(), TC6_Io_Base::FALLBACK_MAC, MAC_ADDRESS_NUM_BYTES);
+  }
+
   if (!tc6_inst->begin(  ip_addr
                        , network_mask
                        , gateway
+                       , mac_addr
                        , t1s_plca_settings
                        , t1s_mac_settings))
   {
     Serial.println("'TC6::begin(...)' failed.");
-    return;
+    for (;;) { }
   }
 
   Serial.print("IP\t");
   Serial.println(ip_addr);
-  Serial.println(tc6_inst->getMacAddr());
+  Serial.println(mac_addr);
   Serial.println(t1s_plca_settings);
   Serial.println(t1s_mac_settings);
 

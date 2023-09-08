@@ -32,8 +32,6 @@
 
 #include "microchip/lib/libtc6/inc/tc6.h"
 
-#include "../MacAddress.h"
-
 #include "TC6_Io_Generic.h"
 
 /**************************************************************************************
@@ -80,6 +78,7 @@ public:
   virtual bool begin(IPAddress const ip_addr,
                      IPAddress const network_mask,
                      IPAddress const gateway,
+                     MacAddress const mac_addr,
                      T1SPlcaSettings const t1s_plca_settings,
                      T1SMacSettings const t1s_mac_settings) override;
 
@@ -89,8 +88,6 @@ public:
   bool getPlcaStatus(TC6LwIP_On_PlcaStatus on_plca_status);
 
   bool sendWouldBlock();
-
-  MacAddress getMacAddr();
 
 
 private:
