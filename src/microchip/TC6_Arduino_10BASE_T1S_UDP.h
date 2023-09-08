@@ -61,7 +61,7 @@ typedef struct
 {
   TC6Lib_t tc;
   LwIp_t ip;
-  std::shared_ptr<TC6_Io> io;
+  std::shared_ptr<TC6::TC6_Io> io;
 } TC6LwIP_t;
 
 /**************************************************************************************

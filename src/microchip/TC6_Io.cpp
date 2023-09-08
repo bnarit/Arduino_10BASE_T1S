@@ -23,30 +23,31 @@
 #include "TC6_Io.h"
 
 /**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+namespace TC6
+{
+
+/**************************************************************************************
  * CONSTANTS
  **************************************************************************************/
 
-static SPISettings const LAN865x_SPI_SETTING{8*1000*1000UL, MSBFIRST, SPI_MODE0};
+static SPISettings const LAN865x_SPI_SETTING{8 * 1000 * 1000UL, MSBFIRST, SPI_MODE0};
 
 /**************************************************************************************
  * STATIC MEMBER DEFINITION
  **************************************************************************************/
 
-size_t  const TC6_Io::MAC_SIZE;
+size_t const TC6_Io::MAC_SIZE;
 uint8_t const TC6_Io::FALLBACK_MAC[TC6_Io::MAC_SIZE];
 
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6_Io::TC6_Io(HardwareSPI & spi, int const cs_pin, int const reset_pin, int const irq_pin)
-: _spi{spi}
-, _cs_pin{cs_pin}
-, _reset_pin{reset_pin}
-, _irq_pin{irq_pin}
-, _int_in{0}
-, _int_out{0}
-, _int_reported{0}
+TC6_Io::TC6_Io(HardwareSPI &spi, int const cs_pin, int const reset_pin, int const irq_pin)
+  : _spi{spi}, _cs_pin{cs_pin}, _reset_pin{reset_pin}, _irq_pin{irq_pin}, _int_in{0}, _int_out{0}, _int_reported{0}
 {
 
 }
@@ -88,7 +89,7 @@ void TC6_Io::release_interrupt()
     _int_out = _int_reported;
 }
 
-bool TC6_Io::spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const len)
+bool TC6_Io::spi_transaction(uint8_t const *pTx, uint8_t *pRx, uint16_t const len)
 {
   digitalWrite(_cs_pin, LOW);
   _spi.beginTransaction(LAN865x_SPI_SETTING);
@@ -101,3 +102,9 @@ bool TC6_Io::spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const 
 
   return true;
 }
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+} /* TC6 */
