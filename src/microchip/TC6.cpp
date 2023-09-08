@@ -92,7 +92,6 @@ static void OnPlcaStatus(TC6_t *pInst, bool success, uint32_t addr, uint32_t val
 
 static err_t lwIpInit(struct netif *netif);
 static err_t lwIpOut(struct netif *netif, struct pbuf *p);
-static void OnRawTx(TC6_t *pInst, const uint8_t *pTx, uint16_t len, void *pTag, void *pGlobalTag);
 
 /**************************************************************************************
  * CTOR/DTOR
@@ -274,29 +273,34 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
         break;
       }
     }
-    success = TC6_SendRawEthernetSegments(lw->tc.tc6, txSeg, seg, p->tot_len, 0, OnRawTx, p);
+    success = TC6_SendRawEthernetSegments(
+        lw->tc.tc6
+      , txSeg
+      , seg
+      , p->tot_len
+      , 0
+      , +[](TC6_t *pInst, const uint8_t *pTx, uint16_t len, void *pTag, void *pGlobalTag) -> void
+        {
+          struct pbuf *p = (struct pbuf *)pTag;
+          (void)pInst;
+          (void)pTx;
+          (void)len;
+          (void)pTag;
+          (void)pGlobalTag;
+//  TC6_ASSERT(GetContextTC6(pInst));
+//  TC6_ASSERT(pTx == p->payload);
+//  TC6_ASSERT(len == p->tot_len);
+//  TC6_ASSERT(len == p->len);
+//  TC6_ASSERT(p->ref);
+          pbuf_free(p);
+        }
+      , p);
 //    TC6_ASSERT(success); /* Must always succeed as TC6_GetRawSegments returned a valid value */
     result = success ? ERR_OK : ERR_IF;
   } else {
     result = ERR_WOULDBLOCK;
   }
   return result;
-}
-
-static void OnRawTx(TC6_t *pInst, const uint8_t *pTx, uint16_t len, void *pTag, void *pGlobalTag)
-{
-  struct pbuf *p = (struct pbuf *)pTag;
-  (void)pInst;
-  (void)pTx;
-  (void)len;
-  (void)pTag;
-  (void)pGlobalTag;
-//  TC6_ASSERT(GetContextTC6(pInst));
-//  TC6_ASSERT(pTx == p->payload);
-//  TC6_ASSERT(len == p->tot_len);
-//  TC6_ASSERT(len == p->len);
-//  TC6_ASSERT(p->ref);
-  pbuf_free(p);
 }
 
 /**************************************************************************************
