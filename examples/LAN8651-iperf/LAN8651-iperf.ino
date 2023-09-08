@@ -51,7 +51,6 @@ static int const IRQ_PIN   =  2;
 
 auto const tc6_io = std::make_shared<TC6_Io_Generic>
   ( SPI
-  , Wire
   , CS_PIN
   , RESET_PIN
   , IRQ_PIN);
@@ -66,6 +65,12 @@ void setup()
   Serial.begin(115200);
   while (!Serial) { }
   delay(1000);
+
+  /* I2C (Wire) is needed to obtain an individual MAC
+   * address from the AT24MAC402 EEPROM located on the
+   * Mikroe Two-Wire ETH click board.
+   */
+  Wire.begin();
 
   /* Initialize digital IO interface for interfacing
    * with the LAN8651.
@@ -86,9 +91,9 @@ void setup()
    * Two-Wire ETH Click board.
    */
   MacAddress mac_addr;
-  if (!tc6_io->get_mac_address(mac_addr.data()))
+  if (!get_mac_address(mac_addr.data()))
   {
-    Serial.println("'TC6_Io_Generic::get_mac_address(...)' failed, using fallback MAC address.");
+    Serial.println("'get_mac_address(...)' failed, using fallback MAC address.");
     memcpy(mac_addr.data(), TC6_Io_Base::FALLBACK_MAC, MAC_ADDRESS_NUM_BYTES);
   }
 
@@ -147,4 +152,31 @@ static void OnPlcaStatus(bool success, bool plcaStatus)
     Serial.println("PLCA Mode active");
   else
     Serial.println("CSMA/CD fallback");
+}
+
+static bool get_mac_address(uint8_t * p_mac)
+{
+  static uint8_t const MAC_EEPROM_I2C_SLAVE_ADDR = 0x58;
+  static uint8_t const MAC_EEPROM_EUI_REG_ADDR = 0x9A;
+  static uint8_t const MAC_EEPROM_MAC_SIZE = 6;
+  bool success = false;
+
+  Wire.beginTransmission(MAC_EEPROM_I2C_SLAVE_ADDR);
+  Wire.write(MAC_EEPROM_EUI_REG_ADDR);
+  Wire.endTransmission();
+
+  Wire.requestFrom(MAC_EEPROM_I2C_SLAVE_ADDR, MAC_EEPROM_MAC_SIZE);
+
+  uint32_t const start = millis();
+
+  size_t bytes_read = 0;
+  while (bytes_read < MAC_EEPROM_MAC_SIZE && ((millis() - start) < 1000)) {
+    if (Wire.available()) {
+      p_mac[bytes_read] = Wire.read();
+      bytes_read++;
+    }
+  }
+
+  success = (bytes_read == MAC_EEPROM_MAC_SIZE);
+  return success;
 }

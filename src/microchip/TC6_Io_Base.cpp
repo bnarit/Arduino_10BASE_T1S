@@ -30,12 +30,3 @@
 
 size_t  const TC6_Io_Base::MAC_SIZE;
 uint8_t const TC6_Io_Base::FALLBACK_MAC[TC6_Io_Base::MAC_SIZE];
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-bool TC6_Io_Base::get_mac_address(uint8_t * p_mac)
-{
-  memcpy(p_mac, FALLBACK_MAC, MAC_SIZE);
-}

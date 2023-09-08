@@ -25,7 +25,6 @@
 #include "TC6_Io_Base.h"
 
 #include <api/HardwareSPI.h>
-#include <api/HardwareI2C.h>
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -35,7 +34,6 @@ class TC6_Io_Generic : public TC6_Io_Base
 {
 public:
   TC6_Io_Generic(HardwareSPI & spi,
-                 HardwareI2C & wire,
                  int const cs_pin,
                  int const reset_pin,
                  int const irq_pin);
@@ -47,14 +45,12 @@ public:
   virtual void release_interrupt() override;
 
   virtual bool spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_t const len) override;
-  virtual bool get_mac_address(uint8_t * p_mac) override;
 
   virtual void onInterrupt() override;
 
 
 private:
   HardwareSPI & _spi;
-  HardwareI2C & _wire;
   int const _cs_pin;
   int const _reset_pin;
   int const _irq_pin;

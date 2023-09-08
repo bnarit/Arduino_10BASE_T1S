@@ -32,9 +32,8 @@ static SPISettings const LAN865x_SPI_SETTING{8*1000*1000UL, MSBFIRST, SPI_MODE0}
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6_Io_Generic::TC6_Io_Generic(HardwareSPI & spi, HardwareI2C & wire, int const cs_pin, int const reset_pin, int const irq_pin)
+TC6_Io_Generic::TC6_Io_Generic(HardwareSPI & spi, int const cs_pin, int const reset_pin, int const irq_pin)
 : _spi{spi}
-, _wire{wire}
 , _cs_pin{cs_pin}
 , _reset_pin{reset_pin}
 , _irq_pin{irq_pin}
@@ -61,7 +60,6 @@ bool TC6_Io_Generic::init()
   delay(100);
 
   _spi.begin();
-  _wire.begin();
 
   return true;
 }
@@ -90,32 +88,6 @@ bool TC6_Io_Generic::spi_transaction(uint8_t const * pTx, uint8_t * pRx, uint16_
   digitalWrite(_cs_pin, HIGH);
 
   return true;
-}
-
-bool TC6_Io_Generic::get_mac_address(uint8_t * p_mac)
-{
-  uint8_t MAC_EEPROM_I2C_SLAVE_ADDR = 0x58;
-  uint8_t MAC_EEPROM_EUI_REG_ADDR = 0x9A;
-  bool success = false;
-
-  _wire.beginTransmission(MAC_EEPROM_I2C_SLAVE_ADDR);
-  _wire.write(MAC_EEPROM_EUI_REG_ADDR);
-  _wire.endTransmission();
-
-  _wire.requestFrom(MAC_EEPROM_I2C_SLAVE_ADDR, MAC_SIZE);
-
-  uint32_t const start = millis();
-
-  size_t bytes_read = 0;
-  while (bytes_read < MAC_SIZE && ((millis() - start) < 1000)) {
-    if (_wire.available()) {
-      p_mac[bytes_read] = _wire.read();
-      bytes_read++;
-    }
-  }
-
-  success = (bytes_read == MAC_SIZE);
-  return success;
 }
 
 void TC6_Io_Generic::onInterrupt()
