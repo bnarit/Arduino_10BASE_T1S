@@ -41,6 +41,11 @@ static T1SMacSettings const t1s_mac_settings{MAC_PROMISCUOUS_MODE, MAC_TX_CUT_TH
 static int const CS_PIN    = 10;
 static int const RESET_PIN =  9;
 static int const IRQ_PIN   =  2;
+#elif defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_MINIMA) || defined(ARDUINO_UNOWIFIR4)
+/* Those are all boards with the Arduino Uno form factor for the T1S shield. */
+static int const CS_PIN    =  9;
+static int const RESET_PIN =  4;
+static int const IRQ_PIN   =  2;
 #else
 # error "No pins defined for your board"
 #endif
