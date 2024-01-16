@@ -2,7 +2,7 @@
 ====================
 [![Compile Examples](https://github.com/bcmi-labs/Arduino_10BASE_T1S/workflows/Compile%20Examples/badge.svg)](https://github.com/bcmi-labs/Arduino_10BASE_T1S/actions?workflow=Compile+Examples)
 
-**Note**: This library works for Arduino [Nano 33 IoT](https://store.arduino.cc/products/arduino-nano-33-iot).
+**Note**: This library works for Arduino [Nano 33 IoT](https://store.arduino.cc/products/arduino-nano-33-iot), Arduino [Zero](https://store.arduino.cc/products/arduino-zero), Arduino [R4 WiFi](https://store.arduino.cc/products/uno-r4-wifi) and Arduino [R4 Minima](https://store.arduino.cc/products/uno-r4-minima).
 
 ### How-to-compile/upload
 ```bash
