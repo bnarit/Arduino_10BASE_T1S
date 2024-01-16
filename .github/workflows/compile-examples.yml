@@ -39,6 +39,9 @@ jobs:
           - fqbn: arduino:renesas_uno:minima
             platforms: |
               - name: arduino:renesas_uno
+          - fqbn: arduino:renesas_uno:unor4wifi
+            platforms: |
+              - name: arduino:renesas_uno
 
     steps:
       - name: Checkout
