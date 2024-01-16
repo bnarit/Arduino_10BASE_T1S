@@ -1,5 +1,7 @@
 `Arduino_10BASE_T1S`
 ====================
+[![Compile Examples](https://github.com/bcmi-labs/Arduino_10BASE_T1S/workflows/Compile%20Examples/badge.svg)](https://github.com/bcmi-labs/Arduino_10BASE_T1S/actions?workflow=Compile+Examples)
+
 **Note**: This library works for Arduino [Nano 33 IoT](https://store.arduino.cc/products/arduino-nano-33-iot).
 
 ### How-to-compile/upload
