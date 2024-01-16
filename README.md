@@ -4,10 +4,10 @@
 
 ### How-to-compile/upload
 ```bash
-arduino-cli compile -b arduino:samd:nano_33_iot -v examples/LAN8651
-arduino-cli upload -b arduino:samd:nano_33_iot -v examples/LAN8651 -p /dev/ttyACM0
+arduino-cli compile -b arduino:samd:nano_33_iot -v examples/LAN8651-iperf
+arduino-cli upload -b arduino:samd:nano_33_iot -v examples/LAN8651-iperf -p /dev/ttyACM0
 # or
-arduino-cli compile -b arduino:samd:nano_33_iot -v examples/LAN8651 -u -p /dev/ttyACM0
+arduino-cli compile -b arduino:samd:nano_33_iot -v examples/LAN8651-iperf -u -p /dev/ttyACM0
 ```
 
 ### How-to-[`EVB-LAN8670-USB`](https://www.microchip.com/en-us/development-tool/EV08L38A)
