@@ -159,7 +159,7 @@ bool TC6_Arduino_10BASE_T1S_UDP::begin(IPAddress const ip_addr,
                     , t1s_mac_settings.mac_rx_cut_through()))
     return false;
 
-  /* Complete initialisation. */
+  /* Complete initialization. */
   while (!TC6Regs_GetInitDone(_lw.tc.tc6))
     TC6_Service(_lw.tc.tc6, true);
 

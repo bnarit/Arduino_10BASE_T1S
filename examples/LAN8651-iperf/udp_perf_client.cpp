@@ -280,7 +280,7 @@ void iperf_init(std::shared_ptr<TC6::TC6_Arduino_10BASE_T1S_UDP> const tc6_inst)
     memset(&server, 0, sizeof(server));
 
     if (!ipaddr_aton(UDP_SERVER_IP_ADDRESS, &remoteIP)) {
-        printf("UDP client: Remote IP wrong formated\r\n");
+        printf("UDP client: Remote IP wrong formatted\r\n");
     }
 
     for (i = 0; i < NUM_OF_PARALLEL_CLIENTS; i++) {
