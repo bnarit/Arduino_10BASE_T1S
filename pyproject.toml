@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "arduino-10base-t1s"
+version = "0.1.0"
+description = ""
+authors = ["Alexander Entinger <consulting@lxrobotics.com>"]
+license = "LGPL"
+readme = "README.md"
+packages = [{include = "arduino_10base_t1s"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.group.dev.dependencies]
+codespell = "^2.2.5"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
