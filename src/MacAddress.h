@@ -22,9 +22,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <cstdint>
-
-#include <array>
+#include <stdint.h>
 
 #include <Print.h>
 #include <Printable.h>
@@ -39,9 +37,17 @@ static size_t constexpr MAC_ADDRESS_NUM_BYTES = 6;
  * CLASS DECLARATION
  **************************************************************************************/
 
-class MacAddress : public arduino::Printable
-                 , public std::array<uint8_t, MAC_ADDRESS_NUM_BYTES>
+class MacAddress
+#if defined(ARDUINO_ARCH_AVR)
+  : public Printable
+#else
+  : public arduino::Printable
+#endif
 {
+public:
+  uint8_t * data() { return _data; }
+  uint8_t const * data() const { return _data; }
 private:
+  uint8_t _data[MAC_ADDRESS_NUM_BYTES];
   virtual size_t printTo(Print & p) const override;
 };

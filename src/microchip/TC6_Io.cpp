@@ -46,7 +46,15 @@ uint8_t const TC6_Io::FALLBACK_MAC[TC6_Io::MAC_SIZE];
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6_Io::TC6_Io(HardwareSPI &spi, int const cs_pin, int const reset_pin, int const irq_pin)
+TC6_Io::TC6_Io(
+#if defined(ARDUINO_ARCH_AVR)
+  SPIClass & spi,
+#else
+  HardwareSPI &spi,
+#endif
+  int const cs_pin,
+  int const reset_pin,
+  int const irq_pin)
   : _spi{spi}, _cs_pin{cs_pin}, _reset_pin{reset_pin}, _irq_pin{irq_pin}, _int_in{0}, _int_out{0}, _int_reported{0}
 {
 

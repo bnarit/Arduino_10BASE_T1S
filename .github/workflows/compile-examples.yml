@@ -27,6 +27,9 @@ jobs:
 
       matrix:
         board:
+          - fqbn: arduino:avr:uno
+            platforms: |
+              - name: arduino:avr
           - fqbn: arduino:samd:nano_33_iot
             platforms: |
               - name: arduino:samd

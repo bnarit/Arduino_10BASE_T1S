@@ -22,9 +22,6 @@
 
 #include "TC6_Arduino_10BASE_T1S_UDP.h"
 
-#include <list>
-#include <functional>
-
 #include "lib/libtc6/inc/tc6-regs.h"
 
 #include "lib/liblwip/include/lwip/init.h"
@@ -49,34 +46,43 @@ namespace TC6
  * GLOBAL CONSTANTS
  **************************************************************************************/
 
-static std::list<TC6LwIP_t *> T6_LWIP_INSTANCE_LIST;
+struct TC6ListNode {
+  TC6LwIP_t * inst;
+  struct TC6ListNode * next;
+};
+
+static TC6ListNode * tc6_lwip_instance_list_head = nullptr;
 
 /**************************************************************************************
  * MODULE INTERNAL FUNCTION DECLARATION
  **************************************************************************************/
 
-static TC6LwIP_t *GetContextNetif(struct netif *intf)
+static TC6LwIP_t * GetContextNetif(struct netif *intf)
 {
-  for (auto const elem: T6_LWIP_INSTANCE_LIST)
+  for (TC6ListNode * ptr = tc6_lwip_instance_list_head;
+       ptr != nullptr;
+       ptr = ptr->next)
   {
     /* Compare memory address to retrieve the right
      * data structure.
      */
-    if (&elem->ip.netint == intf)
-      return elem;
+    if (&ptr->inst->ip.netint == intf)
+      return ptr->inst;
   }
   return nullptr;
 }
 
 static TC6LwIP_t *GetContextTC6(TC6_t *pTC6)
 {
-  for (auto const elem: T6_LWIP_INSTANCE_LIST)
+  for (TC6ListNode * ptr = tc6_lwip_instance_list_head;
+       ptr != nullptr;
+       ptr = ptr->next)
   {
     /* Compare memory address to retrieve the right
      * data structure.
      */
-    if (elem->tc.tc6 == pTC6)
-      return elem;
+    if (ptr->inst->tc.tc6 == pTC6)
+      return ptr->inst;
   }
   return nullptr;
 }
@@ -101,11 +107,26 @@ static void OnPlcaStatus(TC6_t *pInst, bool success, uint32_t addr, uint32_t val
 static err_t lwIpInit(struct netif *netif);
 static err_t lwIpOut(struct netif *netif, struct pbuf *p);
 
+static String IPtoString(IPAddress const & ip_addr)
+{
+#if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_MEGAAVR)
+  char msg_buf[16];
+  snprintf(msg_buf,
+           sizeof(msg_buf),
+           "%u.%u.%u.%u",
+           ip_addr[0], ip_addr[1], ip_addr[2], ip_addr[3]);
+  return String(msg_buf);
+#else
+  return ip_addr.toString();
+#endif
+}
+
+
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6_Arduino_10BASE_T1S_UDP::TC6_Arduino_10BASE_T1S_UDP(std::shared_ptr<TC6_Io> const tc6_io)
+TC6_Arduino_10BASE_T1S_UDP::TC6_Arduino_10BASE_T1S_UDP(TC6_Io * tc6_io)
 : _tc6_io{tc6_io}
 {
   _lw.io = tc6_io;
@@ -143,7 +164,11 @@ bool TC6_Arduino_10BASE_T1S_UDP::begin(IPAddress const ip_addr,
     _lw.tc.tc6 == NULL)
     return false;
 
-  T6_LWIP_INSTANCE_LIST.push_back(&_lw);
+  TC6ListNode * ptr = tc6_lwip_instance_list_head;
+  while (ptr != nullptr) ptr = ptr->next;
+  ptr = new TC6ListNode;
+  ptr->inst = &_lw;
+  ptr->next = NULL;
 
   /* Initialize TC6 registers. */
   if (!TC6Regs_Init(  _lw.tc.tc6
@@ -164,9 +189,9 @@ bool TC6_Arduino_10BASE_T1S_UDP::begin(IPAddress const ip_addr,
     TC6_Service(_lw.tc.tc6, true);
 
   /* Assign IP address, network mask and gateway. */
-  auto const ip_addr_str = ip_addr.toString();
-  auto const network_mask_str = network_mask.toString();
-  auto const gateway_str = gateway.toString();
+  auto const ip_addr_str = IPtoString(ip_addr);
+  auto const network_mask_str = IPtoString(network_mask);
+  auto const gateway_str = IPtoString(gateway);
 
   ip4_addr_t lwip_ip_addr;
   ip4_addr_t lwip_network_mask;

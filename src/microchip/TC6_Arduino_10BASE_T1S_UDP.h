@@ -24,9 +24,7 @@
 
 #include "../Arduino_10BASE_T1S_UDP.h"
 
-#include <cstdint>
-
-#include <memory>
+#include <stdint.h>
 
 #include "lib/liblwip/include/lwip/netif.h"
 
@@ -61,7 +59,7 @@ typedef struct
 {
   TC6Lib_t tc;
   LwIp_t ip;
-  std::shared_ptr<TC6::TC6_Io> io;
+  TC6::TC6_Io * io;
 } TC6LwIP_t;
 
 /**************************************************************************************
@@ -78,7 +76,7 @@ namespace TC6
 class TC6_Arduino_10BASE_T1S_UDP : public Arduino_10BASE_T1S_UDP
 {
 public:
-  TC6_Arduino_10BASE_T1S_UDP(std::shared_ptr<TC6_Io> const tc6_io);
+  TC6_Arduino_10BASE_T1S_UDP(TC6_Io * tc6_io);
 
   virtual ~TC6_Arduino_10BASE_T1S_UDP();
 
@@ -99,7 +97,7 @@ public:
 
 
 private:
-  std::shared_ptr<TC6_Io> const _tc6_io;
+  TC6_Io * _tc6_io;
   TC6LwIP_t _lw;
 };
 

@@ -22,9 +22,13 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <api/Udp.h>
-
-#include <api/IPAddress.h>
+#if defined(ARDUINO_ARCH_AVR)
+# include "Udp.h"
+# include "IPAddress.h"
+#else
+# include <api/Udp.h>
+# include <api/IPAddress.h>
+#endif
 
 #include "MacAddress.h"
 #include "T1SMacSettings.h"

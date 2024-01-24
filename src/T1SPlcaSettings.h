@@ -22,7 +22,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include <cstdint>
+#include <stdint.h>
 
 #include <Print.h>
 #include <Printable.h>
@@ -31,7 +31,12 @@
  * CLASS DECLARATION
  **************************************************************************************/
 
-class T1SPlcaSettings : public arduino::Printable
+class T1SPlcaSettings
+#if defined(ARDUINO_ARCH_AVR)
+  : public Printable
+#else
+  : public arduino::Printable
+#endif
 {
 private:
   uint8_t const _node_id;
