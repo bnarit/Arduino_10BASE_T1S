@@ -213,6 +213,11 @@ bool TC6_Arduino_10BASE_T1S_UDP::begin(IPAddress const ip_addr,
   return true;
 }
 
+void TC6_Arduino_10BASE_T1S_UDP::digitalWrite(bool dioa0, bool dioa1, bool dioa2)
+{
+  TC6Regs_SetDio(_lw.tc.tc6, dioa0, dioa1, dioa2);
+}
+
 void TC6_Arduino_10BASE_T1S_UDP::service()
 {
   sys_check_timeouts(); /* LWIP timers - ARP, DHCP, TCP, etc. */

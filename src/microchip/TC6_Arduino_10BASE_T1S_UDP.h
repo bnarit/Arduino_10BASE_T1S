@@ -91,6 +91,8 @@ public:
 
   virtual void service() override;
 
+  void digitalWrite(bool dioa0, bool dioa1, bool dioa2);
+
   bool getPlcaStatus(TC6LwIP_On_PlcaStatus on_plca_status);
 
   bool sendWouldBlock();

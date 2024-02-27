@@ -120,6 +120,14 @@ void TC6Regs_Reinit(TC6_t *pInst);
  */
 bool TC6Regs_SetPlca(TC6_t *pTC6, bool plcaEnable, uint8_t nodeId, uint8_t nodeCount);
 
+/** \brief Sets DIOAx GPIOs to the desired status.
+ *  \param idx - The instance number as returned from the TC6LwIP_Init() function.
+ *  \param dioax - true, if the pin should be SET; false is the pin should be reset.
+ *  \return true, if request could be enqueued, the PLCA parameters will be changed soon. false, request failed, no change.
+ */
+bool TC6Regs_SetDio(TC6_t *pTC6, bool dioa0, bool dioa1, bool dioa2);
+
+
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                   Implementation of TC6 Callback                     */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/

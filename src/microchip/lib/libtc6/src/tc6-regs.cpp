@@ -235,6 +235,46 @@ bool TC6Regs_SetPlca(TC6_t *pTC6, bool plcaEnable, uint8_t nodeId, uint8_t nodeC
     return true;
 }
 
+#include "Arduino.h"
+
+bool TC6Regs_SetDio(TC6_t *pTC6, bool dioa0, bool dioa1, bool dioa2)
+{
+    static bool _dioa0 = false;
+    static bool _dioa1= false;
+    static bool _dioa2 = false;
+
+    TC6Reg_t *pReg = GetContext(pTC6);
+    // EG0CTL 0x0226
+    // EG1CTL 0x022C
+    // EG2CTL 0x0232
+    // PADCTRL 0x0088
+    uint32_t regVal = (1 << 0) | (1 << 2) | (1 << 4); // set all pins as output
+    while (pReg->initDone && !TC6_WriteRegister(pReg->pTC6, 0x000A0088, regVal, CONTROL_PROTECTION, NULL, NULL)) {
+        TC6_Service(pReg->pTC6, true);
+    }
+
+    regVal = 1; // means toggle
+    if (dioa0 != _dioa0) {
+        while (pReg->initDone && !TC6_WriteRegister(pReg->pTC6, 0x000A0226, regVal, CONTROL_PROTECTION, NULL, NULL)) {
+            TC6_Service(pReg->pTC6, true);
+        }
+        _dioa0 = dioa0;
+    }
+    if (dioa1 != _dioa1) {
+        while (pReg->initDone && !TC6_WriteRegister(pReg->pTC6, 0x000A022C, regVal, CONTROL_PROTECTION, NULL, NULL)) {
+            TC6_Service(pReg->pTC6, true);
+        }
+        _dioa1 = dioa1;
+    }
+    if (dioa2 != _dioa2) {
+        while (pReg->initDone && !TC6_WriteRegister(pReg->pTC6, 0x000A0232, regVal, CONTROL_PROTECTION, NULL, NULL)) {
+            TC6_Service(pReg->pTC6, true);
+        }
+        _dioa2 = dioa2;
+    }
+    return true;
+}
+
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                  CALLBACK FUNCTIONS FROM TC6 STACK                   */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
