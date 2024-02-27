@@ -47,8 +47,8 @@ namespace TC6
  **************************************************************************************/
 
 struct TC6ListNode {
-  TC6LwIP_t * inst;
-  struct TC6ListNode * next;
+  TC6LwIP_t * inst = nullptr;
+  struct TC6ListNode * next = nullptr;
 };
 
 static TC6ListNode * tc6_lwip_instance_list_head = nullptr;
@@ -169,6 +169,9 @@ bool TC6_Arduino_10BASE_T1S_UDP::begin(IPAddress const ip_addr,
   ptr = new TC6ListNode;
   ptr->inst = &_lw;
   ptr->next = NULL;
+  if (tc6_lwip_instance_list_head == nullptr) {
+    tc6_lwip_instance_list_head = ptr;
+  }
 
   /* Initialize TC6 registers. */
   if (!TC6Regs_Init(  _lw.tc.tc6
@@ -355,6 +358,9 @@ uint32_t TC6Regs_CB_GetTicksMs(void)
 bool TC6_CB_OnSpiTransaction(TC6_t *pInst, uint8_t *pTx, uint8_t *pRx, uint16_t len, void *pGlobalTag)
 {
   TC6LwIP_t *lw = TC6::GetContextTC6(pInst);
+  if (lw == nullptr) {
+    return false;
+  }
   bool const success = lw->io->spi_transaction(pTx, pRx, len);
   TC6_SpiBufferDone(pInst /* tc6instance */, success /* success */);
   return success;
