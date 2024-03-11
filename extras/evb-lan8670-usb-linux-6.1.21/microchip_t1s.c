@@ -3,7 +3,7 @@
  * Driver for Microchip 10BASE-T1S PHYs
  *
  * Support: Microchip Phys:
- *  lan8670/1/2 Rev.B1, Rev.C0, Rev.C1
+ *  lan8670/1/2 Rev.B1, Rev.C0, Rev.C1, Rev.C2
  *  lan8650/1 Rev.B0 Internal PHYs
  */
 
@@ -14,6 +14,7 @@
 #define PHY_ID_LAN867X_REVB1 0x0007C162
 #define PHY_ID_LAN867X_REVC0 0x0007C163
 #define PHY_ID_LAN867X_REVC1 0x0007C164
+#define PHY_ID_LAN867X_REVC2 0x0007C165
 #define PHY_ID_LAN865X_REVB0 0x0007C1B3
 
 #define LAN867X_REG_STS2 0x0019
@@ -34,7 +35,8 @@
 #define LAN865X_CFGPARAM_READ_ENABLE BIT(1)
 
 #define LAN86XX_DISABLE_COL_DET 0x0000
-#define LAN86XX_ENABLE_COL_DET 0x0083
+#define LAN86XX_ENABLE_COL_DET 0x8000
+#define LAN86XX_COL_DET_MASK 0x8000
 #define LAN86XX_REG_COL_DET_CTRL0 0x0087
 
 /* PLCA enable - Could be configured by parameter */
@@ -162,14 +164,16 @@ static int lan86xx_configure_plca(struct phy_device *phydev)
 			return ret;
 	}
 	if (plca_enable) {
-		ret = phy_write_mmd(phydev, MDIO_MMD_VEND2, LAN86XX_REG_COL_DET_CTRL0, LAN86XX_DISABLE_COL_DET);
-		if (ret < 0)
+		ret = phy_modify_mmd(phydev, MDIO_MMD_VEND2, LAN86XX_REG_COL_DET_CTRL0,
+				     LAN86XX_COL_DET_MASK, LAN86XX_DISABLE_COL_DET);
+		if (ret)
 			return ret;
 		phydev_info(phydev, "PLCA mode enabled. Node Id: %d, Node Count: %d, Max BC: %d, Burst Timer: %d, TO Timer: %d\n",
 			    plca_node_id, plca_node_count, max_bc, burst_timer, to_timer);
 	} else {
-		ret = phy_write_mmd(phydev, MDIO_MMD_VEND2, LAN86XX_REG_COL_DET_CTRL0, LAN86XX_ENABLE_COL_DET);
-		if (ret < 0)
+		ret = phy_modify_mmd(phydev, MDIO_MMD_VEND2, LAN86XX_REG_COL_DET_CTRL0,
+				     LAN86XX_COL_DET_MASK, LAN86XX_ENABLE_COL_DET);
+		if (ret)
 			return ret;
 		phydev_info(phydev, "CSMA/CD mode enabled\n");
 	}
@@ -522,6 +526,12 @@ static struct phy_driver microchip_t1s_driver[] = {
 		.read_status        = lan86xx_read_status,
 	},
 	{
+		PHY_ID_MATCH_EXACT(PHY_ID_LAN867X_REVC2),
+		.name               = "LAN867X Rev.C2",
+		.config_init        = lan867x_revc_config_init,
+		.read_status        = lan86xx_read_status,
+	},
+	{
 		PHY_ID_MATCH_EXACT(PHY_ID_LAN865X_REVB0),
 		.name               = "LAN865X Rev.B0 Internal Phy",
 		.config_init        = lan865x_revb0_config_init,
@@ -535,6 +545,7 @@ static struct mdio_device_id __maybe_unused tbl[] = {
 	{ PHY_ID_MATCH_EXACT(PHY_ID_LAN867X_REVB1) },
 	{ PHY_ID_MATCH_EXACT(PHY_ID_LAN867X_REVC0) },
 	{ PHY_ID_MATCH_EXACT(PHY_ID_LAN867X_REVC1) },
+	{ PHY_ID_MATCH_EXACT(PHY_ID_LAN867X_REVC2) },
 	{ PHY_ID_MATCH_EXACT(PHY_ID_LAN865X_REVB0) },
 	{ }
 };
