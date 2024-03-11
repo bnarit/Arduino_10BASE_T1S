@@ -235,8 +235,6 @@ bool TC6Regs_SetPlca(TC6_t *pTC6, bool plcaEnable, uint8_t nodeId, uint8_t nodeC
     return true;
 }
 
-#include "Arduino.h"
-
 bool TC6Regs_SetDio(TC6_t *pTC6, bool dioa0, bool dioa1, bool dioa2)
 {
     static bool _dioa0 = false;
