@@ -33,7 +33,7 @@ jobs:
           - fqbn: arduino:samd:arduino_zero_native
             platforms: |
               - name: arduino:samd
-          - fqbn: arduino:arduino:samd:arduino_zero_edbg
+          - fqbn: arduino:samd:arduino_zero_edbg
             platforms: |
               - name: arduino:samd
           - fqbn: arduino:renesas_uno:minima
