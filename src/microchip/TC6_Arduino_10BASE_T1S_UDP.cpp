@@ -210,6 +210,9 @@ bool TC6_Arduino_10BASE_T1S_UDP::begin(IPAddress const ip_addr,
 
   netif_set_link_up(&_lw.ip.netint);
 
+  /* Copy the settings for internal usage. */
+  _t1s_plca_settings = t1s_plca_settings;
+
   return true;
 }
 
@@ -241,6 +244,11 @@ bool TC6_Arduino_10BASE_T1S_UDP::getPlcaStatus(TC6LwIP_On_PlcaStatus on_plca_sta
 {
   _lw.tc.pStatusCallback = on_plca_status;
   return TC6_ReadRegister(_lw.tc.tc6, 0x0004CA03, true, OnPlcaStatus, &_lw); /* PLCA_status_register.plca_status */
+}
+
+bool TC6_Arduino_10BASE_T1S_UDP::enablePlca()
+{
+  return TC6Regs_SetPlca(_lw.tc.tc6, true, _t1s_plca_settings.node_id(), _t1s_plca_settings.node_count());
 }
 
 bool TC6_Arduino_10BASE_T1S_UDP::sendWouldBlock()
@@ -655,8 +663,11 @@ void TC6Regs_CB_OnEvent(TC6_t *pInst, TC6Regs_Event_t event, void *pTag)
     case TC6Regs_Event_GINT_Mask:
       PRINT(ESC_YELLOW "GINT_Mask" ESC_RESETCOLOR "\r\n");
       break;
-    case TC6Regs_Event_PHY_Not_Trimmed:
+    case TC6Regs_Event_Chip_Error:
       PRINT(ESC_RED "PHY is not trimmed" ESC_RESETCOLOR "\r\n");
+      break;
+    case TC6Regs_Event_Unsupported_Hardware:
+      PRINT(ESC_RED "Unsupported hardware" ESC_RESETCOLOR "\r\n");
       break;
   }
   if (reinit)

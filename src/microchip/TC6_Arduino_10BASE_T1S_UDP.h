@@ -94,6 +94,7 @@ public:
   void digitalWrite(bool dioa0, bool dioa1, bool dioa2);
 
   bool getPlcaStatus(TC6LwIP_On_PlcaStatus on_plca_status);
+  bool enablePlca();
 
   bool sendWouldBlock();
 
@@ -101,6 +102,7 @@ public:
 private:
   TC6_Io * _tc6_io;
   TC6LwIP_t _lw;
+  T1SPlcaSettings _t1s_plca_settings;
 };
 
 /**************************************************************************************

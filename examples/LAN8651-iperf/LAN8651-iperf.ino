@@ -147,7 +147,8 @@ void loop()
   if ((now - prev_beacon_check) > 1000)
   {
     prev_beacon_check = now;
-    tc6_inst->getPlcaStatus(OnPlcaStatus);
+    if (!tc6_inst->getPlcaStatus(OnPlcaStatus))
+      Serial.println("getPlcaStatus(...) failed");
   }
 }
 
@@ -162,8 +163,10 @@ static void OnPlcaStatus(bool success, bool plcaStatus)
 
   if (plcaStatus)
     Serial.println("PLCA Mode active");
-  else
+  else {
     Serial.println("CSMA/CD fallback");
+    tc6_inst->enablePlca();
+  }
 }
 
 static bool get_mac_address(uint8_t * p_mac)
