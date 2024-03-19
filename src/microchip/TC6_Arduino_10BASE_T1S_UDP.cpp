@@ -106,6 +106,7 @@ static void OnPlcaStatus(TC6_t *pInst, bool success, uint32_t addr, uint32_t val
 
 static err_t lwIpInit(struct netif *netif);
 static err_t lwIpOut(struct netif *netif, struct pbuf *p);
+static void lwIp_udp_raw_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, uint16_t port);
 
 static String IPtoString(IPAddress const & ip_addr)
 {
@@ -128,6 +129,11 @@ static String IPtoString(IPAddress const & ip_addr)
 
 TC6_Arduino_10BASE_T1S_UDP::TC6_Arduino_10BASE_T1S_UDP(TC6_Io * tc6_io)
 : _tc6_io{tc6_io}
+, _udp_pcb{nullptr}
+, _remote_ip{0,0,0,0}
+, _remote_port{0}
+, _udp_rx_data{nullptr}
+, _udp_rx_data_len{0}
 {
   _lw.io = tc6_io;
 }
@@ -266,8 +272,19 @@ bool TC6_Arduino_10BASE_T1S_UDP::sendWouldBlock()
 
 uint8_t TC6_Arduino_10BASE_T1S_UDP::begin(uint16_t port)
 {
-  /* TODO */
-  return 0;
+  /* Create a UDP PCB (if none exists yet). */
+  if (!_udp_pcb)
+    _udp_pcb = udp_new();
+
+  /* Bind specified port to all local interfaces. */
+  err_t err = udp_bind(_udp_pcb, IP_ADDR_ANY, port);
+  if (err != ERR_OK)
+    return 0;
+
+  /* Set a reception callback to be called upon the arrival of a UDP package. */
+  udp_recv(_udp_pcb , lwIp_udp_raw_recv, this);
+
+  return 1;
 }
 
 void TC6_Arduino_10BASE_T1S_UDP::stop()
@@ -308,13 +325,13 @@ size_t TC6_Arduino_10BASE_T1S_UDP::write(const uint8_t * buffer, size_t size)
 int TC6_Arduino_10BASE_T1S_UDP::parsePacket()
 {
   /* TODO */
-  return 0;
+  return _udp_rx_data_len;
 }
 
 int TC6_Arduino_10BASE_T1S_UDP::available()
 {
   /* TODO */
-  return 0;
+  return _udp_rx_data_len;
 }
 
 int TC6_Arduino_10BASE_T1S_UDP::read()
@@ -348,14 +365,35 @@ void TC6_Arduino_10BASE_T1S_UDP::flush()
 
 IPAddress TC6_Arduino_10BASE_T1S_UDP::remoteIP()
 {
-  /* TODO */
-  return IPAddress();
+  return _remote_ip;
 }
 
 uint16_t TC6_Arduino_10BASE_T1S_UDP::remotePort()
 {
-  /* TODO */
-  return 0;
+  return _remote_port;
+}
+
+void TC6_Arduino_10BASE_T1S_UDP::onUdpRawRecv(struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, uint16_t port)
+{
+  /* Obtain remote port and remote IP. */
+  _remote_ip = IPAddress(ip4_addr1(addr),
+                         ip4_addr2(addr),
+                         ip4_addr3(addr),
+                         ip4_addr4(addr));
+  _remote_port = port;
+
+  /* TODO: very pre-eliminary. Need to buffer received data somewhere. */
+  if (_udp_rx_data)
+    delete[] _udp_rx_data;
+
+  /* Create data buffer for received message. */
+  _udp_rx_data = new uint8_t[p->len]; // Note: There's also "tot_len" - how does that fit in here?
+  /* Copy data into buffer. */
+  memcpy(_udp_rx_data, p->payload, p->len);
+  /* Update the length field. */
+  _udp_rx_data_len = 0;
+  /* Free pbuf */
+  pbuf_free(p);
 }
 
 /**************************************************************************************
@@ -426,6 +464,12 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
     result = ERR_WOULDBLOCK;
   }
   return result;
+}
+
+void lwIp_udp_raw_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, uint16_t port)
+{
+  TC6_Arduino_10BASE_T1S_UDP * this_ptr = (TC6_Arduino_10BASE_T1S_UDP * )arg;
+  this_ptr->onUdpRawRecv(pcb, p, addr, port);
 }
 
 /**************************************************************************************

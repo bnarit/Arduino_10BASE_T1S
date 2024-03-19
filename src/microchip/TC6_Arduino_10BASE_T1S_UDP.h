@@ -26,7 +26,9 @@
 
 #include <stdint.h>
 
+#include "lib/liblwip/include/lwip/udp.h"
 #include "lib/liblwip/include/lwip/netif.h"
+#include "lib/liblwip/include/lwip/ip_addr.h"
 
 #include "microchip/lib/libtc6/inc/tc6.h"
 
@@ -120,10 +122,23 @@ public:
   virtual uint16_t remotePort() override;
 
 
+  /* This function MUST not be called from the user of this library,
+   * it's used for internal purposes only.
+   */
+  void onUdpRawRecv(struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, uint16_t port);
+
+
 private:
   TC6_Io * _tc6_io;
   TC6LwIP_t _lw;
   T1SPlcaSettings _t1s_plca_settings;
+
+  struct udp_pcb * _udp_pcb;
+  IPAddress _remote_ip;
+  uint16_t _remote_port;
+
+  uint8_t * _udp_rx_data;
+  size_t _udp_rx_data_len;
 };
 
 /**************************************************************************************
