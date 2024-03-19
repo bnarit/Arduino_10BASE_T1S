@@ -31,3 +31,20 @@
 #include "lib/liblwip/include/lwip/mem.h"
 #include "lib/liblwip/include/lwip/memp.h"
 #include "lib/liblwip/include/lwip/udp.h"
+
+/**************************************************************************************
+ * CONSTANTS
+ **************************************************************************************/
+
+#if defined(ARDUINO_SAMD_NANO_33_IOT)
+static int const CS_PIN    = 10;
+static int const RESET_PIN =  9;
+static int const IRQ_PIN   =  2;
+#elif defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_MINIMA) || defined(ARDUINO_UNOWIFIR4) || defined(ARDUINO_AVR_UNO_WIFI_REV2)
+/* Those are all boards with the Arduino Uno form factor for the T1S shield. */
+static int const CS_PIN    =  9;
+static int const RESET_PIN =  4;
+static int const IRQ_PIN   =  2;
+#else
+# error "No pins defined for your board"
+#endif
