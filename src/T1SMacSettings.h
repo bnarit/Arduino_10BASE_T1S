@@ -44,6 +44,12 @@ private:
   bool const _mac_rx_cut_through;
 
 public:
+  static bool const DEFAULT_MAC_PROMISCUOUS_MODE = false;
+  static bool const DEFAULT_MAC_TX_CUT_THROUGH   = false;
+  static bool const DEFAULT_MAC_RX_CUT_THROUGH   = false;
+
+
+  T1SMacSettings() : T1SMacSettings(DEFAULT_MAC_PROMISCUOUS_MODE, DEFAULT_MAC_TX_CUT_THROUGH, DEFAULT_MAC_RX_CUT_THROUGH) { }
   T1SMacSettings(bool const mac_promiscuous_mode,
                  bool const mac_tx_cut_through,
                  bool const mac_rx_cut_through);
