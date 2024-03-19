@@ -18,7 +18,7 @@
  * CONSTANTS
  **************************************************************************************/
 
-static uint8_t const T1S_PLCA_NODE_ID = 1;
+static uint8_t const T1S_PLCA_NODE_ID = 2;
 
 static IPAddress const ip_addr     {192, 168,  42, 100 + T1S_PLCA_NODE_ID};
 static IPAddress const network_mask{255, 255, 255,   0};
@@ -27,7 +27,10 @@ static IPAddress const gateway     {192, 168,  42, 100};
 static T1SPlcaSettings const t1s_plca_settings{T1S_PLCA_NODE_ID};
 static T1SMacSettings const t1s_default_mac_settings;
 
-static uint16_t const UDP_SERVER_LOCAL_PORT = 8888;
+static IPAddress const UDP_SERVER_IP_ADDR = {192, 168,  42, 100 + 1};
+static uint16_t const UDP_CLIENT_PORT = 8889;
+static uint16_t const UDP_SERVER_PORT = 8888;
+static uint8_t * udp_tx_msg_buf[256] = {0};
 static uint8_t * udp_rx_msg_buf[256] = {0};
 
 /**************************************************************************************
@@ -99,7 +102,7 @@ void setup()
   Serial.println(t1s_plca_settings);
   Serial.println(t1s_default_mac_settings);
 
-  if (!tc6_inst->begin(UDP_SERVER_LOCAL_PORT))
+  if (!tc6_inst->begin(UDP_CLIENT_PORT))
   {
     Serial.println("begin(...) failed for UDP server");
     for (;;) { }
@@ -124,13 +127,20 @@ void loop()
       Serial.println("getPlcaStatus(...) failed");
   }
 
+  /* Send a UDP packet to the UDP server. */
+  int const tx_packet_size = snprintf((char *)udp_tx_msg_buf, sizeof(udp_tx_msg_buf), "%ld: hello server", millis());
+
+  tc6_inst->beginPacket(UDP_SERVER_IP_ADDR, UDP_SERVER_PORT);
+  tc6_inst->write((const uint8_t *)udp_tx_msg_buf, tx_packet_size);
+  tc6_inst->endPacket();
+
   /* Check for incoming UDP packets. */
-  int const packet_size = tc6_inst->parsePacket();
-  if (packet_size)
+  int const rx_packet_size = tc6_inst->parsePacket();
+  if (rx_packet_size)
   {
     /* Receive incoming UDP packets. */
     Serial.print("Received ");
-    Serial.print(packet_size);
+    Serial.print(rx_packet_size);
     Serial.print(" bytes from ");
     Serial.print(tc6_inst->remoteIP());
     Serial.print(" port ");
