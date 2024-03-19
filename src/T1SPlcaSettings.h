@@ -52,6 +52,7 @@ public:
 
 
   T1SPlcaSettings() : T1SPlcaSettings(DEFAULT_NODE_ID, DEFAULT_NODE_COUNT, DEFAULT_BURST_COUNT, DEFAULT_BURST_TIMER) { }
+  T1SPlcaSettings(uint8_t const node_id) : T1SPlcaSettings(node_id, DEFAULT_NODE_COUNT, DEFAULT_BURST_COUNT, DEFAULT_BURST_TIMER) { }
   T1SPlcaSettings(uint8_t const node_id,
                   uint8_t const node_count,
                   uint8_t const burst_count,

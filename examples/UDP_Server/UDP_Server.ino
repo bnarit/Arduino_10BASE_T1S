@@ -19,9 +19,6 @@
  **************************************************************************************/
 
 static uint8_t const T1S_PLCA_NODE_ID     = 1;
-static uint8_t const T1S_PLCA_NODE_COUNT  = 8;
-static uint8_t const T1S_PLCA_BURST_COUNT = 0;
-static uint8_t const T1S_PLCA_BURST_TIMER = 0x80;
 static bool    const MAC_PROMISCUOUS_MODE = false;
 static bool    const MAC_TX_CUT_THROUGH   = false;
 static bool    const MAC_RX_CUT_THROUGH   = false;
@@ -30,7 +27,7 @@ static IPAddress const ip_addr     {192, 168,  42, 100 + T1S_PLCA_NODE_ID};
 static IPAddress const network_mask{255, 255, 255,   0};
 static IPAddress const gateway     {192, 168,  42, 100};
 
-static T1SPlcaSettings const t1s_plca_settings{T1S_PLCA_NODE_ID, T1S_PLCA_NODE_COUNT, T1S_PLCA_BURST_COUNT, T1S_PLCA_BURST_TIMER};
+static T1SPlcaSettings const t1s_plca_settings{T1S_PLCA_NODE_ID};
 static T1SMacSettings const t1s_mac_settings{MAC_PROMISCUOUS_MODE, MAC_TX_CUT_THROUGH, MAC_RX_CUT_THROUGH};
 
 static uint16_t const UDP_SERVER_LOCAL_PORT = 8888;
