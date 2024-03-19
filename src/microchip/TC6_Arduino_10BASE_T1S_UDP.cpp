@@ -261,6 +261,104 @@ bool TC6_Arduino_10BASE_T1S_UDP::sendWouldBlock()
 }
 
 /**************************************************************************************
+ * arduino::UDP
+ **************************************************************************************/
+
+uint8_t TC6_Arduino_10BASE_T1S_UDP::begin(uint16_t port)
+{
+  /* TODO */
+  return 0;
+}
+
+void TC6_Arduino_10BASE_T1S_UDP::stop()
+{
+  /* TODO */
+}
+
+int TC6_Arduino_10BASE_T1S_UDP::beginPacket(IPAddress ip, uint16_t port)
+{
+  /* TODO */
+  return 0;
+}
+
+int TC6_Arduino_10BASE_T1S_UDP::beginPacket(const char *host, uint16_t port)
+{
+  /* TODO */
+  return 0;
+}
+
+int TC6_Arduino_10BASE_T1S_UDP::endPacket()
+{
+  /* TODO */
+  return 0;
+}
+
+size_t TC6_Arduino_10BASE_T1S_UDP::write(uint8_t data)
+{
+  /* TODO */
+  return 0;
+}
+
+size_t TC6_Arduino_10BASE_T1S_UDP::write(const uint8_t * buffer, size_t size)
+{
+  /* TODO */
+  return 0;
+}
+
+int TC6_Arduino_10BASE_T1S_UDP::parsePacket()
+{
+  /* TODO */
+  return 0;
+}
+
+int TC6_Arduino_10BASE_T1S_UDP::available()
+{
+  /* TODO */
+  return 0;
+}
+
+int TC6_Arduino_10BASE_T1S_UDP::read()
+{
+  /* TODO */
+  return 0;
+}
+
+int TC6_Arduino_10BASE_T1S_UDP::read(unsigned char* buffer, size_t len)
+{
+  /* TODO */
+  return 0;
+}
+
+int TC6_Arduino_10BASE_T1S_UDP::read(char* buffer, size_t len)
+{
+  /* TODO */
+  return 0;
+}
+
+int TC6_Arduino_10BASE_T1S_UDP::peek()
+{
+  /* TODO */
+  return 0;
+}
+
+void TC6_Arduino_10BASE_T1S_UDP::flush()
+{
+  /* TODO */
+}
+
+IPAddress TC6_Arduino_10BASE_T1S_UDP::remoteIP()
+{
+  /* TODO */
+  return IPAddress();
+}
+
+uint16_t TC6_Arduino_10BASE_T1S_UDP::remotePort()
+{
+  /* TODO */
+  return 0;
+}
+
+/**************************************************************************************
  * LWIP CALLBACKS
  **************************************************************************************/
 
