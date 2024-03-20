@@ -26,6 +26,9 @@
 
 #include <stdint.h>
 
+#include <deque>
+#include <vector>
+
 #include "lib/liblwip/include/lwip/udp.h"
 #include "lib/liblwip/include/lwip/netif.h"
 #include "lib/liblwip/include/lwip/ip_addr.h"
@@ -133,12 +136,16 @@ private:
   TC6LwIP_t _lw;
   T1SPlcaSettings _t1s_plca_settings;
 
+  /* arduino:UDP */
   struct udp_pcb * _udp_pcb;
+
   IPAddress _remote_ip;
   uint16_t _remote_port;
+  std::deque<uint8_t> _rx_data;
 
-  uint8_t * _udp_rx_data;
-  size_t _udp_rx_data_len;
+  IPAddress _send_to_ip;
+  uint16_t _send_to_port;
+  std::vector<uint8_t> _tx_data;
 };
 
 /**************************************************************************************

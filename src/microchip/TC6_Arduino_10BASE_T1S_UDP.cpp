@@ -132,8 +132,8 @@ TC6_Arduino_10BASE_T1S_UDP::TC6_Arduino_10BASE_T1S_UDP(TC6_Io * tc6_io)
 , _udp_pcb{nullptr}
 , _remote_ip{0,0,0,0}
 , _remote_port{0}
-, _udp_rx_data{nullptr}
-, _udp_rx_data_len{0}
+, _send_to_ip{0,0,0,0}
+, _send_to_port{0}
 {
   _lw.io = tc6_io;
 }
@@ -277,7 +277,7 @@ uint8_t TC6_Arduino_10BASE_T1S_UDP::begin(uint16_t port)
     _udp_pcb = udp_new();
 
   /* Bind specified port to all local interfaces. */
-  err_t err = udp_bind(_udp_pcb, IP_ADDR_ANY, port);
+  err_t const err = udp_bind(_udp_pcb, IP_ADDR_ANY, port);
   if (err != ERR_OK)
     return 0;
 
@@ -289,13 +289,26 @@ uint8_t TC6_Arduino_10BASE_T1S_UDP::begin(uint16_t port)
 
 void TC6_Arduino_10BASE_T1S_UDP::stop()
 {
-  /* TODO */
+  if (_udp_pcb != nullptr)
+  {
+    udp_disconnect(_udp_pcb);
+    udp_remove(_udp_pcb);
+    _udp_pcb = nullptr;
+  }
 }
 
 int TC6_Arduino_10BASE_T1S_UDP::beginPacket(IPAddress ip, uint16_t port)
 {
-  /* TODO */
-  return 0;
+  if (_udp_pcb == nullptr)
+    return 0;
+
+  _send_to_ip = ip;
+  _send_to_port = port;
+
+  /* Make sure that the transmit data buffer is empty. */
+  _tx_data.clear();
+
+  return 1;
 }
 
 int TC6_Arduino_10BASE_T1S_UDP::beginPacket(const char *host, uint16_t port)
@@ -306,61 +319,91 @@ int TC6_Arduino_10BASE_T1S_UDP::beginPacket(const char *host, uint16_t port)
 
 int TC6_Arduino_10BASE_T1S_UDP::endPacket()
 {
-  /* TODO */
-  return 0;
+  if (_udp_pcb == nullptr)
+    return 0;
+
+  /* Convert to IP address required for LWIP. */
+  ip_addr_t ipaddr;
+  IP_ADDR4(&ipaddr, _send_to_ip[0], _send_to_ip[1], _send_to_ip[2], _send_to_ip[3]);
+
+  /* Allocate pbuf structure. */
+  struct pbuf * p = pbuf_alloc(PBUF_TRANSPORT, _tx_data.size(), PBUF_RAM);
+  if (!p)
+    return 0;
+
+  /* Copy data from transmit buffer over. */
+  err_t err = pbuf_take(p, _tx_data.data(), _tx_data.size());
+  if (err != ERR_OK)
+    return -1;
+
+  /* Empty our transmit buffer. */
+  _tx_data.clear();
+
+  /* Send UDP packet. */
+  err = udp_sendto(_udp_pcb, p, &ipaddr, _send_to_port);
+  if (err != ERR_OK)
+    return -1;
+
+  /* Free pbuf */
+  pbuf_free(p);
+
+  return 1;
 }
 
 size_t TC6_Arduino_10BASE_T1S_UDP::write(uint8_t data)
 {
-  /* TODO */
-  return 0;
+  _tx_data.push_back(data);
+  return 1;
 }
 
 size_t TC6_Arduino_10BASE_T1S_UDP::write(const uint8_t * buffer, size_t size)
 {
-  /* TODO */
-  return 0;
+  _tx_data.reserve(_tx_data.size() + size);
+  std::copy(buffer, buffer + size, std::back_inserter(_tx_data));
+  return size;
 }
 
 int TC6_Arduino_10BASE_T1S_UDP::parsePacket()
 {
-  /* TODO */
-  return _udp_rx_data_len;
+  return available();
 }
 
 int TC6_Arduino_10BASE_T1S_UDP::available()
 {
-  /* TODO */
-  return _udp_rx_data_len;
+  return _rx_data.size();
 }
 
 int TC6_Arduino_10BASE_T1S_UDP::read()
 {
-  /* TODO */
-  return 0;
+  uint8_t const data = _rx_data.front();
+  _rx_data.pop_front();
+  return data;
 }
 
 int TC6_Arduino_10BASE_T1S_UDP::read(unsigned char* buffer, size_t len)
 {
-  /* TODO */
-  return 0;
+  size_t bytes_read = 0;
+  for (; bytes_read < len && !_rx_data.empty(); bytes_read++)
+  {
+    buffer[bytes_read] = _rx_data.front();
+    _rx_data.pop_front();
+  }
+  return bytes_read;
 }
 
 int TC6_Arduino_10BASE_T1S_UDP::read(char* buffer, size_t len)
 {
-  /* TODO */
-  return 0;
+  return read((unsigned char*)buffer, len);
 }
 
 int TC6_Arduino_10BASE_T1S_UDP::peek()
 {
-  /* TODO */
-  return 0;
+  return _rx_data.front();
 }
 
 void TC6_Arduino_10BASE_T1S_UDP::flush()
 {
-  /* TODO */
+  /* Nothing to be done. */
 }
 
 IPAddress TC6_Arduino_10BASE_T1S_UDP::remoteIP()
@@ -382,16 +425,11 @@ void TC6_Arduino_10BASE_T1S_UDP::onUdpRawRecv(struct udp_pcb *pcb, struct pbuf *
                          ip4_addr4(addr));
   _remote_port = port;
 
-  /* TODO: very pre-eliminary. Need to buffer received data somewhere. */
-  if (_udp_rx_data)
-    delete[] _udp_rx_data;
-
-  /* Create data buffer for received message. */
-  _udp_rx_data = new uint8_t[p->len]; // Note: There's also "tot_len" - how does that fit in here?
   /* Copy data into buffer. */
-  memcpy(_udp_rx_data, p->payload, p->len);
-  /* Update the length field. */
-  _udp_rx_data_len = 0;
+  std::copy((uint8_t *)p->payload,
+            (uint8_t *)p->payload + p->len,
+            std::back_inserter(_rx_data));
+
   /* Free pbuf */
   pbuf_free(p);
 }
