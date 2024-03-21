@@ -24,7 +24,7 @@
  * CONSTANTS
  **************************************************************************************/
 
-static uint8_t const T1S_PLCA_NODE_ID = 1;
+static uint8_t const T1S_PLCA_NODE_ID = 0; /* The UDP server doubles as PLCA coordinator. */
 
 static IPAddress const ip_addr     {192, 168,  42, 100 + T1S_PLCA_NODE_ID};
 static IPAddress const network_mask{255, 255, 255,   0};

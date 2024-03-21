@@ -18,7 +18,7 @@
  * CONSTANTS
  **************************************************************************************/
 
-static uint8_t const T1S_PLCA_NODE_ID = 2;
+static uint8_t const T1S_PLCA_NODE_ID = 1;
 
 static IPAddress const ip_addr     {192, 168,  42, 100 + T1S_PLCA_NODE_ID};
 static IPAddress const network_mask{255, 255, 255,   0};
@@ -27,7 +27,7 @@ static IPAddress const gateway     {192, 168,  42, 100};
 static T1SPlcaSettings const t1s_plca_settings{T1S_PLCA_NODE_ID};
 static T1SMacSettings const t1s_default_mac_settings;
 
-static IPAddress const UDP_SERVER_IP_ADDR = {192, 168,  42, 100 + 1};
+static IPAddress const UDP_SERVER_IP_ADDR = {192, 168,  42, 100 + 0};
 static uint16_t const UDP_CLIENT_PORT = 8889;
 static uint16_t const UDP_SERVER_PORT = 8888;
 static uint8_t udp_tx_msg_buf[256] = {0};
