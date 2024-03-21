@@ -30,8 +30,8 @@ static T1SMacSettings const t1s_default_mac_settings;
 static IPAddress const UDP_SERVER_IP_ADDR = {192, 168,  42, 100 + 1};
 static uint16_t const UDP_CLIENT_PORT = 8889;
 static uint16_t const UDP_SERVER_PORT = 8888;
-static uint8_t * udp_tx_msg_buf[256] = {0};
-static uint8_t * udp_rx_msg_buf[256] = {0};
+static uint8_t udp_tx_msg_buf[256] = {0};
+static uint8_t udp_rx_msg_buf[256] = {0};
 
 /**************************************************************************************
  * GLOBAL VARIABLES
@@ -85,7 +85,7 @@ void setup()
     memcpy(mac_addr.data(), TC6::TC6_Io::FALLBACK_MAC, MAC_ADDRESS_NUM_BYTES);
   }
 
-  if (!tc6_inst->begin(  ip_addr
+  if (!tc6_inst->begin(ip_addr
     , network_mask
     , gateway
     , mac_addr
@@ -117,6 +117,7 @@ void loop()
   tc6_inst->service();
 
   static unsigned long prev_beacon_check = 0;
+  static unsigned long prev_udp_packet_sent = 0;
 
   auto const now = millis();
 
@@ -127,12 +128,17 @@ void loop()
       Serial.println("getPlcaStatus(...) failed");
   }
 
-  /* Send a UDP packet to the UDP server. */
-  int const tx_packet_size = snprintf((char *)udp_tx_msg_buf, sizeof(udp_tx_msg_buf), "%ld: hello server", millis());
+  if ((now - prev_udp_packet_sent) > 1000)
+  {
+    prev_udp_packet_sent = now;
 
-  tc6_inst->beginPacket(UDP_SERVER_IP_ADDR, UDP_SERVER_PORT);
-  tc6_inst->write((const uint8_t *)udp_tx_msg_buf, tx_packet_size);
-  tc6_inst->endPacket();
+    /* Send a UDP packet to the UDP server. */
+    int const tx_packet_size = snprintf((char *)udp_tx_msg_buf, sizeof(udp_tx_msg_buf), "%ld: hello server", millis());
+
+    tc6_inst->beginPacket(UDP_SERVER_IP_ADDR, UDP_SERVER_PORT);
+    tc6_inst->write(udp_tx_msg_buf, tx_packet_size);
+    tc6_inst->endPacket();
+  }
 
   /* Check for incoming UDP packets. */
   int const rx_packet_size = tc6_inst->parsePacket();
@@ -147,21 +153,15 @@ void loop()
     Serial.print(tc6_inst->remotePort());
     Serial.println();
 
-    int len = tc6_inst->read(reinterpret_cast<unsigned char *>(udp_rx_msg_buf), sizeof(udp_rx_msg_buf));
-    if (len > 0) {
-      udp_rx_msg_buf[len] = 0;
+    int const bytes_read = tc6_inst->read(udp_rx_msg_buf, sizeof(udp_rx_msg_buf));
+    if (bytes_read > 0) {
+      udp_rx_msg_buf[bytes_read] = 0;
     }
-    Serial.print("UDP packet contents: ");
+    Serial.print("UDP packet content: ");
     Serial.print(reinterpret_cast<char *>(udp_rx_msg_buf));
     Serial.println();
-
-    /* Send back a reply, to the IP address and port we got the packet from. */
-    tc6_inst->beginPacket(tc6_inst->remoteIP(), tc6_inst->remotePort());
-    tc6_inst->write((const uint8_t *)udp_rx_msg_buf, sizeof(udp_rx_msg_buf));
-    tc6_inst->endPacket();
   }
 }
-
 
 static void OnPlcaStatus(bool success, bool plcaStatus)
 {
