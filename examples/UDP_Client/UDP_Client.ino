@@ -159,9 +159,9 @@ void loop()
     if (bytes_read > 0) {
       udp_rx_msg_buf[bytes_read] = 0;
     }
-    Serial.print("UDP packet content: ");
+    Serial.print("UDP packet content: \"");
     Serial.print(reinterpret_cast<char *>(udp_rx_msg_buf));
-    Serial.println();
+    Serial.println("\"");
   }
 }
 
