@@ -34,7 +34,7 @@ static T1SPlcaSettings const t1s_plca_settings{T1S_PLCA_NODE_ID};
 static T1SMacSettings const t1s_default_mac_settings;
 
 static uint16_t const UDP_SERVER_LOCAL_PORT = 8888;
-static uint8_t * udp_rx_msg_buf[256] = {0};
+static uint8_t udp_rx_msg_buf[256] = {0};
 
 /**************************************************************************************
  * GLOBAL VARIABLES
@@ -143,11 +143,11 @@ void loop()
     Serial.print(tc6_inst->remotePort());
     Serial.println();
 
-    int len = tc6_inst->read(reinterpret_cast<unsigned char *>(udp_rx_msg_buf), sizeof(udp_rx_msg_buf));
-    if (len > 0) {
-      udp_rx_msg_buf[len] = 0;
+    int bytes_read = tc6_inst->read(reinterpret_cast<unsigned char *>(udp_rx_msg_buf), sizeof(udp_rx_msg_buf));
+    if (bytes_read > 0) {
+      udp_rx_msg_buf[bytes_read] = 0;
     }
-    Serial.print("UDP packet contents: ");
+    Serial.print("UDP packet content: ");
     Serial.print(reinterpret_cast<char *>(udp_rx_msg_buf));
     Serial.println();
 
