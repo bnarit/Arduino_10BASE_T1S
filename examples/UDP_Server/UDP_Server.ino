@@ -155,7 +155,7 @@ void loop()
 
     /* Send back a reply, to the IP address and port we got the packet from. */
     tc6_inst->beginPacket(tc6_inst->remoteIP(), tc6_inst->remotePort());
-    tc6_inst->write((const uint8_t *)udp_rx_msg_buf, sizeof(udp_rx_msg_buf));
+    tc6_inst->write((const uint8_t *)udp_rx_msg_buf, packet_size);
     tc6_inst->endPacket();
   }
 }
