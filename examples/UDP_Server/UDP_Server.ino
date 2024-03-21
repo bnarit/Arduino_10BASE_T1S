@@ -1,6 +1,12 @@
 /*
  * This example has been tested with the Arduino 10BASE-T1S (T1TOS) shield.
  *
+ * This example contains a UDP echo server that displays each received message
+ * and echos it back to its sender.
+ *
+ * Can be tested on Linux with a 10BASE-T1S USB dongle and
+ *   echo -n "hello" >/dev/udp/192.168.42.101/8888
+ *
  * Author:
  *  Alexander Entinger
  */
