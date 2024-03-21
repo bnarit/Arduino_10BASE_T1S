@@ -45,14 +45,16 @@ T1SPlcaSettings::T1SPlcaSettings(uint8_t const node_id,
 size_t T1SPlcaSettings::printTo(Print & p) const
 {
   char msg[128] = {0};
+
   snprintf(msg,
            sizeof(msg),
            "PLCA\n" \
-           "\tnode id     : %d\n" \
+           "\tnode id     : %d%s\n" \
            "\tnode count  : %d\n" \
            "\tburst count : %d\n" \
            "\tburst timer : %d",
            _node_id,
+           (_node_id == 0) ? " (PLCA Coordinator)" : "",
            _node_count,
            _burst_count,
            _burst_timer);
