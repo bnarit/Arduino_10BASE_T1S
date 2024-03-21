@@ -88,7 +88,7 @@ void setup()
     memcpy(mac_addr.data(), TC6::TC6_Io::FALLBACK_MAC, MAC_ADDRESS_NUM_BYTES);
   }
 
-  if (!tc6_inst->begin(  ip_addr
+  if (!tc6_inst->begin(ip_addr
     , network_mask
     , gateway
     , mac_addr
@@ -143,7 +143,7 @@ void loop()
     Serial.print(tc6_inst->remotePort());
     Serial.println();
 
-    int bytes_read = tc6_inst->read(reinterpret_cast<unsigned char *>(udp_rx_msg_buf), sizeof(udp_rx_msg_buf));
+    int const bytes_read = tc6_inst->read(udp_rx_msg_buf, sizeof(udp_rx_msg_buf));
     if (bytes_read > 0) {
       udp_rx_msg_buf[bytes_read] = 0;
     }
