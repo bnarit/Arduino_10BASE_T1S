@@ -110,6 +110,8 @@ void setup()
     Serial.println("begin(...) failed for UDP server");
     for (;;) { }
   }
+
+  Serial.println("UDP_Server");
 }
 
 void loop()
