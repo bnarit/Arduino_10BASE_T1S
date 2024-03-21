@@ -140,6 +140,10 @@ void loop()
     tc6_inst->beginPacket(UDP_SERVER_IP_ADDR, UDP_SERVER_PORT);
     tc6_inst->write(udp_tx_msg_buf, tx_packet_size);
     tc6_inst->endPacket();
+
+    Serial.print("UDP_Client sending: \"");
+    Serial.print(reinterpret_cast<char *>(udp_rx_msg_buf));
+    Serial.println("\"");
   }
 
   /* Check for incoming UDP packets. */
@@ -159,7 +163,7 @@ void loop()
     if (bytes_read > 0) {
       udp_rx_msg_buf[bytes_read] = 0;
     }
-    Serial.print("UDP packet content: \"");
+    Serial.print("UDP_Client received packet content: \"");
     Serial.print(reinterpret_cast<char *>(udp_rx_msg_buf));
     Serial.println("\"");
   }
