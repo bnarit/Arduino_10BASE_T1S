@@ -44,7 +44,8 @@ auto const tc6_io = new TC6::TC6_Io
     , CS_PIN
     , RESET_PIN
     , IRQ_PIN);
-auto const tc6_inst = new TC6::TC6_Arduino_10BASE_T1S_UDP(tc6_io);
+auto const tc6_inst = new TC6::TC6_Arduino_10BASE_T1S(tc6_io);
+Arduino_10BASE_T1S_UDP udp_server;
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -90,7 +91,7 @@ void setup()
   Serial.println(t1s_plca_settings);
   Serial.println(t1s_default_mac_settings);
 
-  if (!tc6_inst->begin(UDP_SERVER_LOCAL_PORT))
+  if (!udp_server.begin(UDP_SERVER_LOCAL_PORT))
   {
     Serial.println("begin(...) failed for UDP server");
     for (;;) { }
@@ -118,19 +119,19 @@ void loop()
   }
 
   /* Check for incoming UDP packets. */
-  int const packet_size = tc6_inst->parsePacket();
+  int const packet_size = udp_server.parsePacket();
   if (packet_size)
   {
     /* Receive incoming UDP packets. */
     Serial.print("Received ");
     Serial.print(packet_size);
     Serial.print(" bytes from ");
-    Serial.print(tc6_inst->remoteIP());
+    Serial.print(udp_server.remoteIP());
     Serial.print(" port ");
-    Serial.print(tc6_inst->remotePort());
+    Serial.print(udp_server.remotePort());
     Serial.println();
 
-    int const bytes_read = tc6_inst->read(udp_rx_msg_buf, sizeof(udp_rx_msg_buf));
+    int const bytes_read = udp_server.read(udp_rx_msg_buf, sizeof(udp_rx_msg_buf));
     if (bytes_read > 0) {
       udp_rx_msg_buf[bytes_read] = 0;
     }
@@ -139,9 +140,9 @@ void loop()
     Serial.println("\"");
 
     /* Send back a reply, to the IP address and port we got the packet from. */
-    tc6_inst->beginPacket(tc6_inst->remoteIP(), tc6_inst->remotePort());
-    tc6_inst->write((const uint8_t *)udp_rx_msg_buf, packet_size);
-    tc6_inst->endPacket();
+    udp_server.beginPacket(udp_server.remoteIP(), udp_server.remotePort());
+    udp_server.write((const uint8_t *)udp_rx_msg_buf, packet_size);
+    udp_server.endPacket();
   }
 }
 

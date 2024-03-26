@@ -68,7 +68,7 @@ const char kLabel[] =
     'G'
 };
 
-TC6::TC6_Arduino_10BASE_T1S_UDP * priv_tc6_inst = NULL;
+TC6::TC6_Arduino_10BASE_T1S * priv_tc6_inst = NULL;
 
 void iperf_print_app_header(void)
 {
@@ -272,7 +272,7 @@ static void PrintServerStats(void)
     }
 }
 
-void iperf_init(TC6::TC6_Arduino_10BASE_T1S_UDP * tc6_inst)
+void iperf_init(TC6::TC6_Arduino_10BASE_T1S * tc6_inst)
 {
     priv_tc6_inst = tc6_inst;
 

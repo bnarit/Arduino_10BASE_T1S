@@ -12,7 +12,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "TC6_Arduino_10BASE_T1S_UDP.h"
+#include "TC6_Arduino_10BASE_T1S.h"
 
 #include "lib/libtc6/inc/tc6-regs.h"
 
@@ -98,39 +98,18 @@ static void OnPlcaStatus(TC6_t *pInst, bool success, uint32_t addr, uint32_t val
 
 static err_t lwIpInit(struct netif *netif);
 static err_t lwIpOut(struct netif *netif, struct pbuf *p);
-static void lwIp_udp_raw_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, uint16_t port);
-
-static String IPtoString(IPAddress const & ip_addr)
-{
-#if defined(ARDUINO_ARCH_AVR) || defined(ARDUINO_ARCH_MEGAAVR)
-  char msg_buf[16];
-  snprintf(msg_buf,
-           sizeof(msg_buf),
-           "%u.%u.%u.%u",
-           ip_addr[0], ip_addr[1], ip_addr[2], ip_addr[3]);
-  return String(msg_buf);
-#else
-  return ip_addr.toString();
-#endif
-}
-
 
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6_Arduino_10BASE_T1S_UDP::TC6_Arduino_10BASE_T1S_UDP(TC6_Io * tc6_io)
+TC6_Arduino_10BASE_T1S::TC6_Arduino_10BASE_T1S(TC6_Io * tc6_io)
 : _tc6_io{tc6_io}
-, _udp_pcb{nullptr}
-, _remote_ip{0,0,0,0}
-, _remote_port{0}
-, _send_to_ip{0,0,0,0}
-, _send_to_port{0}
 {
   _lw.io = tc6_io;
 }
 
-TC6_Arduino_10BASE_T1S_UDP::~TC6_Arduino_10BASE_T1S_UDP()
+TC6_Arduino_10BASE_T1S::~TC6_Arduino_10BASE_T1S()
 {
 
 }
@@ -139,12 +118,12 @@ TC6_Arduino_10BASE_T1S_UDP::~TC6_Arduino_10BASE_T1S_UDP()
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-bool TC6_Arduino_10BASE_T1S_UDP::begin(IPAddress const ip_addr,
-                                       IPAddress const network_mask,
-                                       IPAddress const gateway,
-                                       MacAddress const mac_addr,
-                                       T1SPlcaSettings const t1s_plca_settings,
-                                       T1SMacSettings const t1s_mac_settings)
+bool TC6_Arduino_10BASE_T1S::begin(IPAddress const ip_addr,
+                                   IPAddress const network_mask,
+                                   IPAddress const gateway,
+                                   MacAddress const mac_addr,
+                                   T1SPlcaSettings const t1s_plca_settings,
+                                   T1SMacSettings const t1s_mac_settings)
 {
   /* Initialize LWIP only once. */
   static bool is_lwip_init = false;
@@ -190,9 +169,9 @@ bool TC6_Arduino_10BASE_T1S_UDP::begin(IPAddress const ip_addr,
     TC6_Service(_lw.tc.tc6, true);
 
   /* Assign IP address, network mask and gateway. */
-  auto const ip_addr_str = IPtoString(ip_addr);
-  auto const network_mask_str = IPtoString(network_mask);
-  auto const gateway_str = IPtoString(gateway);
+  auto const ip_addr_str = ip_addr.toString();
+  auto const network_mask_str = network_mask.toString();
+  auto const gateway_str = gateway.toString();
 
   ip4_addr_t lwip_ip_addr;
   ip4_addr_t lwip_network_mask;
@@ -214,12 +193,12 @@ bool TC6_Arduino_10BASE_T1S_UDP::begin(IPAddress const ip_addr,
   return true;
 }
 
-void TC6_Arduino_10BASE_T1S_UDP::digitalWrite(bool dioa0, bool dioa1, bool dioa2)
+void TC6_Arduino_10BASE_T1S::digitalWrite(bool dioa0, bool dioa1, bool dioa2)
 {
   TC6Regs_SetDio(_lw.tc.tc6, dioa0, dioa1, dioa2);
 }
 
-void TC6_Arduino_10BASE_T1S_UDP::service()
+void TC6_Arduino_10BASE_T1S::service()
 {
   sys_check_timeouts(); /* LWIP timers - ARP, DHCP, TCP, etc. */
 
@@ -238,192 +217,24 @@ void TC6_Arduino_10BASE_T1S_UDP::service()
   TC6Regs_CheckTimers();
 }
 
-bool TC6_Arduino_10BASE_T1S_UDP::getPlcaStatus(TC6LwIP_On_PlcaStatus on_plca_status)
+bool TC6_Arduino_10BASE_T1S::getPlcaStatus(TC6LwIP_On_PlcaStatus on_plca_status)
 {
   _lw.tc.pStatusCallback = on_plca_status;
   return TC6_ReadRegister(_lw.tc.tc6, 0x0004CA03, true, OnPlcaStatus, &_lw); /* PLCA_status_register.plca_status */
 }
 
-bool TC6_Arduino_10BASE_T1S_UDP::enablePlca()
+bool TC6_Arduino_10BASE_T1S::enablePlca()
 {
   return TC6Regs_SetPlca(_lw.tc.tc6, true, _t1s_plca_settings.node_id(), _t1s_plca_settings.node_count());
 }
 
-bool TC6_Arduino_10BASE_T1S_UDP::sendWouldBlock()
+bool TC6_Arduino_10BASE_T1S::sendWouldBlock()
 {
   TC6_RawTxSegment *dummySeg;
   uint8_t const segCount = TC6_GetRawSegments(_lw.tc.tc6, &dummySeg);
   bool const wouldBlock = (0u == segCount);
 
   return wouldBlock;
-}
-
-/**************************************************************************************
- * arduino::UDP
- **************************************************************************************/
-
-uint8_t TC6_Arduino_10BASE_T1S_UDP::begin(uint16_t port)
-{
-  /* Create a UDP PCB (if none exists yet). */
-  if (!_udp_pcb)
-    _udp_pcb = udp_new();
-
-  /* Bind specified port to all local interfaces. */
-  err_t const err = udp_bind(_udp_pcb, IP_ADDR_ANY, port);
-  if (err != ERR_OK)
-    return 0;
-
-  /* Set a reception callback to be called upon the arrival of a UDP package. */
-  udp_recv(_udp_pcb , lwIp_udp_raw_recv, this);
-
-  return 1;
-}
-
-void TC6_Arduino_10BASE_T1S_UDP::stop()
-{
-  if (_udp_pcb != nullptr)
-  {
-    udp_disconnect(_udp_pcb);
-    udp_remove(_udp_pcb);
-    _udp_pcb = nullptr;
-  }
-}
-
-int TC6_Arduino_10BASE_T1S_UDP::beginPacket(IPAddress ip, uint16_t port)
-{
-  if (_udp_pcb == nullptr)
-    return 0;
-
-  _send_to_ip = ip;
-  _send_to_port = port;
-
-  /* Make sure that the transmit data buffer is empty. */
-  _tx_data.clear();
-
-  return 1;
-}
-
-int TC6_Arduino_10BASE_T1S_UDP::beginPacket(const char *host, uint16_t port)
-{
-  /* TODO */
-  return 0;
-}
-
-int TC6_Arduino_10BASE_T1S_UDP::endPacket()
-{
-  if (_udp_pcb == nullptr)
-    return 0;
-
-  /* Convert to IP address required for LWIP. */
-  ip_addr_t ipaddr;
-  IP_ADDR4(&ipaddr, _send_to_ip[0], _send_to_ip[1], _send_to_ip[2], _send_to_ip[3]);
-
-  /* Allocate pbuf structure. */
-  struct pbuf * p = pbuf_alloc(PBUF_TRANSPORT, _tx_data.size(), PBUF_RAM);
-  if (!p)
-    return 0;
-
-  /* Copy data from transmit buffer over. */
-  err_t err = pbuf_take(p, _tx_data.data(), _tx_data.size());
-  if (err != ERR_OK)
-    return -1;
-
-  /* Empty our transmit buffer. */
-  _tx_data.clear();
-
-  /* Send UDP packet. */
-  err = udp_sendto(_udp_pcb, p, &ipaddr, _send_to_port);
-  if (err != ERR_OK)
-    return -1;
-
-  /* Free pbuf */
-  pbuf_free(p);
-
-  return 1;
-}
-
-size_t TC6_Arduino_10BASE_T1S_UDP::write(uint8_t data)
-{
-  _tx_data.push_back(data);
-  return 1;
-}
-
-size_t TC6_Arduino_10BASE_T1S_UDP::write(const uint8_t * buffer, size_t size)
-{
-  _tx_data.reserve(_tx_data.size() + size);
-  std::copy(buffer, buffer + size, std::back_inserter(_tx_data));
-  return size;
-}
-
-int TC6_Arduino_10BASE_T1S_UDP::parsePacket()
-{
-  return available();
-}
-
-int TC6_Arduino_10BASE_T1S_UDP::available()
-{
-  return _rx_data.size();
-}
-
-int TC6_Arduino_10BASE_T1S_UDP::read()
-{
-  uint8_t const data = _rx_data.front();
-  _rx_data.pop_front();
-  return data;
-}
-
-int TC6_Arduino_10BASE_T1S_UDP::read(unsigned char* buffer, size_t len)
-{
-  size_t bytes_read = 0;
-  for (; bytes_read < len && !_rx_data.empty(); bytes_read++)
-  {
-    buffer[bytes_read] = _rx_data.front();
-    _rx_data.pop_front();
-  }
-  return bytes_read;
-}
-
-int TC6_Arduino_10BASE_T1S_UDP::read(char* buffer, size_t len)
-{
-  return read((unsigned char*)buffer, len);
-}
-
-int TC6_Arduino_10BASE_T1S_UDP::peek()
-{
-  return _rx_data.front();
-}
-
-void TC6_Arduino_10BASE_T1S_UDP::flush()
-{
-  /* Nothing to be done. */
-}
-
-IPAddress TC6_Arduino_10BASE_T1S_UDP::remoteIP()
-{
-  return _remote_ip;
-}
-
-uint16_t TC6_Arduino_10BASE_T1S_UDP::remotePort()
-{
-  return _remote_port;
-}
-
-void TC6_Arduino_10BASE_T1S_UDP::onUdpRawRecv(struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, uint16_t port)
-{
-  /* Obtain remote port and remote IP. */
-  _remote_ip = IPAddress(ip4_addr1(addr),
-                         ip4_addr2(addr),
-                         ip4_addr3(addr),
-                         ip4_addr4(addr));
-  _remote_port = port;
-
-  /* Copy data into buffer. */
-  std::copy((uint8_t *)p->payload,
-            (uint8_t *)p->payload + p->len,
-            std::back_inserter(_rx_data));
-
-  /* Free pbuf */
-  pbuf_free(p);
 }
 
 /**************************************************************************************
@@ -494,12 +305,6 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
     result = ERR_WOULDBLOCK;
   }
   return result;
-}
-
-void lwIp_udp_raw_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, uint16_t port)
-{
-  TC6_Arduino_10BASE_T1S_UDP * this_ptr = (TC6_Arduino_10BASE_T1S_UDP * )arg;
-  this_ptr->onUdpRawRecv(pcb, p, addr, port);
 }
 
 /**************************************************************************************

@@ -46,7 +46,7 @@ auto const tc6_io = new TC6::TC6_Io
   , CS_PIN
   , RESET_PIN
   , IRQ_PIN);
-auto const tc6_inst = new TC6::TC6_Arduino_10BASE_T1S_UDP(tc6_io);
+auto const tc6_inst = new TC6::TC6_Arduino_10BASE_T1S(tc6_io);
 
 /**************************************************************************************
  * SETUP/LOOP

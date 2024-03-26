@@ -14,16 +14,11 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "../Arduino_10BASE_T1S_UDP.h"
+#include "../IArduino_10BASE_T1S.h"
 
 #include <stdint.h>
 
-#include <deque>
-#include <vector>
-
-#include "lib/liblwip/include/lwip/udp.h"
 #include "lib/liblwip/include/lwip/netif.h"
-#include "lib/liblwip/include/lwip/ip_addr.h"
 
 #include "microchip/lib/libtc6/inc/tc6.h"
 
@@ -70,12 +65,12 @@ namespace TC6
  * CLASS DECLARATION
  **************************************************************************************/
 
-class TC6_Arduino_10BASE_T1S_UDP : public Arduino_10BASE_T1S_UDP
+class TC6_Arduino_10BASE_T1S : public IArduino_10BASE_T1S
 {
 public:
-  TC6_Arduino_10BASE_T1S_UDP(TC6_Io * tc6_io);
+  TC6_Arduino_10BASE_T1S(TC6_Io * tc6_io);
 
-  virtual ~TC6_Arduino_10BASE_T1S_UDP();
+  virtual ~TC6_Arduino_10BASE_T1S();
 
 
   virtual bool begin(IPAddress const ip_addr,
@@ -95,49 +90,11 @@ public:
 
   bool sendWouldBlock();
 
-  /* arduino:UDP */
-  virtual uint8_t begin(uint16_t port) override;
-  virtual void stop() override;
-
-  virtual int beginPacket(IPAddress ip, uint16_t port) override;
-  virtual int beginPacket(const char *host, uint16_t port) override;
-  virtual int endPacket() override;
-  virtual size_t write(uint8_t data) override;
-  virtual size_t write(const uint8_t * buffer, size_t size) override;
-
-  virtual int parsePacket() override;
-  virtual int available() override;
-  virtual int read() override;
-  virtual int read(unsigned char* buffer, size_t len) override;
-  virtual int read(char* buffer, size_t len) override;
-  virtual int peek() override;
-  virtual void flush() override;
-
-  virtual IPAddress remoteIP() override;
-  virtual uint16_t remotePort() override;
-
-
-  /* This function MUST not be called from the user of this library,
-   * it's used for internal purposes only.
-   */
-  void onUdpRawRecv(struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, uint16_t port);
-
 
 private:
   TC6_Io * _tc6_io;
   TC6LwIP_t _lw;
   T1SPlcaSettings _t1s_plca_settings;
-
-  /* arduino:UDP */
-  struct udp_pcb * _udp_pcb;
-
-  IPAddress _remote_ip;
-  uint16_t _remote_port;
-  std::deque<uint8_t> _rx_data;
-
-  IPAddress _send_to_ip;
-  uint16_t _send_to_port;
-  std::vector<uint8_t> _tx_data;
 };
 
 /**************************************************************************************

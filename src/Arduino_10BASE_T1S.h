@@ -14,7 +14,10 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "microchip/TC6_Arduino_10BASE_T1S_UDP.h"
+#include "IArduino_10BASE_T1S.h"
+#include "Arduino_10BASE_T1S_UDP.h"
+
+#include "microchip/TC6_Arduino_10BASE_T1S.h"
 
 #include "lib/liblwip/include/lwip/netif.h"
 #include "lib/liblwip/include/lwip/init.h"

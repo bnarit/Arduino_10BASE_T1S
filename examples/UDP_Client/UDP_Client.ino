@@ -41,7 +41,8 @@ auto const tc6_io = new TC6::TC6_Io
     , CS_PIN
     , RESET_PIN
     , IRQ_PIN);
-auto const tc6_inst = new TC6::TC6_Arduino_10BASE_T1S_UDP(tc6_io);
+auto const tc6_inst = new TC6::TC6_Arduino_10BASE_T1S(tc6_io);
+Arduino_10BASE_T1S_UDP udp_client;
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -87,9 +88,9 @@ void setup()
   Serial.println(t1s_plca_settings);
   Serial.println(t1s_default_mac_settings);
 
-  if (!tc6_inst->begin(UDP_CLIENT_PORT))
+  if (!udp_client.begin(UDP_CLIENT_PORT))
   {
-    Serial.println("begin(...) failed for UDP server");
+    Serial.println("begin(...) failed for UDP client");
     for (;;) { }
   }
 
@@ -125,9 +126,9 @@ void loop()
     int const tx_packet_size = snprintf((char *)udp_tx_msg_buf, sizeof(udp_tx_msg_buf), "Single-Pair Ethernet / 10BASE-T1S: packet cnt = %d", tx_packet_cnt);
 
     /* Send a UDP packet to the UDP server. */
-    tc6_inst->beginPacket(UDP_SERVER_IP_ADDR, UDP_SERVER_PORT);
-    tc6_inst->write(udp_tx_msg_buf, tx_packet_size);
-    tc6_inst->endPacket();
+    udp_client.beginPacket(UDP_SERVER_IP_ADDR, UDP_SERVER_PORT);
+    udp_client.write(udp_tx_msg_buf, tx_packet_size);
+    udp_client.endPacket();
 
     Serial.print("[");
     Serial.print(millis());
@@ -139,19 +140,19 @@ void loop()
   }
 
   /* Check for incoming UDP packets. */
-  int const rx_packet_size = tc6_inst->parsePacket();
+  int const rx_packet_size = udp_client.parsePacket();
   if (rx_packet_size)
   {
     /* Receive incoming UDP packets. */
     Serial.print("Received ");
     Serial.print(rx_packet_size);
     Serial.print(" bytes from ");
-    Serial.print(tc6_inst->remoteIP());
+    Serial.print(udp_client.remoteIP());
     Serial.print(" port ");
-    Serial.print(tc6_inst->remotePort());
+    Serial.print(udp_client.remotePort());
     Serial.println();
 
-    int const bytes_read = tc6_inst->read(udp_rx_msg_buf, sizeof(udp_rx_msg_buf));
+    int const bytes_read = udp_client.read(udp_rx_msg_buf, sizeof(udp_rx_msg_buf));
     if (bytes_read > 0) {
       udp_rx_msg_buf[bytes_read] = 0;
     }

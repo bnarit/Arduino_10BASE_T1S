@@ -100,7 +100,7 @@ struct perf_stats {
 /* Number of parallel UDP clients */
 #define NUM_OF_PARALLEL_CLIENTS 1
 
-void iperf_init(TC6::TC6_Arduino_10BASE_T1S_UDP * tc6_inst);
+void iperf_init(TC6::TC6_Arduino_10BASE_T1S * tc6_inst);
 void iperf_print_app_header(void);
 void iperf_start_application(void);
 void iperf_stop_application(void);
