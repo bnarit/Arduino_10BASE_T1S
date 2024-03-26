@@ -23,12 +23,7 @@
  * CLASS DECLARATION
  **************************************************************************************/
 
-class T1SPlcaSettings
-#if defined(ARDUINO_ARCH_AVR)
-  : public Printable
-#else
-  : public arduino::Printable
-#endif
+class T1SPlcaSettings : public arduino::Printable
 {
 private:
   uint8_t _node_id;

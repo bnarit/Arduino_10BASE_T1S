@@ -29,12 +29,7 @@ static size_t constexpr MAC_ADDRESS_NUM_BYTES = 6;
  * CLASS DECLARATION
  **************************************************************************************/
 
-class MacAddress
-#if defined(ARDUINO_ARCH_AVR)
-  : public Printable
-#else
-  : public arduino::Printable
-#endif
+class MacAddress : public arduino::Printable
 {
 public:
   MacAddress() : MacAddress(nullptr) { }

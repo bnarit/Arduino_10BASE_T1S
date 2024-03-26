@@ -23,12 +23,7 @@
  * CLASS DECLARATION
  **************************************************************************************/
 
-class T1SMacSettings
-#if defined(ARDUINO_ARCH_AVR)
-  : public Printable
-#else
-  : public arduino::Printable
-#endif
+class T1SMacSettings : public arduino::Printable
 {
 private:
   bool const _mac_promiscuous_mode;
