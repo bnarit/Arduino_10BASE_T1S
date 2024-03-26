@@ -35,12 +35,7 @@ public:
   static uint8_t constexpr
   FALLBACK_MAC[MAC_SIZE] = { 0x00u, 0x80u, 0xC2u, 0x00u, 0x01u, 0xCCu };
 
-  TC6_Io(
-#if defined(ARDUINO_ARCH_AVR)
-         SPIClass & spi,
-#else
-         HardwareSPI & spi,
-#endif
+  TC6_Io(HardwareSPI & spi,
          int const cs_pin,
          int const reset_pin,
          int const irq_pin);
@@ -57,11 +52,7 @@ public:
 
 
 private:
-#if defined(ARDUINO_ARCH_AVR)
-  SPIClass & _spi;
-#else
   HardwareSPI & _spi;
-#endif
   int const _cs_pin;
   int const _reset_pin;
   int const _irq_pin;

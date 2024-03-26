@@ -39,11 +39,7 @@ uint8_t const TC6_Io::FALLBACK_MAC[TC6_Io::MAC_SIZE];
  **************************************************************************************/
 
 TC6_Io::TC6_Io(
-#if defined(ARDUINO_ARCH_AVR)
-  SPIClass & spi,
-#else
   HardwareSPI &spi,
-#endif
   int const cs_pin,
   int const reset_pin,
   int const irq_pin)
