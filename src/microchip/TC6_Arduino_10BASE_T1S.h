@@ -14,7 +14,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "../IArduino_10BASE_T1S.h"
+#include "../Arduino_10BASE_T1S_PHY_Interface.h"
 
 #include <stdint.h>
 
@@ -65,7 +65,7 @@ namespace TC6
  * CLASS DECLARATION
  **************************************************************************************/
 
-class TC6_Arduino_10BASE_T1S : public IArduino_10BASE_T1S
+class TC6_Arduino_10BASE_T1S : public Arduino_10BASE_T1S_PHY_Interface
 {
 public:
   TC6_Arduino_10BASE_T1S(TC6_Io * tc6_io);

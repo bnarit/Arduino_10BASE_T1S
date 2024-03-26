@@ -24,10 +24,10 @@
  * CLASS DECLARATION
  **************************************************************************************/
 
-class IArduino_10BASE_T1S
+class Arduino_10BASE_T1S_PHY_Interface
 {
 public:
-  virtual ~IArduino_10BASE_T1S() { }
+  virtual ~Arduino_10BASE_T1S_PHY_Interface() { }
 
   virtual bool begin(IPAddress const ip_addr,
                      IPAddress const network_mask,

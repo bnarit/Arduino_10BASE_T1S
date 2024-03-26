@@ -14,7 +14,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "IArduino_10BASE_T1S.h"
+#include "Arduino_10BASE_T1S_PHY_Interface.h"
 #include "Arduino_10BASE_T1S_UDP.h"
 
 #include "microchip/TC6_Arduino_10BASE_T1S.h"
