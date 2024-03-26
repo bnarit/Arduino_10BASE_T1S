@@ -37,8 +37,15 @@ class MacAddress
 #endif
 {
 public:
+  MacAddress() : MacAddress(nullptr) { }
+  MacAddress(uint8_t const * mac);
+
+  static MacAddress create_from_uid();
+
   uint8_t * data() { return _data; }
   uint8_t const * data() const { return _data; }
+
+
 private:
   uint8_t _data[MAC_ADDRESS_NUM_BYTES];
   virtual size_t printTo(Print & p) const override;

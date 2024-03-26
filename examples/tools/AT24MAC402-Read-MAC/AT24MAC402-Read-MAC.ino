@@ -46,6 +46,7 @@ void setup()
 }
 
 void loop() {
+
 }
 
 static bool get_mac_address(uint8_t * p_mac)

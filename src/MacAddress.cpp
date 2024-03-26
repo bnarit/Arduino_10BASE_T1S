@@ -15,17 +15,41 @@
 #include "MacAddress.h"
 
 /**************************************************************************************
+ * FUNCTION DECLARATION
+ **************************************************************************************/
+
+void get_unique_chip_id_3(uint8_t * uid);
+
+/**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-//MacAddress::MacAddress()
-//{
-//
-//}
+MacAddress::MacAddress(uint8_t const * mac)
+{
+  if (mac)
+    memcpy(_data, mac, MAC_ADDRESS_NUM_BYTES);
+  else
+    memset(_data, 0, MAC_ADDRESS_NUM_BYTES);
+}
 
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
+
+MacAddress MacAddress::create_from_uid()
+{
+  /* The generated MAC address is comprised from Arduino's
+   * Organisationally Unique Identifier (OUI) ...
+   */
+  uint8_t mac_addr[MAC_ADDRESS_NUM_BYTES] = {0xA8, 0x61, 0x0A, 0, 0, 0};
+  /* ... as well as from a part of the unique id from
+   * each MCU.
+   */
+  static uint8_t const MAC_NIC_SPECIFIC_OFFSET = 3;
+  get_unique_chip_id_3(mac_addr + MAC_NIC_SPECIFIC_OFFSET);
+
+  return MacAddress(mac_addr);
+}
 
 size_t MacAddress::printTo(Print & p) const
 {
@@ -44,4 +68,39 @@ size_t MacAddress::printTo(Print & p) const
            ptr_mac[5]);
 
   return p.write(msg);
+}
+
+/**************************************************************************************
+ * FUNCTION DEFINITION
+ **************************************************************************************/
+
+void get_unique_chip_id_3(uint8_t * uid)
+{
+#if defined(ARDUINO_ARCH_SAMD)
+  {
+    uint32_t const samd_uid = *(volatile uint32_t*)(0x0080A048);
+    memcpy(uid, &samd_uid, 3);
+  }
+#elif defined(ARDUINO_MINIMA) || defined(ARDUINO_UNOWIFIR4)
+  {
+    #define BSP_FEATURE_BSP_MCU_INFO_POINTER_LOCATION            (0x407FB19C)
+    #define BSP_FEATURE_BSP_UNIQUE_ID_OFFSET                     (0x14)
+    #define BSP_FEATURE_BSP_UNIQUE_ID_POINTER                    ((*(uint32_t *) BSP_FEATURE_BSP_MCU_INFO_POINTER_LOCATION) \
+                                                                  +                                                         \
+                                                                  BSP_FEATURE_BSP_UNIQUE_ID_OFFSET)
+    typedef struct st_bsp_unique_id
+    {
+      union
+      {
+        uint32_t unique_id_words[4];
+        uint8_t  unique_id_bytes[16];
+      };
+    } bsp_unique_id_t;
+
+    bsp_unique_id_t const * renesas_unique_id = (bsp_unique_id_t *) BSP_FEATURE_BSP_UNIQUE_ID_POINTER;
+    memcpy(uid, renesas_unique_id->unique_id_bytes, 3);
+  }
+#else
+# error "Retrieving a unique chip ID for MAC generation is not supported on this platform."
+#endif
 }
