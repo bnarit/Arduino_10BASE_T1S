@@ -198,6 +198,12 @@ void TC6_Arduino_10BASE_T1S::digitalWrite(bool dioa0, bool dioa1, bool dioa2)
   TC6Regs_SetDio(_lw.tc.tc6, dioa0, dioa1, dioa2);
 }
 
+void TC6_Arduino_10BASE_T1S::digitalWrite(DIO const dio, bool const value)
+{
+  if (dio == DIO::A0)
+    digitalWrite_A0(value);
+}
+
 void TC6_Arduino_10BASE_T1S::service()
 {
   sys_check_timeouts(); /* LWIP timers - ARP, DHCP, TCP, etc. */
@@ -235,6 +241,23 @@ bool TC6_Arduino_10BASE_T1S::sendWouldBlock()
   bool const wouldBlock = (0u == segCount);
 
   return wouldBlock;
+}
+
+void TC6_Arduino_10BASE_T1S::digitalWrite_A0(bool const value)
+{
+  static bool is_dio_a0_enabled = false;
+  if (!is_dio_a0_enabled)
+  {
+    TC6Regs_EnableDio_A0(_lw.tc.tc6);
+    is_dio_a0_enabled = true;
+  }
+
+  static bool dio_a0_val = false;
+  if (value != dio_a0_val)
+  {
+    TC6Regs_ToggleDio_A0(_lw.tc.tc6);
+    dio_a0_val = value;
+  }
 }
 
 /**************************************************************************************

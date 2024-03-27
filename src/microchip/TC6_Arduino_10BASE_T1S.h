@@ -62,6 +62,12 @@ namespace TC6
 {
 
 /**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+enum class DIO { A0, A1, A2, A3, A4, B0 };
+
+/**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
@@ -85,6 +91,8 @@ public:
 
   void digitalWrite(bool dioa0, bool dioa1, bool dioa2);
 
+  void digitalWrite(DIO const dio, bool const value);
+
   bool getPlcaStatus(TC6LwIP_On_PlcaStatus on_plca_status);
   bool enablePlca();
 
@@ -95,6 +103,8 @@ private:
   TC6_Io * _tc6_io;
   TC6LwIP_t _lw;
   T1SPlcaSettings _t1s_plca_settings;
+
+  void digitalWrite_A0(bool const value);
 };
 
 /**************************************************************************************

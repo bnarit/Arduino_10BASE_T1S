@@ -38,6 +38,8 @@ Microchip or any third party.
 #include <stdint.h>
 #include "tc6.h"
 
+#include <type_traits>
+
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                            DEFINITIONS                               */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
@@ -81,6 +83,18 @@ typedef enum
     TC6Regs_Event_Chip_Error,
     TC6Regs_Event_Unsupported_Hardware
 } TC6Regs_Event_t;
+
+enum class PADCTRL_A0SEL : uint32_t
+{
+  EVENT_CAPTURE     = 0x00,
+  EVENT_GENERATOR_0 = 0x01
+};
+constexpr uint32_t PADCTRL_A0SEL_MASK = 0x00000003;
+
+enum class EG0CTL : uint32_t
+{
+  START = 0,
+};
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                            PUBLIC API                                */
@@ -128,6 +142,8 @@ bool TC6Regs_SetPlca(TC6_t *pInst, bool plcaEnable, uint8_t nodeId, uint8_t node
  */
 bool TC6Regs_SetDio(TC6_t *pTC6, bool dioa0, bool dioa1, bool dioa2);
 
+void TC6Regs_EnableDio_A0(TC6_t *pTC6);
+void TC6Regs_ToggleDio_A0(TC6_t *pTC6);
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                   Implementation of TC6 Callback                     */
@@ -159,6 +175,28 @@ uint32_t TC6Regs_CB_GetTicksMs(void);
  * \param event - Enumeration matching to the occured event.
  * \param pTag - The exact same pointer, which was given along with the TC6Regs_Init() function.
  */
- void TC6Regs_CB_OnEvent(TC6_t *pInst, TC6Regs_Event_t event, void *pTag);
+void TC6Regs_CB_OnEvent(TC6_t *pInst, TC6Regs_Event_t event, void *pTag);
+
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+/*                        CONVERSTION FUNCTIONS                         */
+/*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
+
+template <typename Enumeration>
+constexpr auto to_integer(Enumeration const value) -> typename std::underlying_type<Enumeration>::type
+{
+  return static_cast<typename std::underlying_type<Enumeration>::type>(value);
+}
+
+template <typename Enumeration>
+constexpr auto bp(Enumeration const value) -> typename std::underlying_type<Enumeration>::type
+{
+  return to_integer(value);
+}
+
+template <typename Enumeration>
+constexpr auto bm(Enumeration const value) -> typename std::underlying_type<Enumeration>::type
+{
+  return (1 << to_integer(value));
+}
 
 #endif /* TC6_REGS_H_ */

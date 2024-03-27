@@ -211,6 +211,40 @@ bool TC6Regs_SetDio(TC6_t *pTC6, bool dioa0, bool dioa1, bool dioa2)
     return true;
 }
 
+static bool is_dio_a0_op_done = false;
+void TC6_Dio_A0_Callback(TC6_t *pInst, bool success, uint32_t addr, uint32_t value, void *pTag, void *pGlobalTag)
+{
+  is_dio_a0_op_done = true;
+}
+
+void TC6Regs_EnableDio_A0(TC6_t *pTC6)
+{
+  TC6Reg_t * pReg = GetContext(pTC6);
+
+  /* Configure as output, PADCTRL = 0x0088. */
+  uint32_t reg_val = to_integer(PADCTRL_A0SEL::EVENT_GENERATOR_0);
+  uint32_t reg_mask = PADCTRL_A0SEL_MASK;
+
+  is_dio_a0_op_done = false;
+  while (!is_dio_a0_op_done && !TC6_ReadModifyWriteRegister(pReg->pTC6, 0x000A0088, reg_val, reg_mask, CONTROL_PROTECTION, TC6_Dio_A0_Callback, NULL)) {
+    TC6_Service(pReg->pTC6, true);
+  }
+}
+
+void TC6Regs_ToggleDio_A0(TC6_t *pTC6)
+{
+  TC6Reg_t * pReg = GetContext(pTC6);
+
+  /* Toggle output, EG0CTL = 0x0226. */
+  uint32_t reg_val = bm(EG0CTL::START);
+  uint32_t reg_mask = bm(EG0CTL::START);;
+
+  is_dio_a0_op_done = false;
+  while (!is_dio_a0_op_done && !TC6_ReadModifyWriteRegister(pReg->pTC6, 0x000A0226, reg_val, reg_mask, CONTROL_PROTECTION, TC6_Dio_A0_Callback, NULL)) {
+    TC6_Service(pReg->pTC6, true);
+  }
+}
+
 uint8_t TC6Regs_GetChipRevision(TC6_t *pTC6)
 {
     TC6Reg_t *pReg = GetContext(pTC6);
