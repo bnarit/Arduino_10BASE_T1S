@@ -27,6 +27,10 @@ static IPAddress const gateway     {192, 168,  42, 100};
 static T1SPlcaSettings const t1s_plca_settings{T1S_PLCA_NODE_ID};
 static T1SMacSettings const t1s_default_mac_settings;
 
+/* Modify this function call parameter if you want to test a different LAN8651 DIO.
+ */
+static auto const DIO_PIN = TC6::DIO::A0;
+
 /**************************************************************************************
  * GLOBAL VARIABLES
  **************************************************************************************/
@@ -81,10 +85,6 @@ void setup()
   Serial.println(mac_addr);
   Serial.println(t1s_plca_settings);
   Serial.println(t1s_default_mac_settings);
-
-  // If Power Provider, turn on LOCAL_ENABLE and turn on T1S_DISABLE
-  //tc6_inst->digitalWrite(1,1,1);
-  //tc6_inst->digitalWrite(0,0,0);
 }
 
 void loop()
@@ -103,13 +103,22 @@ void loop()
 
     static bool dio_val = false;
 
-    Serial.print("DIO A0 = ");
+    Serial.print("DIO ");
+    Serial.print(toStr(DIO_PIN));
+    Serial.print(" = ");
     Serial.println(dio_val);
 
-    /* Modify this function call parameter if you want
-     * to test a different LAN8651 DIO.
-     */
-    tc6_inst->digitalWrite(TC6::DIO::A1, dio_val);
+    tc6_inst->digitalWrite(DIO_PIN, dio_val);
     dio_val = !dio_val;
   }
+}
+
+String toStr(TC6::DIO const dio)
+{
+  if (dio == TC6::DIO::A0)
+    return String("A0");
+  else if (dio == TC6::DIO::A1)
+    return String("A1");
+  else
+    return String("");
 }
