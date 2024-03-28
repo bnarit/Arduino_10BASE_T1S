@@ -101,7 +101,7 @@ void loop()
   {
     prev_dio_toogle = now;
 
-    static bool dio_val = true;
+    static bool dio_val = false;
 
     Serial.print("DIO A0 = ");
     Serial.println(dio_val);
