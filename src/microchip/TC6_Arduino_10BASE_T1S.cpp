@@ -193,11 +193,6 @@ bool TC6_Arduino_10BASE_T1S::begin(IPAddress const ip_addr,
   return true;
 }
 
-void TC6_Arduino_10BASE_T1S::digitalWrite(bool dioa0, bool dioa1, bool dioa2)
-{
-  TC6Regs_SetDio(_lw.tc.tc6, dioa0, dioa1, dioa2);
-}
-
 void TC6_Arduino_10BASE_T1S::digitalWrite(DIO const dio, bool const value)
 {
   if (dio == DIO::A0)

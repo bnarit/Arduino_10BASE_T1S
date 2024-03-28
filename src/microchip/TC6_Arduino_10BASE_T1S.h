@@ -89,8 +89,6 @@ public:
 
   virtual void service() override;
 
-  void digitalWrite(bool dioa0, bool dioa1, bool dioa2);
-
   void digitalWrite(DIO const dio, bool const value);
 
   bool getPlcaStatus(TC6LwIP_On_PlcaStatus on_plca_status);

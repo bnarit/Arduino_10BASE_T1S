@@ -106,13 +106,6 @@ void setup()
   Serial.println(t1s_plca_settings);
   Serial.println(t1s_mac_settings);
 
-  // If Power Provider, turn on LOCAL_ENABLE and turn on T1S_DISABLE
-  //tc6_inst->digitalWrite(1,1,0);
-  // If Power Receiver, turn off LOCAL_ENABLE and turn off T1S_DISABLE
-  tc6_inst->digitalWrite(0,0,0);
-  // If we want to disable PoDL, turn off LOCAL_ENABLE and turn on T1S_DISABLE
-  //tc6_inst->digitalWrite(0,0,0);
-
   iperf_init(tc6_inst);
   iperf_print_app_header();
   iperf_start_application();
