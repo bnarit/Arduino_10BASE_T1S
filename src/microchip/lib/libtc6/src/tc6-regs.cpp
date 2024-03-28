@@ -245,6 +245,40 @@ void TC6Regs_ToggleDio_A0(TC6_t *pTC6)
   }
 }
 
+static bool is_dio_a1_op_done = false;
+void TC6_Dio_A1_Callback(TC6_t *pInst, bool success, uint32_t addr, uint32_t value, void *pTag, void *pGlobalTag)
+{
+  is_dio_a1_op_done = true;
+}
+
+void TC6Regs_EnableDio_A1(TC6_t *pTC6)
+{
+  TC6Reg_t * pReg = GetContext(pTC6);
+
+  /* Configure as output, PADCTRL = 0x0088. */
+  uint32_t reg_val = to_integer(PADCTRL_A1SEL::EVENT_GENERATOR_1);
+  uint32_t reg_mask = PADCTRL_A1SEL_MASK;
+
+  is_dio_a1_op_done = false;
+  while (!is_dio_a1_op_done && !TC6_ReadModifyWriteRegister(pReg->pTC6, 0x000A0088, reg_val, reg_mask, CONTROL_PROTECTION, TC6_Dio_A0_Callback, NULL)) {
+    TC6_Service(pReg->pTC6, true);
+  }
+}
+
+void TC6Regs_ToggleDio_A1(TC6_t *pTC6)
+{
+  TC6Reg_t * pReg = GetContext(pTC6);
+
+  /* Toggle output, EG1CTL = 0x022C. */
+  uint32_t reg_val = bm(EG1CTL::START);
+  uint32_t reg_mask = bm(EG1CTL::START);;
+
+  is_dio_a1_op_done = false;
+  while (!is_dio_a1_op_done && !TC6_ReadModifyWriteRegister(pReg->pTC6, 0x000A022C, reg_val, reg_mask, CONTROL_PROTECTION, TC6_Dio_A0_Callback, NULL)) {
+    TC6_Service(pReg->pTC6, true);
+  }
+}
+
 uint8_t TC6Regs_GetChipRevision(TC6_t *pTC6)
 {
     TC6Reg_t *pReg = GetContext(pTC6);

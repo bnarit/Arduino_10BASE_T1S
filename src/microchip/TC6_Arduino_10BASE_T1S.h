@@ -65,7 +65,7 @@ namespace TC6
  * TYPEDEF
  **************************************************************************************/
 
-enum class DIO { A0, A1, A2, A3, A4, B0 };
+enum class DIO { A0, A1 };
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -105,6 +105,7 @@ private:
   T1SPlcaSettings _t1s_plca_settings;
 
   void digitalWrite_A0(bool const value);
+  void digitalWrite_A1(bool const value);
 };
 
 /**************************************************************************************

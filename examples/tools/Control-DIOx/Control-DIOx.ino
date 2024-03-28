@@ -109,7 +109,7 @@ void loop()
     /* Modify this function call parameter if you want
      * to test a different LAN8651 DIO.
      */
-    tc6_inst->digitalWrite(TC6::DIO::A0, dio_val);
+    tc6_inst->digitalWrite(TC6::DIO::A1, dio_val);
     dio_val = !dio_val;
   }
 }

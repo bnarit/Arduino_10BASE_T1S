@@ -91,7 +91,20 @@ enum class PADCTRL_A0SEL : uint32_t
 };
 constexpr uint32_t PADCTRL_A0SEL_MASK = 0x00000003;
 
+enum class PADCTRL_A1SEL : uint32_t
+{
+  EVENT_CAPTURE     = 0x00 << 2,
+  EVENT_GENERATOR_1 = 0x01 << 2
+};
+
+constexpr uint32_t PADCTRL_A1SEL_MASK = 0x0000000C;
+
 enum class EG0CTL : uint32_t
+{
+  START = 0,
+};
+
+enum class EG1CTL : uint32_t
 {
   START = 0,
 };
@@ -142,8 +155,15 @@ bool TC6Regs_SetPlca(TC6_t *pInst, bool plcaEnable, uint8_t nodeId, uint8_t node
  */
 bool TC6Regs_SetDio(TC6_t *pTC6, bool dioa0, bool dioa1, bool dioa2);
 
+/** \brief Configure DIOAx GPIOs as output.
+ */
 void TC6Regs_EnableDio_A0(TC6_t *pTC6);
+void TC6Regs_EnableDio_A1(TC6_t *pTC6);
+
+/** \brief Toogle DIOAx GPIOs - initial state after enabling is LOW.
+ */
 void TC6Regs_ToggleDio_A0(TC6_t *pTC6);
+void TC6Regs_ToggleDio_A1(TC6_t *pTC6);
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                   Implementation of TC6 Callback                     */

@@ -202,6 +202,8 @@ void TC6_Arduino_10BASE_T1S::digitalWrite(DIO const dio, bool const value)
 {
   if (dio == DIO::A0)
     digitalWrite_A0(value);
+  else if (dio == DIO::A1)
+    digitalWrite_A1(value);
 }
 
 void TC6_Arduino_10BASE_T1S::service()
@@ -257,6 +259,23 @@ void TC6_Arduino_10BASE_T1S::digitalWrite_A0(bool const value)
   {
     TC6Regs_ToggleDio_A0(_lw.tc.tc6);
     dio_a0_val = value;
+  }
+}
+
+void TC6_Arduino_10BASE_T1S::digitalWrite_A1(bool const value)
+{
+  static bool is_dio_a1_enabled = false;
+  if (!is_dio_a1_enabled)
+  {
+    TC6Regs_EnableDio_A1(_lw.tc.tc6);
+    is_dio_a1_enabled = true;
+  }
+
+  static bool dio_a1_val = false;
+  if (value != dio_a1_val)
+  {
+    TC6Regs_ToggleDio_A1(_lw.tc.tc6);
+    dio_a1_val = value;
   }
 }
 
