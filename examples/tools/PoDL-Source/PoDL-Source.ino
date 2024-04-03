@@ -85,7 +85,7 @@ void setup()
 
   /* A0 -> LOCAL_ENABLE -> feed power from board to network. */
   tc6_inst->digitalWrite(TC6::DIO::A0, true);
-  /* A1 -> T1S_DISBLE -> close the switch connecting network to board. */
+  /* A1 -> T1S_DISABLE -> close the switch connecting network to board. */
   tc6_inst->digitalWrite(TC6::DIO::A1, true);
 
   Serial.println("PoDL-Source");

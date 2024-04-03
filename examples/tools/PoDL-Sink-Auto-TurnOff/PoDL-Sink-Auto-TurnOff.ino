@@ -85,7 +85,7 @@ void setup()
 
   /* A0 -> LOCAL_ENABLE -> DO NOT feed power from board to network. */
   tc6_inst->digitalWrite(TC6::DIO::A0, false);
-  /* A1 -> T1S_DISBLE -> Open the switch connecting network to board by pulling EN LOW. */
+  /* A1 -> T1S_DISABLE -> Open the switch connecting network to board by pulling EN LOW. */
   tc6_inst->digitalWrite(TC6::DIO::A1, true);
 
   Serial.println("PoDL-Sink-Auto-TurnOff");
