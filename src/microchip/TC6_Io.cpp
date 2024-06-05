@@ -25,7 +25,7 @@ namespace TC6
  * CONSTANTS
  **************************************************************************************/
 
-static SPISettings const LAN865x_SPI_SETTING{8 * 1000 * 1000UL, MSBFIRST, SPI_MODE0};
+static SPISettings const LAN865x_SPI_SETTING{24 * 1000 * 1000UL, MSBFIRST, SPI_MODE0};
 
 /**************************************************************************************
  * STATIC MEMBER DEFINITION
@@ -90,8 +90,8 @@ bool TC6_Io::spi_transaction(uint8_t const *pTx, uint8_t *pRx, uint16_t const le
   digitalWrite(_cs_pin, LOW);
   _spi.beginTransaction(LAN865x_SPI_SETTING);
 
-  for (size_t b = 0; b < len; b++)
-    pRx[b] = _spi.transfer(pTx[b]);
+  memcpy(pRx, pTx, len);
+  _spi.transfer(pRx, len);
 
   _spi.endTransaction();
   digitalWrite(_cs_pin, HIGH);
