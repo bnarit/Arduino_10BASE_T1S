@@ -35,7 +35,7 @@
 static int const CS_PIN    = 10;
 static int const RESET_PIN =  9;
 static int const IRQ_PIN   =  2;
-#elif defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_MINIMA) || defined(ARDUINO_UNOWIFIR4) || defined(ARDUINO_AVR_UNO_WIFI_REV2)
+#elif defined(ARDUINO_SAMD_ZERO) || defined(ARDUINO_MINIMA) || defined(ARDUINO_UNOWIFIR4) || defined(ARDUINO_AVR_UNO_WIFI_REV2) || defined(ARDUINO_GIGA)
 /* Those are all boards with the Arduino Uno form factor for the T1S shield. */
 static int const CS_PIN    =  9;
 static int const RESET_PIN =  4;

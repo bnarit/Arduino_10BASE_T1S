@@ -41,11 +41,19 @@ static T1SMacSettings const t1s_mac_settings{MAC_PROMISCUOUS_MODE, MAC_TX_CUT_TH
  * GLOBAL VARIABLES
  **************************************************************************************/
 
+#ifdef ARDUINO_GIGA
+auto const tc6_io = new TC6::TC6_Io
+  ( SPI1
+  , CS_PIN
+  , RESET_PIN
+  , IRQ_PIN);
+#else
 auto const tc6_io = new TC6::TC6_Io
   ( SPI
   , CS_PIN
   , RESET_PIN
   , IRQ_PIN);
+#endif
 auto const tc6_inst = new TC6::TC6_Arduino_10BASE_T1S(tc6_io);
 
 /**************************************************************************************

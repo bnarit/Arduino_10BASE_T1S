@@ -73,6 +73,7 @@ size_t MacAddress::printTo(Print & p) const
 /**************************************************************************************
  * FUNCTION DEFINITION
  **************************************************************************************/
+#include "Arduino.h"
 
 void get_unique_chip_id_3(uint8_t * uid)
 {
@@ -99,6 +100,11 @@ void get_unique_chip_id_3(uint8_t * uid)
 
     bsp_unique_id_t const * renesas_unique_id = (bsp_unique_id_t *) BSP_FEATURE_BSP_UNIQUE_ID_POINTER;
     memcpy(uid, renesas_unique_id->unique_id_bytes, 3);
+  }
+#elif defined(ARDUINO_GIGA)
+  {
+    auto stm32_uid = HAL_GetUIDw2();
+    memcpy(uid, &stm32_uid, 3);
   }
 #else
 # error "Retrieving a unique chip ID for MAC generation is not supported on this platform."
