@@ -137,9 +137,10 @@ bool TC6_Arduino_10BASE_T1S::begin(IPAddress const ip_addr,
   memcpy(_lw.ip.mac, mac_addr.data(), sizeof(_lw.ip.mac));
 
   /* Initialize the TC6 library and pass a global tag. */
-  if (_lw.tc.tc6 = TC6_Init(&_lw);
-    _lw.tc.tc6 == NULL)
+  _lw.tc.tc6 = TC6_Init(&_lw);
+  if (_lw.tc.tc6 == NULL) {
     return false;
+  }
 
   TC6ListNode * ptr = tc6_lwip_instance_list_head;
   while (ptr != nullptr) ptr = ptr->next;
