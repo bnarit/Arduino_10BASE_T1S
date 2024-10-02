@@ -92,7 +92,7 @@ struct perf_stats {
 #define UDP_TIME_INTERVAL 300
 
 /* Server to connect with */
-#define UDP_SERVER_IP_ADDRESS "192.168.0.5"
+#define UDP_SERVER_IP_ADDRESS "192.168.42.100"
 
 /* UDP buffer length in bytes */
 #define UDP_SEND_BUFSIZE 1460
