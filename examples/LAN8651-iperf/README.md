@@ -35,5 +35,5 @@ PING 192.168.42.101 (192.168.42.101) 56(84) bytes of data.
 ```
 Start `iperf` on your PC:
 ```bash
-iperf -c 192.168.42.101 -u -b 10M
+iperf --client 192.168.42.101 --udp --bandwidth 10M
 ```
