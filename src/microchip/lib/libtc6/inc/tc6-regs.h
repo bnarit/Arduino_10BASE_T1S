@@ -148,6 +148,12 @@ void TC6Regs_Reinit(TC6_t *pInst);
  */
 bool TC6Regs_SetPlca(TC6_t *pInst, bool plcaEnable, uint8_t nodeId, uint8_t nodeCount);
 
+/** \brief Returns the LAN865x Revision number.
+ *  \param pInst - The pointer returned by TC6_Init.
+ *  \return 0, in case of error. Otherwise, Chip Revision.
+ */
+uint8_t TC6Regs_GetChipRevision(TC6_t *pInst);
+
 /** \brief Configure DIOAx GPIOs as output.
  */
 void TC6Regs_EnableDio_A0(TC6_t *pTC6);
@@ -191,7 +197,7 @@ uint32_t TC6Regs_CB_GetTicksMs(void);
 void TC6Regs_CB_OnEvent(TC6_t *pInst, TC6Regs_Event_t event, void *pTag);
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
-/*                        CONVERSTION FUNCTIONS                         */
+/*                        CONVERSION  FUNCTIONS                         */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
 template <typename Enumeration>

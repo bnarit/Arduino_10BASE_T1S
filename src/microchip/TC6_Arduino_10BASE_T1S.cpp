@@ -398,58 +398,33 @@ void TC6_CB_OnRxEthernetSlice(TC6_t *pInst, const uint8_t *pRx, uint16_t offset,
 {
   TC6LwIP_t *lw = TC6::GetContextTC6(pInst);
   bool success = true;
-  (void) pInst;
-  (void) pGlobalTag;
+  (void)pInst;
+  (void)pGlobalTag;
 //  TC6_ASSERT(lw->tc.tc6 == pInst);
-  if (lw->tc.rxInvalid)
-  {
+  if (lw->tc.rxInvalid) {
     success = false;
   }
-  if (success && ((offset + len) > TC6LwIP_MTU))
-  {
-//        PrintRateLimited("on_rx_slice:packet greater than MTU", (offset + len));
+  if (success && ((offset + len) > TC6LwIP_MTU)) {
+//    PRINT("on_rx_slice:packet greater than MTU", (offset + len));
     lw->tc.rxInvalid = true;
     success = false;
   }
-  if (success && (0u != offset))
-  {
-    if (!lw->tc.pbuf || !lw->tc.rxLen)
-    {
-//      TC6_ASSERT(false);
+  if (success && (NULL == lw->tc.pbuf)) {
+    lw->tc.pbuf = pbuf_alloc(PBUF_RAW, TC6LwIP_MTU, PBUF_RAM);
+    if (!lw->tc.pbuf) {
       lw->tc.rxInvalid = true;
       success = false;
     }
-  } else
-  {
-    if (success && (lw->tc.pbuf || lw->tc.rxLen))
-    {
-//      TC6_ASSERT(false);
-      lw->tc.rxInvalid = true;
-      success = false;
-    }
-
-    if (success)
-    {
-      lw->tc.pbuf = pbuf_alloc(PBUF_RAW, TC6LwIP_MTU, PBUF_RAM);
-      if (!lw->tc.pbuf)
-      {
-        lw->tc.rxInvalid = true;
-        success = false;
-      }
-    }
-    if (success && (NULL != lw->tc.pbuf->next))
-    {
-//      TC6_ASSERT(lw->tc.pbuf->ref != 0);
-//            PrintRateLimited("rx_slice: could not allocate unsegmented memory diff", (lw->tc.pbuf->tot_len - lw->tc.pbuf->len));
+    if (success && (NULL != lw->tc.pbuf->next)) {
+//      PRINT("rx_slice: could not allocate unsegmented memory diff", (lw->tc.pbuf->tot_len - lw->tc.pbuf->len));
       lw->tc.rxInvalid = true;
       pbuf_free(lw->tc.pbuf);
       lw->tc.pbuf = NULL;
       success = false;
     }
   }
-  if (success)
-  {
-    (void) memcpy((uint8_t *) lw->tc.pbuf->payload + offset, pRx, len);
+  if (success) {
+    (void)memcpy(lw->tc.pbuf->payload + offset, pRx, len);
     lw->tc.rxLen += len;
   }
 }
