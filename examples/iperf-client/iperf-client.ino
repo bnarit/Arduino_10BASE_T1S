@@ -87,15 +87,7 @@ void setup()
     for (;;) { }
   }
 
-  /* Obtain MAC address stored on EEPROM of Mikroe
-   * Two-Wire ETH Click board.
-   */
-  MacAddress mac_addr;
-  if (!get_mac_address(mac_addr.data()))
-  {
-    Serial.println("'get_mac_address(...)' failed, using fallback MAC address.");
-    memcpy(mac_addr.data(), TC6::TC6_Io::FALLBACK_MAC, MAC_ADDRESS_NUM_BYTES);
-  }
+  MacAddress const mac_addr = MacAddress::create_from_uid();
 
   if (!tc6_inst->begin(  ip_addr
                        , network_mask
@@ -155,31 +147,4 @@ static void OnPlcaStatus(bool success, bool plcaStatus)
     Serial.println("CSMA/CD fallback");
     tc6_inst->enablePlca();
   }
-}
-
-static bool get_mac_address(uint8_t * p_mac)
-{
-  static uint8_t const MAC_EEPROM_I2C_SLAVE_ADDR = 0x58;
-  static uint8_t const MAC_EEPROM_EUI_REG_ADDR = 0x9A;
-  static uint8_t const MAC_EEPROM_MAC_SIZE = 6;
-  bool success = false;
-
-  Wire.beginTransmission(MAC_EEPROM_I2C_SLAVE_ADDR);
-  Wire.write(MAC_EEPROM_EUI_REG_ADDR);
-  Wire.endTransmission();
-
-  Wire.requestFrom(MAC_EEPROM_I2C_SLAVE_ADDR, MAC_EEPROM_MAC_SIZE);
-
-  uint32_t const start = millis();
-
-  size_t bytes_read = 0;
-  while (bytes_read < MAC_EEPROM_MAC_SIZE && ((millis() - start) < 1000)) {
-    if (Wire.available()) {
-      p_mac[bytes_read] = Wire.read();
-      bytes_read++;
-    }
-  }
-
-  success = (bytes_read == MAC_EEPROM_MAC_SIZE);
-  return success;
 }

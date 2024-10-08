@@ -1,14 +1,11 @@
-:floppy_disk: `LAN8651-iperf`
+:floppy_disk: `iperf-client`
 =============================
 
 This example sketch can be used to measure 10BASE-T1S network performance using this software stack. The required hardware is a Arduino [Nano 33 IoT](https://store.arduino.cc/products/arduino-nano-33-iot) and a Mikroe [2-Wire ETH](https://www.mikroe.com/two-wire-eth-click) click board. 
 
 ### How-to-compile/upload
 ```bash
-arduino-cli compile -b arduino:samd:nano_33_iot -v examples/LAN8651-iperf
-arduino-cli upload -b arduino:samd:nano_33_iot -v examples/LAN8651-iperf -p /dev/ttyACM0
-# or
-arduino-cli compile -b arduino:samd:nano_33_iot -v examples/LAN8651-iperf -u -p /dev/ttyACM0
+arduino-cli compile -b arduino:renesas_uno:unor4wifi -v examples/iperf-client -u -p /dev/ttyACM0
 ```
 
 ### How-to-`iperf`
@@ -35,5 +32,5 @@ PING 192.168.42.101 (192.168.42.101) 56(84) bytes of data.
 ```
 Start `iperf` on your PC:
 ```bash
-iperf -c 192.168.42.101 -u -b 10M
+iperf --client 192.168.42.101 --udp --bandwidth 10M
 ```
