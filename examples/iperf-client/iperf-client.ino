@@ -48,8 +48,12 @@ auto const tc6_io = new TC6::TC6_Io
   , RESET_PIN
   , IRQ_PIN);
 #else
-auto const tc6_io = new TC6::TC6_Io
-  ( SPI
+auto const tc6_io = new TC6::TC6_Io(
+#ifdef ARDUINO_GIGA
+  SPI1
+#else
+  SPI
+#endif
   , CS_PIN
   , RESET_PIN
   , IRQ_PIN);
