@@ -46,6 +46,11 @@ static int const IRQ_PIN   =  2;
 static int const CS_PIN    =  PinNameToIndex(PH_6);
 static int const RESET_PIN =  PinNameToIndex(PJ_11);
 static int const IRQ_PIN   =  PinNameToIndex(PC_7);
+#elif defined(ARDUINO_PORTENTA_C33)
+/* Pro Demo kit on MID carrier, UNO form factor */
+static int const CS_PIN    =  25;
+static int const RESET_PIN =  4;
+static int const IRQ_PIN   =  2;
 #else
 # error "No pins defined for your board"
 #endif
