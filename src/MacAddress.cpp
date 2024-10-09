@@ -101,7 +101,11 @@ void get_unique_chip_id_3(uint8_t * uid)
     bsp_unique_id_t const * renesas_unique_id = (bsp_unique_id_t *) BSP_FEATURE_BSP_UNIQUE_ID_POINTER;
     memcpy(uid, renesas_unique_id->unique_id_bytes, 3);
   }
-#elif defined(ARDUINO_GIGA)
+#elif defined(ARDUINO_GIGA) || defined(ARDUINO_PORTENTA_H7_M7) || defined(ARDUINO_PORTENTA_H7_M4)
+  {
+    uint32_t const stm32_uid = HAL_GetUIDw2();
+    memcpy(uid, &stm32_uid, 3);
+  }
   {
     auto stm32_uid = HAL_GetUIDw2();
     memcpy(uid, &stm32_uid, 3);
