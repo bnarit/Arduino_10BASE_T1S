@@ -143,7 +143,7 @@ void loop()
   int const rx_packet_size = udp_client.parsePacket();
   if (rx_packet_size)
   {
-    /* Receive incoming UDP packets. */
+    /* Print some metadata from received UDP packet. */
     Serial.print("Received ");
     Serial.print(rx_packet_size);
     Serial.print(" bytes from ");
@@ -152,15 +152,21 @@ void loop()
     Serial.print(udp_client.remotePort());
     Serial.println();
 
+    /* Read from received UDP packet. */
     int const bytes_read = udp_client.read(udp_rx_msg_buf, sizeof(udp_rx_msg_buf));
     if (bytes_read > 0) {
       udp_rx_msg_buf[bytes_read] = 0;
     }
+
+    /* Finish reading the current packet. */
+    udp_client.flush();
+
     Serial.print("[");
     Serial.print(millis());
     Serial.print("] UDP_Client received packet content: \"");
     Serial.print(reinterpret_cast<char *>(udp_rx_msg_buf));
     Serial.println("\"");
+
   }
 }
 
