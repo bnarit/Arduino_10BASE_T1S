@@ -95,8 +95,8 @@ private:
       : _remote_ip(remote_ip)
       , _remote_port(remote_port)
       , _rx_data_len(data_len)
+      , _rx_data(p_data, p_data + data_len)
     {
-      std::copy(p_data, p_data + data_len, std::back_inserter(_rx_data));
     }
 
     typedef std::shared_ptr<UdpRxPacket> SharedPtr;

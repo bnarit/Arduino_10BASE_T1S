@@ -121,6 +121,7 @@ void loop()
     prev_udp_packet_sent = now;
 
     /* Prepare UDP packet. */
+    uint8_t udp_tx_msg_buf[256] = {0};
     int const tx_packet_size = snprintf((char *)udp_tx_msg_buf, sizeof(udp_tx_msg_buf), "Single-Pair Ethernet / 10BASE-T1S: packet cnt = %d", tx_packet_cnt);
 
     /* Send a UDP packet to the UDP server. */

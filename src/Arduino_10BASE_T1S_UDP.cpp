@@ -129,7 +129,6 @@ size_t Arduino_10BASE_T1S_UDP::write(uint8_t data)
 
 size_t Arduino_10BASE_T1S_UDP::write(const uint8_t * buffer, size_t size)
 {
-  _tx_data.reserve(_tx_data.size() + size);
   std::copy(buffer, buffer + size, std::back_inserter(_tx_data));
   return size;
 }

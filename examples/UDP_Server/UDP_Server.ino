@@ -121,7 +121,7 @@ void loop()
   int const rx_packet_size = udp_server.parsePacket();
   if (rx_packet_size)
   {
-    std::vector<uint8_t> udp_tx_buf(rx_packet_size);
+    std::vector<uint8_t> udp_tx_buf;
     IPAddress const destination_ip = udp_server.remoteIP();
     uint16_t const destination_port = udp_server.remotePort();
 
