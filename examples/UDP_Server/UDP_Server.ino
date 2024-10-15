@@ -140,7 +140,7 @@ void loop()
 
     Serial.print("[");
     Serial.print(millis());
-    Serial.print("] UDP_Client received packet content: \"");
+    Serial.print("] UDP_Server received packet content: \"");
 
     /* Read from received UDP packet. */
     size_t const UDP_RX_MSG_BUF_SIZE = 16 + 1; /* Reserve the last byte for the '\0' termination. */
