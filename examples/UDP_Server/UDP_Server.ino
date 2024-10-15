@@ -33,7 +33,6 @@ static T1SPlcaSettings const t1s_plca_settings{T1S_PLCA_NODE_ID};
 static T1SMacSettings const t1s_default_mac_settings;
 
 static uint16_t const UDP_SERVER_LOCAL_PORT = 8888;
-static uint8_t udp_rx_msg_buf[256] = {0};
 
 /**************************************************************************************
  * GLOBAL VARIABLES
@@ -119,34 +118,50 @@ void loop()
   }
 
   /* Check for incoming UDP packets. */
-  int const packet_size = udp_server.parsePacket();
-  if (packet_size)
+  int const rx_packet_size = udp_server.parsePacket();
+  if (rx_packet_size)
   {
+    std::vector<uint8_t> udp_tx_buf(rx_packet_size);
+    IPAddress const destination_ip = udp_server.remoteIP();
+    uint16_t const destination_port = udp_server.remotePort();
+
     /* Print some metadata from received UDP packet. */
     Serial.print("Received ");
-    Serial.print(packet_size);
+    Serial.print(rx_packet_size);
     Serial.print(" bytes from ");
     Serial.print(udp_server.remoteIP());
     Serial.print(" port ");
     Serial.print(udp_server.remotePort());
     Serial.println();
 
+    Serial.print("[");
+    Serial.print(millis());
+    Serial.print("] UDP_Client received packet content: \"");
+
     /* Read from received UDP packet. */
-    int const bytes_read = udp_server.read(udp_rx_msg_buf, sizeof(udp_rx_msg_buf));
-    if (bytes_read > 0) {
-      udp_rx_msg_buf[bytes_read] = 0;
+    size_t const UDP_RX_MSG_BUF_SIZE = 16 + 1; /* Reserve the last byte for the '\0' termination. */
+    uint8_t udp_rx_msg_buf[UDP_RX_MSG_BUF_SIZE] = {0};
+    int bytes_read = udp_server.read(udp_rx_msg_buf, UDP_RX_MSG_BUF_SIZE - 1);
+    while(bytes_read != 0)
+    {
+      /* Copy received data into transmit buffer for echo functionality. */
+      std::copy(udp_rx_msg_buf, udp_rx_msg_buf + bytes_read, std::back_inserter(udp_tx_buf));
+
+      /* Print received data to Serial. */
+      udp_rx_msg_buf[bytes_read] = '\0'; /* Terminate buffer so that we can print it as a C-string. */
+      Serial.print(reinterpret_cast<char *>(udp_rx_msg_buf));
+
+      /* Continue reading. */
+      bytes_read = udp_server.read(udp_rx_msg_buf, UDP_RX_MSG_BUF_SIZE - 1);
     }
+    Serial.println("\"");
 
     /* Finish reading the current packet. */
     udp_server.flush();
 
-    Serial.print("UDP_Server received packet content: \"");
-    Serial.print(reinterpret_cast<char *>(udp_rx_msg_buf));
-    Serial.println("\"");
-
     /* Send back a reply, to the IP address and port we got the packet from. */
-    udp_server.beginPacket(udp_server.remoteIP(), udp_server.remotePort());
-    udp_server.write((const uint8_t *)udp_rx_msg_buf, packet_size);
+    udp_server.beginPacket(destination_ip, destination_port);
+    udp_server.write(udp_tx_buf.data(), udp_tx_buf.size());
     udp_server.endPacket();
   }
 }
