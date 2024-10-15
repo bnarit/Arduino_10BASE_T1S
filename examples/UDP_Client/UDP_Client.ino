@@ -29,18 +29,20 @@ static T1SMacSettings const t1s_default_mac_settings;
 static IPAddress const UDP_SERVER_IP_ADDR = {192, 168,  42, 100 + 0};
 static uint16_t const UDP_CLIENT_PORT = 8889;
 static uint16_t const UDP_SERVER_PORT = 8888;
-static uint8_t udp_tx_msg_buf[256] = {0};
-static uint8_t udp_rx_msg_buf[256] = {0};
 
 /**************************************************************************************
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-auto const tc6_io = new TC6::TC6_Io
-  ( SPI
-    , CS_PIN
-    , RESET_PIN
-    , IRQ_PIN);
+auto const tc6_io = new TC6::TC6_Io(
+#ifdef ARDUINO_GIGA
+  SPI1
+#else
+  SPI
+#endif
+  , CS_PIN
+  , RESET_PIN
+  , IRQ_PIN);
 auto const tc6_inst = new TC6::TC6_Arduino_10BASE_T1S(tc6_io);
 Arduino_10BASE_T1S_UDP udp_client;
 
@@ -123,6 +125,7 @@ void loop()
     prev_udp_packet_sent = now;
 
     /* Prepare UDP packet. */
+    uint8_t udp_tx_msg_buf[256] = {0};
     int const tx_packet_size = snprintf((char *)udp_tx_msg_buf, sizeof(udp_tx_msg_buf), "Single-Pair Ethernet / 10BASE-T1S: packet cnt = %d", tx_packet_cnt);
 
     /* Send a UDP packet to the UDP server. */
@@ -143,24 +146,34 @@ void loop()
   int const rx_packet_size = udp_client.parsePacket();
   if (rx_packet_size)
   {
-    /* Receive incoming UDP packets. */
-    Serial.print("Received ");
+    /* Print some metadata from received UDP packet. */
+    Serial.print("[");
+    Serial.print(millis());
+    Serial.print("] Received ");
     Serial.print(rx_packet_size);
     Serial.print(" bytes from ");
     Serial.print(udp_client.remoteIP());
     Serial.print(" port ");
     Serial.print(udp_client.remotePort());
-    Serial.println();
+    Serial.print(", data = \"");
 
-    int const bytes_read = udp_client.read(udp_rx_msg_buf, sizeof(udp_rx_msg_buf));
-    if (bytes_read > 0) {
-      udp_rx_msg_buf[bytes_read] = 0;
+    /* Read from received UDP packet. */
+    size_t const UDP_RX_MSG_BUF_SIZE = 16 + 1; /* Reserve the last byte for the '\0' termination. */
+    uint8_t udp_rx_msg_buf[UDP_RX_MSG_BUF_SIZE] = {0};
+    int bytes_read = udp_client.read(udp_rx_msg_buf, UDP_RX_MSG_BUF_SIZE - 1);
+    while(bytes_read != 0)
+    {
+      /* Print received data to Serial. */
+      udp_rx_msg_buf[bytes_read] = '\0'; /* Terminate buffer so that we can print it as a C-string. */
+      Serial.print(reinterpret_cast<char *>(udp_rx_msg_buf));
+
+      /* Continue reading. */
+      bytes_read = udp_client.read(udp_rx_msg_buf, UDP_RX_MSG_BUF_SIZE - 1);
     }
-    Serial.print("[");
-    Serial.print(millis());
-    Serial.print("] UDP_Client received packet content: \"");
-    Serial.print(reinterpret_cast<char *>(udp_rx_msg_buf));
     Serial.println("\"");
+
+    /* Finish reading the current packet. */
+    udp_client.flush();
   }
 }
 

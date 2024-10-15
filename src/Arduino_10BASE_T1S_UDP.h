@@ -14,8 +14,10 @@
  * INCLUDE
  **************************************************************************************/
 
+#include <list>
 #include <deque>
 #include <vector>
+#include <memory>
 
 #include <api/Udp.h>
 #include <api/IPAddress.h>
@@ -67,13 +69,74 @@ public:
 
 
 private:
+  /* LWIP */
   struct udp_pcb * _udp_pcb;
 
-  IPAddress _remote_ip;
-  uint16_t _remote_port;
-  std::deque<uint8_t> _rx_data;
-
+  /* UDP TRANSMISSION */
   IPAddress _send_to_ip;
   uint16_t _send_to_port;
   std::vector<uint8_t> _tx_data;
+
+  /* UDP RECEPTION */
+  class UdpRxPacket
+  {
+  private:
+    IPAddress const _remote_ip;
+    uint16_t const _remote_port;
+    size_t const _rx_data_len;
+    std::deque<uint8_t> _rx_data;
+
+  public:
+    UdpRxPacket(
+      IPAddress const remote_ip,
+      uint16_t const remote_port,
+      uint8_t const * p_data,
+      size_t const data_len)
+      : _remote_ip(remote_ip)
+      , _remote_port(remote_port)
+      , _rx_data_len(data_len)
+      , _rx_data(p_data, p_data + data_len)
+    {
+    }
+
+    typedef std::shared_ptr<UdpRxPacket> SharedPtr;
+
+    IPAddress remoteIP() const { return _remote_ip; }
+    uint16_t remotePort() const { return _remote_port; }
+    size_t totalSize() const { return _rx_data_len; }
+
+    int available()
+    {
+      return _rx_data.size();
+    }
+
+    int read()
+    {
+      uint8_t const data = _rx_data.front();
+      _rx_data.pop_front();
+      return data;
+    }
+
+    int read(unsigned char* buffer, size_t len)
+    {
+      size_t bytes_read = 0;
+      for (; bytes_read < len && !_rx_data.empty(); bytes_read++)
+      {
+        buffer[bytes_read] = _rx_data.front();
+        _rx_data.pop_front();
+      }
+      return bytes_read;
+    }
+
+    int read(char* buffer, size_t len)
+    {
+      return read((unsigned char*)buffer, len);
+    }
+
+    int peek()
+    {
+      return _rx_data.front();
+    }
+  };
+  std::list<UdpRxPacket::SharedPtr> _rx_pkt_list;
 };

@@ -32,11 +32,15 @@ static T1SMacSettings const t1s_default_mac_settings;
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-auto const tc6_io = new TC6::TC6_Io
-  ( SPI
-    , CS_PIN
-    , RESET_PIN
-    , IRQ_PIN);
+auto const tc6_io = new TC6::TC6_Io(
+#ifdef ARDUINO_GIGA
+  SPI1
+#else
+  SPI
+#endif
+  , CS_PIN
+  , RESET_PIN
+  , IRQ_PIN);
 auto const tc6_inst = new TC6::TC6_Arduino_10BASE_T1S(tc6_io);
 
 /**************************************************************************************
