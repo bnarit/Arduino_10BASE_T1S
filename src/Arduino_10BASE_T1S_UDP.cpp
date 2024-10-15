@@ -186,11 +186,7 @@ void Arduino_10BASE_T1S_UDP::flush()
 {
   /* Drop packet from receive buffer. */
   if (_rx_pkt_list.size())
-  {
-    auto const rx_pkt = _rx_pkt_list.front();
     _rx_pkt_list.pop_front();
-    delete rx_pkt;
-  }
 }
 
 IPAddress Arduino_10BASE_T1S_UDP::remoteIP()
@@ -220,7 +216,7 @@ void Arduino_10BASE_T1S_UDP::onUdpRawRecv(struct udp_pcb *pcb, struct pbuf *p, c
   auto const remote_port = port;
 
   /* Create UDP object. */
-  auto const rx_pkt = new UdpRxPacket(
+  auto const rx_pkt = std::make_shared<UdpRxPacket>(
     remote_ip,
     remote_port,
     (uint8_t *)p->payload,

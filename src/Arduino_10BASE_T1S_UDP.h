@@ -17,6 +17,7 @@
 #include <list>
 #include <deque>
 #include <vector>
+#include <memory>
 
 #include <api/Udp.h>
 #include <api/IPAddress.h>
@@ -98,6 +99,8 @@ private:
       std::copy(p_data, p_data + data_len, std::back_inserter(_rx_data));
     }
 
+    typedef std::shared_ptr<UdpRxPacket> SharedPtr;
+
     IPAddress remoteIP() const { return _remote_ip; }
     uint16_t remotePort() const { return _remote_port; }
     size_t totalSize() const { return _rx_data_len; }
@@ -135,5 +138,5 @@ private:
       return _rx_data.front();
     }
   };
-  std::list<UdpRxPacket *> _rx_pkt_list;
+  std::list<UdpRxPacket::SharedPtr> _rx_pkt_list;
 };
