@@ -218,7 +218,7 @@ void Arduino_10BASE_T1S_UDP::onUdpRawRecv(struct udp_pcb *pcb, struct pbuf *p, c
   auto const rx_pkt = std::make_shared<UdpRxPacket>(
     remote_ip,
     remote_port,
-    (uint8_t *)p->payload,
+    (uint8_t const *)p->payload,
     p->len);
 
   _rx_pkt_list.push_back(rx_pkt);
