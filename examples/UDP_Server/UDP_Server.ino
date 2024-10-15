@@ -130,17 +130,15 @@ void loop()
     uint16_t const destination_port = udp_server.remotePort();
 
     /* Print some metadata from received UDP packet. */
-    Serial.print("Received ");
+    Serial.print("[");
+    Serial.print(millis());
+    Serial.print("] Received ");
     Serial.print(rx_packet_size);
     Serial.print(" bytes from ");
     Serial.print(udp_server.remoteIP());
     Serial.print(" port ");
     Serial.print(udp_server.remotePort());
-    Serial.println();
-
-    Serial.print("[");
-    Serial.print(millis());
-    Serial.print("] UDP_Server received packet content: \"");
+    Serial.print(", data = \"");
 
     /* Read from received UDP packet. */
     size_t const UDP_RX_MSG_BUF_SIZE = 16 + 1; /* Reserve the last byte for the '\0' termination. */
@@ -169,7 +167,6 @@ void loop()
     udp_server.endPacket();
   }
 }
-
 
 static void OnPlcaStatus(bool success, bool plcaStatus)
 {
