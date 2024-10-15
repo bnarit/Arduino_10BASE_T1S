@@ -34,11 +34,15 @@ static uint16_t const UDP_SERVER_PORT = 8888;
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-auto const tc6_io = new TC6::TC6_Io
-  ( SPI
-    , CS_PIN
-    , RESET_PIN
-    , IRQ_PIN);
+auto const tc6_io = new TC6::TC6_Io(
+#ifdef ARDUINO_GIGA
+  SPI1
+#else
+  SPI
+#endif
+  , CS_PIN
+  , RESET_PIN
+  , IRQ_PIN);
 auto const tc6_inst = new TC6::TC6_Arduino_10BASE_T1S(tc6_io);
 Arduino_10BASE_T1S_UDP udp_client;
 
@@ -143,17 +147,15 @@ void loop()
   if (rx_packet_size)
   {
     /* Print some metadata from received UDP packet. */
-    Serial.print("Received ");
+    Serial.print("[");
+    Serial.print(millis());
+    Serial.print("] Received ");
     Serial.print(rx_packet_size);
     Serial.print(" bytes from ");
     Serial.print(udp_client.remoteIP());
     Serial.print(" port ");
     Serial.print(udp_client.remotePort());
-    Serial.println();
-
-    Serial.print("[");
-    Serial.print(millis());
-    Serial.print("] UDP_Client received packet content: \"");
+    Serial.print(", data = \"");
 
     /* Read from received UDP packet. */
     size_t const UDP_RX_MSG_BUF_SIZE = 16 + 1; /* Reserve the last byte for the '\0' termination. */

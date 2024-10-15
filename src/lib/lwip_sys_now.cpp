@@ -22,6 +22,7 @@
 
 #include <Arduino.h>
 
+#include "liblwip/include/lwip/opt.h"
 #include "liblwip/arch/cc.h"
 
 /**************************************************************************************
