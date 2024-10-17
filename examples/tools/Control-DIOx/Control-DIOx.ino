@@ -36,7 +36,7 @@ static auto const DIO_PIN = TC6::DIO::A0;
  **************************************************************************************/
 
 auto const tc6_io = new TC6::TC6_Io(
-#ifdef ARDUINO_GIGA
+#if defined(ARDUINO_GIGA) || defined(ARDUINO_PORTENTA_C33)
   SPI1
 #else
   SPI

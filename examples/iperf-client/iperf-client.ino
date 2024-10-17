@@ -42,7 +42,7 @@ static T1SMacSettings const t1s_mac_settings{MAC_PROMISCUOUS_MODE, MAC_TX_CUT_TH
  **************************************************************************************/
 
 auto const tc6_io = new TC6::TC6_Io(
-#ifdef ARDUINO_GIGA
+#if defined(ARDUINO_GIGA) || defined(ARDUINO_PORTENTA_C33)
   SPI1
 #else
   SPI
