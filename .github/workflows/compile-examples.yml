@@ -48,6 +48,9 @@ jobs:
           - fqbn: arduino:mbed_giga:giga
             platforms: |
               - name: arduino:mbed_giga
+          - fqbn: arduino:mbed_portenta:envie_m7
+            platforms: |
+              - name: arduino:mbed_portenta
 
     steps:
       - name: Checkout
