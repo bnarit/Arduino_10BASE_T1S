@@ -35,7 +35,7 @@ static uint16_t const UDP_SERVER_PORT = 8888;
  **************************************************************************************/
 
 auto const tc6_io = new TC6::TC6_Io(
-#ifdef ARDUINO_GIGA
+#if defined(ARDUINO_GIGA) || defined(ARDUINO_PORTENTA_C33)
   SPI1
 #else
   SPI

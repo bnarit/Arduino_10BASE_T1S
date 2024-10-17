@@ -82,26 +82,16 @@ void get_unique_chip_id_3(uint8_t * uid)
     uint32_t const samd_uid = *(volatile uint32_t*)(0x0080A048);
     memcpy(uid, &samd_uid, 3);
   }
-#elif defined(ARDUINO_MINIMA) || defined(ARDUINO_UNOWIFIR4)
+#elif defined(ARDUINO_MINIMA) || defined(ARDUINO_UNOWIFIR4) || defined(ARDUINO_PORTENTA_C33)
   {
-    #define BSP_FEATURE_BSP_MCU_INFO_POINTER_LOCATION            (0x407FB19C)
-    #define BSP_FEATURE_BSP_UNIQUE_ID_OFFSET                     (0x14)
-    #define BSP_FEATURE_BSP_UNIQUE_ID_POINTER                    ((*(uint32_t *) BSP_FEATURE_BSP_MCU_INFO_POINTER_LOCATION) \
-                                                                  +                                                         \
-                                                                  BSP_FEATURE_BSP_UNIQUE_ID_OFFSET)
-    typedef struct st_bsp_unique_id
-    {
-      union
-      {
-        uint32_t unique_id_words[4];
-        uint8_t  unique_id_bytes[16];
-      };
-    } bsp_unique_id_t;
-
-    bsp_unique_id_t const * renesas_unique_id = (bsp_unique_id_t *) BSP_FEATURE_BSP_UNIQUE_ID_POINTER;
-    memcpy(uid, renesas_unique_id->unique_id_bytes, 3);
+    const bsp_unique_id_t* t = R_BSP_UniqueIdGet();
+    memcpy(uid, t->unique_id_bytes, 3);
   }
-#elif defined(ARDUINO_GIGA)
+#elif defined(ARDUINO_GIGA) || defined(ARDUINO_PORTENTA_H7_M7) || defined(ARDUINO_PORTENTA_H7_M4)
+  {
+    uint32_t const stm32_uid = HAL_GetUIDw2();
+    memcpy(uid, &stm32_uid, 3);
+  }
   {
     auto stm32_uid = HAL_GetUIDw2();
     memcpy(uid, &stm32_uid, 3);
@@ -110,3 +100,9 @@ void get_unique_chip_id_3(uint8_t * uid)
 # error "Retrieving a unique chip ID for MAC generation is not supported on this platform."
 #endif
 }
+
+#if defined(ARDUINO_PORTENTA_C33)
+extern "C" int LWIP_RAND() {
+  return rand();
+}
+#endif

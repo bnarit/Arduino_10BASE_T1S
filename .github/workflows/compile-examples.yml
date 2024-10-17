@@ -42,9 +42,15 @@ jobs:
           - fqbn: arduino:renesas_uno:unor4wifi
             platforms: |
               - name: arduino:renesas_uno
+          - fqbn: arduino:renesas_portenta:portenta_c33
+            platforms: |
+              - name: arduino:renesas_portenta
           - fqbn: arduino:mbed_giga:giga
             platforms: |
               - name: arduino:mbed_giga
+          - fqbn: arduino:mbed_portenta:envie_m7
+            platforms: |
+              - name: arduino:mbed_portenta
 
     steps:
       - name: Checkout
