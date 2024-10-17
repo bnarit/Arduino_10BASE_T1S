@@ -1,7 +1,5 @@
 /*
- * This example has been tested with Arduino Nano 33 IoT and with
- * Mikroe Two-Wire ETH Click board (MicroChip LAN8651). For further
- * information take a look at the README.
+ * This example has been tested with the Arduino 10BASE-T1S (T1TOS) shield.
  *
  * Author:
  *  Alexander Entinger
