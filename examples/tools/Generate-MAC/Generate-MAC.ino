@@ -1,6 +1,5 @@
 /*
- * This example has been tested with Arduino Uno WiFi R4 and Arduino Nano 33 IoT.
- *   - arduino-cli compile -b arduino:samd:nano_33_iot -v examples/tools/Generate-MAC -u -p /dev/ttyACM0
+ * This example has been tested with Arduino Uno Minima / WiFi R4.
  *   - arduino-cli compile -b arduino:renesas_uno:unor4wifi -v examples/tools/Generate-MAC -u -p /dev/ttyACM0
  *   - arduino-cli compile -b arduino:renesas_uno:minima -v examples/tools/Generate-MAC -u -p /dev/ttyACM0
  */

@@ -1,11 +1,11 @@
 :floppy_disk: `iperf-client`
 =============================
 
-This example sketch can be used to measure 10BASE-T1S network performance using this software stack. The required hardware is a Arduino [Nano 33 IoT](https://store.arduino.cc/products/arduino-nano-33-iot) and a Mikroe [2-Wire ETH](https://www.mikroe.com/two-wire-eth-click) click board. 
+This example sketch can be used to measure 10BASE-T1S network performance using this software stack. 
 
 ### How-to-compile/upload
 ```bash
-arduino-cli compile -b arduino:renesas_uno:unor4wifi -v examples/iperf-client -u -p /dev/ttyACM0
+arduino-cli compile -b arduino:renesas_uno:minima -v examples/iperf-client -u -p /dev/ttyACM0
 ```
 
 ### How-to-`iperf`
