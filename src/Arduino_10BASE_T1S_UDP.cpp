@@ -28,6 +28,7 @@ Arduino_10BASE_T1S_UDP::Arduino_10BASE_T1S_UDP()
 : _udp_pcb{nullptr}
 , _send_to_ip{0,0,0,0}
 , _send_to_port{0}
+, _rx_pkt{nullptr}
 {
 
 }
@@ -136,70 +137,83 @@ size_t Arduino_10BASE_T1S_UDP::write(const uint8_t * buffer, size_t size)
 int Arduino_10BASE_T1S_UDP::parsePacket()
 {
   if (_rx_pkt_list.size())
-    return _rx_pkt_list.front()->totalSize();
+  {
+    /* Discard UdpRxPacket object previously held by _rx_pkt
+     * and replace it with the new one.
+     */
+    _rx_pkt = _rx_pkt_list.front();
+    _rx_pkt_list.pop_front();
+    return _rx_pkt->totalSize();
+  }
   else
+  {
+    /* Otherwise ensure that _rx_pkt definitely
+     * does not hold any UdpRxPacket object anymore.
+     */
+    _rx_pkt.reset();
     return 0;
+  }
 }
 
 int Arduino_10BASE_T1S_UDP::available()
 {
-  if (_rx_pkt_list.size())
-    return _rx_pkt_list.front()->available();
+  if (_rx_pkt)
+    return _rx_pkt->available();
   else
     return 0;
 }
 
 int Arduino_10BASE_T1S_UDP::read()
 {
-  if (_rx_pkt_list.size())
-   return _rx_pkt_list.front()->read();
+  if (_rx_pkt)
+   return _rx_pkt->read();
   else
     return -1;
 }
 
 int Arduino_10BASE_T1S_UDP::read(unsigned char* buffer, size_t len)
 {
-  if (_rx_pkt_list.size())
-    return _rx_pkt_list.front()->read(buffer, len);
+  if (_rx_pkt)
+    return _rx_pkt->read(buffer, len);
   else
     return -1;
 }
 
 int Arduino_10BASE_T1S_UDP::read(char* buffer, size_t len)
 {
-  if (_rx_pkt_list.size())
-    return _rx_pkt_list.front()->read(buffer, len);
+  if (_rx_pkt)
+    return _rx_pkt->read(buffer, len);
   else
     return -1;
 }
 
 int Arduino_10BASE_T1S_UDP::peek()
 {
-  if (_rx_pkt_list.size())
-    return _rx_pkt_list.front()->peek();
+  if (_rx_pkt)
+    return _rx_pkt->peek();
   else
     return -1;
 }
 
 void Arduino_10BASE_T1S_UDP::flush()
 {
-  /* Drop packet from receive buffer. */
-  if (_rx_pkt_list.size())
-    _rx_pkt_list.pop_front();
+  /* Delete UdpRxPacket object held by _rx_pkt. */
+  if (_rx_pkt)
+    _rx_pkt.reset();
 }
 
 IPAddress Arduino_10BASE_T1S_UDP::remoteIP()
 {
-  if (_rx_pkt_list.size())
-    return _rx_pkt_list.front()->remoteIP();
+  if (_rx_pkt)
+    return _rx_pkt->remoteIP();
   else
     return IPAddress();
 }
 
 uint16_t Arduino_10BASE_T1S_UDP::remotePort()
 {
-  if (_rx_pkt_list.size())
-    return _rx_pkt_list.front()->remotePort();
+  if (_rx_pkt)
+    return _rx_pkt->remotePort();
   else
     return 0;
 }

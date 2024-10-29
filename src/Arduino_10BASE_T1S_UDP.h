@@ -139,4 +139,5 @@ private:
     }
   };
   std::list<UdpRxPacket::SharedPtr> _rx_pkt_list;
+  UdpRxPacket::SharedPtr _rx_pkt;
 };
