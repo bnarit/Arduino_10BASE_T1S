@@ -66,7 +66,9 @@ public:
    * it's used for internal purposes only.
    */
   void onUdpRawRecv(struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, uint16_t port);
-
+  void bufferSize(int size) {
+    _rx_pkt_list_size = size;
+  }
 
 private:
   /* LWIP */
@@ -76,7 +78,7 @@ private:
   IPAddress _send_to_ip;
   uint16_t _send_to_port;
   std::vector<uint8_t> _tx_data;
-
+  int _rx_pkt_list_size = 10;
   /* UDP RECEPTION */
   class UdpRxPacket
   {
