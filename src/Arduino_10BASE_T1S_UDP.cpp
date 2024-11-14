@@ -235,8 +235,12 @@ void Arduino_10BASE_T1S_UDP::onUdpRawRecv(struct udp_pcb *pcb, struct pbuf *p, c
     (uint8_t const *)p->payload,
     p->len);
 
-  _rx_pkt_list.push_back(rx_pkt);
+  // drop the oldest packet if the list is full
+  if(_rx_pkt_list.size() > _rx_pkt_list_size) {
+    _rx_pkt_list.pop_front();
+  }
 
+  _rx_pkt_list.push_back(rx_pkt);
   /* Free pbuf */
   pbuf_free(p);
 }
