@@ -48,5 +48,8 @@ static int const CS_PIN    =  25;
 static int const RESET_PIN =  6;  /* D6 (Uno form factor) -> PWM6 (Mid carrier headers) = P601 (Portenta C33 high-density connectors) = D6 */
 static int const IRQ_PIN   =  2;
 #else
-# error "No pins defined for your board"
+static int const CS_PIN    =  -1;
+static int const RESET_PIN =  -1;
+static int const IRQ_PIN   =  -1;
+# warning "No pins defined for your board"
 #endif
