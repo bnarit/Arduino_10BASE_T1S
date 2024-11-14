@@ -97,7 +97,7 @@ void get_unique_chip_id_3(uint8_t * uid)
     memcpy(uid, &stm32_uid, 3);
   }
 #else
-# error "Retrieving a unique chip ID for MAC generation is not supported on this platform."
+# warning "Retrieving a unique chip ID for MAC generation is not supported on this platform."
 #endif
 }
 
