@@ -43,7 +43,7 @@ public:
 
   virtual size_t printTo(Print & p) const override;
 
-  uint8_t mac_promiscuous_mode() const { return _mac_promiscuous_mode; }
-  uint8_t mac_tx_cut_through()   const { return _mac_tx_cut_through; }
-  uint8_t mac_rx_cut_through()   const { return _mac_rx_cut_through; }
+  bool mac_promiscuous_mode() const { return _mac_promiscuous_mode; }
+  bool mac_tx_cut_through()   const { return _mac_tx_cut_through; }
+  bool mac_rx_cut_through()   const { return _mac_rx_cut_through; }
 };
