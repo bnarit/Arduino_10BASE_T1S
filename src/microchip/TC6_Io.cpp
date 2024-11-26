@@ -73,19 +73,19 @@ void TC6_Io::onInterrupt()
   _int_in++;
 }
 
-bool TC6_Io::is_interrupt_active()
+bool TC6_Io::isInterruptActive()
 {
   _int_reported = _int_in;
   return (_int_reported != _int_out);
 }
 
-void TC6_Io::release_interrupt()
+void TC6_Io::releaseInterrupt()
 {
   if (digitalRead(_irq_pin) == HIGH)
     _int_out = _int_reported;
 }
 
-bool TC6_Io::spi_transaction(uint8_t const *pTx, uint8_t *pRx, uint16_t const len)
+bool TC6_Io::spiTransaction(uint8_t const *pTx, uint8_t *pRx, uint16_t const len)
 {
   digitalWrite(_cs_pin, LOW);
   _spi.beginTransaction(LAN865x_SPI_SETTING);

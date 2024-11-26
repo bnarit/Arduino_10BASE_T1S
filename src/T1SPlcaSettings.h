@@ -49,8 +49,8 @@ public:
   virtual size_t printTo(Print & p) const override;
 
 
-  uint8_t node_id()     const { return _node_id; }
-  uint8_t node_count()  const { return _node_count; }
-  uint8_t burst_count() const { return _burst_count; }
-  uint8_t burst_timer() const { return _burst_timer; }
+  uint8_t nodeId()     const { return _node_id; }
+  uint8_t nodeCount()  const { return _node_count; }
+  uint8_t burstCount() const { return _burst_count; }
+  uint8_t burstTimer() const { return _burst_timer; }
 };
