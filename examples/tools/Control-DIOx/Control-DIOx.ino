@@ -35,7 +35,7 @@ static auto const DIO_PIN = TC6::DIO::A0;
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-auto const tc6_io = new TC6::TC6_Io(
+TC6::TC6_Io tc6_io(
 #if defined(ARDUINO_GIGA) || defined(ARDUINO_PORTENTA_C33)
   SPI1
 #else
@@ -44,7 +44,7 @@ auto const tc6_io = new TC6::TC6_Io(
   , CS_PIN
   , RESET_PIN
   , IRQ_PIN);
-auto const tc6_inst = new TC6::TC6_Arduino_10BASE_T1S(tc6_io);
+TC6::TC6_Arduino_10BASE_T1S tc6_inst(tc6_io);
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -61,11 +61,11 @@ void setup()
    */
   pinMode(IRQ_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(IRQ_PIN),
-                  []() { tc6_io->onInterrupt(); },
+                  []() { tc6_io.onInterrupt(); },
                   FALLING);
 
   /* Initialize IO module. */
-  if (!tc6_io->begin())
+  if (!tc6_io.begin())
   {
     Serial.println("'TC6_Io::begin(...)' failed.");
     for (;;) { }
@@ -73,7 +73,7 @@ void setup()
 
   MacAddress const mac_addr = MacAddress::create_from_uid();
 
-  if (!tc6_inst->begin(ip_addr
+  if (!tc6_inst.begin(ip_addr
     , network_mask
     , gateway
     , mac_addr
@@ -96,7 +96,7 @@ void loop()
   /* Services the hardware and the protocol stack.
    * Must be called cyclic. The faster the better.
    */
-  tc6_inst->service();
+  tc6_inst.service();
 
   static unsigned long prev_dio_toogle = 0;
   auto const now = millis();
@@ -112,7 +112,7 @@ void loop()
     Serial.print(" = ");
     Serial.println(dio_val);
 
-    tc6_inst->digitalWrite(DIO_PIN, dio_val);
+    tc6_inst.digitalWrite(DIO_PIN, dio_val);
     dio_val = !dio_val;
   }
 }

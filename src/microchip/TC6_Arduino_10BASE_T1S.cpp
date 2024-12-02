@@ -103,10 +103,10 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p);
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6_Arduino_10BASE_T1S::TC6_Arduino_10BASE_T1S(TC6_Io * tc6_io)
+TC6_Arduino_10BASE_T1S::TC6_Arduino_10BASE_T1S(TC6_Io & tc6_io)
 : _tc6_io{tc6_io}
 {
-  _lw.io = tc6_io;
+  _lw.io = &tc6_io;
 }
 
 TC6_Arduino_10BASE_T1S::~TC6_Arduino_10BASE_T1S()
@@ -206,11 +206,11 @@ void TC6_Arduino_10BASE_T1S::service()
 {
   sys_check_timeouts(); /* LWIP timers - ARP, DHCP, TCP, etc. */
 
-  if (_tc6_io->isInterruptActive())
+  if (_tc6_io.isInterruptActive())
   {
     if (TC6_Service(_lw.tc.tc6, false))
     {
-      _tc6_io->releaseInterrupt();
+      _tc6_io.releaseInterrupt();
     }
   } else if (_lw.tc.tc6NeedService)
   {
