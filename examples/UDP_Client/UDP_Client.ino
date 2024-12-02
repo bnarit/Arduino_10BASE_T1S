@@ -34,16 +34,11 @@ static uint16_t const UDP_SERVER_PORT = 8888;
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-TC6::TC6_Io tc6_io(
 #if defined(ARDUINO_GIGA) || defined(ARDUINO_PORTENTA_C33)
-  SPI1
+  Arduino_10BASE_T1S_PHY_TC6(SPI1, CS_PIN, RESET_PIN, IRQ_PIN);
 #else
-  SPI
+  Arduino_10BASE_T1S_PHY_TC6(SPI, CS_PIN, RESET_PIN, IRQ_PIN);
 #endif
-  , CS_PIN
-  , RESET_PIN
-  , IRQ_PIN);
-TC6::TC6_Arduino_10BASE_T1S tc6_inst(tc6_io);
 Arduino_10BASE_T1S_UDP udp_client;
 
 /**************************************************************************************
@@ -61,11 +56,11 @@ void setup()
    */
   pinMode(IRQ_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(IRQ_PIN),
-                  []() { tc6_io.onInterrupt(); },
+                  []() { t1s_io.onInterrupt(); },
                   FALLING);
 
   /* Initialize IO module. */
-  if (!tc6_io.begin())
+  if (!t1s_io.begin())
   {
     Serial.println("'TC6_Io::begin(...)' failed.");
     for (;;) { }
@@ -73,7 +68,7 @@ void setup()
 
   MacAddress const mac_addr = MacAddress::create_from_uid();
 
-  if (!tc6_inst.begin(ip_addr
+  if (!t1s_phy.begin(ip_addr
     , network_mask
     , gateway
     , mac_addr
@@ -104,7 +99,7 @@ void loop()
   /* Services the hardware and the protocol stack.
    * Must be called cyclic. The faster the better.
    */
-  tc6_inst.service();
+  t1s_phy.service();
 
   static unsigned long prev_beacon_check = 0;
   static unsigned long prev_udp_packet_sent = 0;
@@ -114,7 +109,7 @@ void loop()
   if ((now - prev_beacon_check) > 1000)
   {
     prev_beacon_check = now;
-    if (!tc6_inst.getPlcaStatus(OnPlcaStatus))
+    if (!t1s_phy.getPlcaStatus(OnPlcaStatus))
       Serial.println("getPlcaStatus(...) failed");
   }
 
@@ -189,6 +184,6 @@ static void OnPlcaStatus(bool success, bool plcaStatus)
     Serial.println("PLCA Mode active");
   else {
     Serial.println("CSMA/CD fallback");
-    tc6_inst.enablePlca();
+    t1s_phy.enablePlca();
   }
 }

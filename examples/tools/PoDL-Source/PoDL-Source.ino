@@ -32,16 +32,11 @@ static T1SMacSettings const t1s_default_mac_settings;
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-TC6::TC6_Io tc6_io(
 #if defined(ARDUINO_GIGA) || defined(ARDUINO_PORTENTA_C33)
-  SPI1
+  Arduino_10BASE_T1S_PHY_TC6(SPI1, CS_PIN, RESET_PIN, IRQ_PIN);
 #else
-  SPI
+  Arduino_10BASE_T1S_PHY_TC6(SPI, CS_PIN, RESET_PIN, IRQ_PIN);
 #endif
-  , CS_PIN
-  , RESET_PIN
-  , IRQ_PIN);
-TC6::TC6_Arduino_10BASE_T1S tc6_inst(tc6_io);
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -58,11 +53,11 @@ void setup()
    */
   pinMode(IRQ_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(IRQ_PIN),
-                  []() { tc6_io.onInterrupt(); },
+                  []() { t1s_io.onInterrupt(); },
                   FALLING);
 
   /* Initialize IO module. */
-  if (!tc6_io.begin())
+  if (!t1s_io.begin())
   {
     Serial.println("'TC6_Io::begin(...)' failed.");
     for (;;) { }
@@ -70,7 +65,7 @@ void setup()
 
   MacAddress const mac_addr = MacAddress::create_from_uid();
 
-  if (!tc6_inst.begin(ip_addr
+  if (!t1s_phy.begin(ip_addr
     , network_mask
     , gateway
     , mac_addr
@@ -88,9 +83,9 @@ void setup()
   Serial.println(t1s_default_mac_settings);
 
   /* A0 -> LOCAL_ENABLE -> feed power from board to network. */
-  tc6_inst.digitalWrite(TC6::DIO::A0, true);
+  t1s_phy.digitalWrite(TC6::DIO::A0, true);
   /* A1 -> T1S_DISABLE -> close the switch connecting network to board. */
-  tc6_inst.digitalWrite(TC6::DIO::A1, true);
+  t1s_phy.digitalWrite(TC6::DIO::A1, true);
 
   Serial.println("PoDL-Source");
 }
@@ -100,5 +95,5 @@ void loop()
   /* Services the hardware and the protocol stack.
    * Must be called cyclic. The faster the better.
    */
-  tc6_inst.service();
+  t1s_phy.service();
 }

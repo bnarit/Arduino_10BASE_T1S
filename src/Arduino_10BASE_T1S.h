@@ -53,3 +53,11 @@ static int const RESET_PIN =  -1;
 static int const IRQ_PIN   =  -1;
 # warning "No pins defined for your board"
 #endif
+
+/**************************************************************************************
+ * MACROS
+ **************************************************************************************/
+
+#define Arduino_10BASE_T1S_PHY_TC6(__SPI, __CS_PIN, __RESET_PIN, __IRQ_PIN) \
+  TC6::TC6_Io t1s_io(__SPI, __CS_PIN, __RESET_PIN, __IRQ_PIN);              \
+  TC6::TC6_Arduino_10BASE_T1S t1s_phy(t1s_io);
