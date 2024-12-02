@@ -44,11 +44,11 @@ public:
 
   void onInterrupt();
 
-  bool is_interrupt_active();
+  bool isInterruptActive();
 
-  void release_interrupt();
+  void releaseInterrupt();
 
-  bool spi_transaction(uint8_t const *pTx, uint8_t *pRx, uint16_t const len);
+  bool spiTransaction(uint8_t const *pTx, uint8_t *pRx, uint16_t const len);
 
 
 private:

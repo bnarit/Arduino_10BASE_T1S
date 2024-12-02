@@ -103,10 +103,10 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p);
  * CTOR/DTOR
  **************************************************************************************/
 
-TC6_Arduino_10BASE_T1S::TC6_Arduino_10BASE_T1S(TC6_Io * tc6_io)
+TC6_Arduino_10BASE_T1S::TC6_Arduino_10BASE_T1S(TC6_Io & tc6_io)
 : _tc6_io{tc6_io}
 {
-  _lw.io = tc6_io;
+  _lw.io = &tc6_io;
 }
 
 TC6_Arduino_10BASE_T1S::~TC6_Arduino_10BASE_T1S()
@@ -156,13 +156,13 @@ bool TC6_Arduino_10BASE_T1S::begin(IPAddress const ip_addr,
                     , &_lw
                     , _lw.ip.mac
                     , true /* enable_plca */
-                    , t1s_plca_settings.node_id()
-                    , t1s_plca_settings.node_count()
-                    , t1s_plca_settings.burst_count()
-                    , t1s_plca_settings.burst_timer()
-                    , t1s_mac_settings.mac_promiscuous_mode()
-                    , t1s_mac_settings.mac_tx_cut_through()
-                    , t1s_mac_settings.mac_rx_cut_through()))
+                    , t1s_plca_settings.nodeId()
+                    , t1s_plca_settings.nodeCount()
+                    , t1s_plca_settings.burstCount()
+                    , t1s_plca_settings.burstTimer()
+                    , t1s_mac_settings.isMacPromiscuousModeEnabled()
+                    , t1s_mac_settings.isMacTxCutThroughEnabled()
+                    , t1s_mac_settings.isMacRxCutThroughEnabled()))
     return false;
 
   /* Complete initialization. */
@@ -206,11 +206,11 @@ void TC6_Arduino_10BASE_T1S::service()
 {
   sys_check_timeouts(); /* LWIP timers - ARP, DHCP, TCP, etc. */
 
-  if (_tc6_io->is_interrupt_active())
+  if (_tc6_io.isInterruptActive())
   {
     if (TC6_Service(_lw.tc.tc6, false))
     {
-      _tc6_io->release_interrupt();
+      _tc6_io.releaseInterrupt();
     }
   } else if (_lw.tc.tc6NeedService)
   {
@@ -229,7 +229,7 @@ bool TC6_Arduino_10BASE_T1S::getPlcaStatus(TC6LwIP_On_PlcaStatus on_plca_status)
 
 bool TC6_Arduino_10BASE_T1S::enablePlca()
 {
-  return TC6Regs_SetPlca(_lw.tc.tc6, true, _t1s_plca_settings.node_id(), _t1s_plca_settings.node_count());
+  return TC6Regs_SetPlca(_lw.tc.tc6, true, _t1s_plca_settings.nodeId(), _t1s_plca_settings.nodeCount());
 }
 
 bool TC6_Arduino_10BASE_T1S::sendWouldBlock()
@@ -389,7 +389,7 @@ bool TC6_CB_OnSpiTransaction(TC6_t *pInst, uint8_t *pTx, uint8_t *pRx, uint16_t 
   if (lw == nullptr) {
     return false;
   }
-  bool const success = lw->io->spi_transaction(pTx, pRx, len);
+  bool const success = lw->io->spiTransaction(pTx, pRx, len);
   TC6_SpiBufferDone(pInst /* tc6instance */, success /* success */);
   return success;
 }

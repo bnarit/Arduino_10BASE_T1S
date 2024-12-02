@@ -74,7 +74,7 @@ enum class DIO { A0, A1 };
 class TC6_Arduino_10BASE_T1S : public Arduino_10BASE_T1S_PHY_Interface
 {
 public:
-  TC6_Arduino_10BASE_T1S(TC6_Io * tc6_io);
+  TC6_Arduino_10BASE_T1S(TC6_Io & tc6_io);
 
   virtual ~TC6_Arduino_10BASE_T1S();
 
@@ -98,7 +98,7 @@ public:
 
 
 private:
-  TC6_Io * _tc6_io;
+  TC6_Io & _tc6_io;
   TC6LwIP_t _lw;
   T1SPlcaSettings _t1s_plca_settings;
 
