@@ -489,8 +489,18 @@ void TC6_CB_OnRxEthernetPacket(TC6_t *pInst, bool success, uint16_t len, uint64_
     lw->tc.rxInvalid = false;
   }
 }
-
-#define PRINT(...)
+char buffer[100];
+#define ESC_RED       "\033[31m"
+#define ESC_GREEN     "\033[32m"
+#define ESC_YELLOW    "\033[33m"
+#define ESC_RESETCOLOR     "\033[0m"
+#define PRINT(...)               \
+  do {                           \
+    char buffer[128];            \
+    sprintf(buffer, __VA_ARGS__); \
+    Serial.print(buffer);        \
+  } while (0);                    \
+  Serial.println();                  
 
 void TC6_CB_OnError(TC6_t *pInst, TC6_Error_t err, void *pGlobalTag)
 {

@@ -45,6 +45,12 @@ TC6_Io::TC6_Io(
   int const irq_pin)
   : _spi{spi}, _cs_pin{cs_pin}, _reset_pin{reset_pin}, _irq_pin{irq_pin}, _int_in{0}, _int_out{0}, _int_reported{0}
 {
+  Serial.print("TC6_Io::TC6_Io: cs_pin=");
+  Serial.print(_cs_pin);
+  Serial.print(", reset_pin=");
+  Serial.print(_reset_pin);
+  Serial.print(", irq_pin=");
+  Serial.println(_irq_pin);
 
 }
 
