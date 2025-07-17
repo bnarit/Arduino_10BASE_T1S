@@ -47,7 +47,7 @@
  *
  * Author: Adam Dunkels <adam@sics.se>
  */
-
+#include "t1s_adaptor.h"
 #include "../include/lwip/opt.h"
 
 #include <string.h> /* memset */

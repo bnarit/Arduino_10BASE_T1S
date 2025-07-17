@@ -57,7 +57,7 @@
  * Author: Simon Goldschmidt
  *
  */
-
+#include "t1s_adaptor.h"
 #include "../include/lwip/opt.h"
 #include "../include/lwip/def.h"
 
