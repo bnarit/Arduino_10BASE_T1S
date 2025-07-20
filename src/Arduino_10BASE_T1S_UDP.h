@@ -1,3 +1,4 @@
+
 /*
  *  This file is part of the Arduino_10BASE_T1S library.
  *
@@ -70,6 +71,13 @@ public:
     _rx_pkt_list_size = size;
   }
 
+  // Send a UDP ping ("ping" message) to a target IP/port
+  bool pingNode(const IPAddress& target, uint16_t port = 8888) {
+    if (beginPacket(target, port) == 0) return false;
+    if (write((const uint8_t*)"ping", 4) != 4) return false;
+    if (endPacket() == 0) return false;
+    return true;
+  }
 private:
   /* LWIP */
   struct udp_pcb * _udp_pcb;

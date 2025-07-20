@@ -78,7 +78,10 @@ public:
 
   virtual ~TC6_Arduino_10BASE_T1S();
 
-
+  // Returns true if the physical link is up
+  bool isLinkUp() const;
+  //bool isResetComplete() const { return g_resetComplete; }
+  //bool g_resetComplete = false;
   virtual bool begin(IPAddress const ip_addr,
                      IPAddress const network_mask,
                      IPAddress const gateway,
@@ -95,7 +98,10 @@ public:
   bool enablePlca();
 
   bool sendWouldBlock();
-
+  IPAddress getLocalIP()
+  {
+    return IPAddress(_lw.ip.netint.ip_addr.addr);
+  };
 
 private:
   TC6_Io & _tc6_io;

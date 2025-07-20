@@ -26,6 +26,12 @@
 
 namespace TC6
 {
+extern "C" {
+#include "lib/liblwip/include/lwip/netif.h"
+}
+bool TC6_Arduino_10BASE_T1S::isLinkUp() const {
+    return netif_is_link_up(&(_lw.ip.netint));
+}
 
 /**************************************************************************************
  * DEFINE
@@ -204,13 +210,18 @@ void TC6_Arduino_10BASE_T1S::digitalWrite(DIO const dio, bool const value)
 
 void TC6_Arduino_10BASE_T1S::service()
 {
+ // Serial.println("SPE service");
   sys_check_timeouts(); /* LWIP timers - ARP, DHCP, TCP, etc. */
 
   if (_tc6_io.isInterruptActive())
   {
+    Serial.println("Interrupt");
     if (TC6_Service(_lw.tc.tc6, false))
     {
       _tc6_io.releaseInterrupt();
+      Serial.println("Interrupt released");
+    }else{  
+      Serial.println("Interrupt not released- service failed");
     }
   } else if (_lw.tc.tc6NeedService)
   {
@@ -500,7 +511,9 @@ char buffer[100];
     sprintf(buffer, __VA_ARGS__); \
     Serial.print(buffer);        \
   } while (0);                    \
-  Serial.println();                  
+  Serial.println();               \
+  Serial.flush();                   
+         
 
 void TC6_CB_OnError(TC6_t *pInst, TC6_Error_t err, void *pGlobalTag)
 {
@@ -582,6 +595,7 @@ void TC6Regs_CB_OnEvent(TC6_t *pInst, TC6Regs_Event_t event, void *pTag)
       break;
     case TC6Regs_Event_Reset_Complete:
       PRINT(ESC_GREEN "Reset_Complete" ESC_RESETCOLOR "\r\n");
+
       break;
     case TC6Regs_Event_PHY_Interrupt:
       PRINT(ESC_GREEN "PHY_Interrupt" ESC_RESETCOLOR "\r\n");
