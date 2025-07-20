@@ -46,6 +46,8 @@ Microchip or any third party.
 #include "../cfg-example/tc6-conf.h"
 #include "../inc/tc6.h"
 #include "tc6-queue.h"
+#include "../inc/tc6-regs.h"
+#include <Arduino.h>
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 /*                          USER ADJUSTABLE                             */
@@ -278,21 +280,25 @@ void TC6_Reset(TC6_t *g)
 
 bool TC6_Service(TC6_t *g, bool interruptLevel)
 {
+    //Serial.println("Dbg-service");
     bool intPending = false;
     TC6_ASSERT(g && (TC6_MAGIC == g->magic));
     if (!g->intContext) {
         if (serviceControl(g)) {
+            Serial.println("Dbg-proc serv-ctrl");
            if (!interruptLevel) {
                intPending = true;
            }
         } else if (g->enableData) {
+            //Serial.println("Dbg-proc rx");
             processDataRx(g);
+            //Serial.println("Dbg-proc rx done");
             if (!serviceData(g, !interruptLevel)) {
                 if (!interruptLevel) {
                    intPending = true;
                 }
             }
-            processDataRx(g);
+           // processDataRx(g);
         } else if (!interruptLevel) {
             intPending = true;
         } else {} /* MISRA enforced termination */
@@ -823,15 +829,94 @@ static bool accessRegisters(TC6_t *g, enum register_op_type op, uint32_t addr, u
 
 static void processDataRx(TC6_t *g)
 {
+    // Get our MAC address from the register context
+    TC6Reg_t *pReg = GetContext(g); // g is your TC6_t*
+    const uint8_t *my_mac = pReg->mac;
     /*******************************/
     /* DATA RX & Free up SPI Queue */
     /*******************************/
+    Serial.println("Dbg-proc data-rx");
+    Serial.flush();
+    //delayMicroseconds(200);
+    int loopCount = 0;
+    /*if(qspibuf_stage3_process_ready(&g->qSpi))    
+    {
+        Serial.println("Dbg- true");
+        Serial.flush();
+
+    }else{
+        Serial.println("Dbg-false");
+        Serial.flush();
+
+    }*/
+
     while (qspibuf_stage3_process_ready(&g->qSpi)) {
+        
+        for (int i = 0; i < 6; i++) 
+        {
+            Serial.print(my_mac[i], HEX);
+            Serial.print(":");
+        }
+        Serial.println("... Dbgety");
+        Serial.flush();
+        delayMicroseconds(200);
         struct qspibuf *entry = qspibuf_stage3_process_ptr(&g->qSpi);
+
+       // Get destination MAC from the Ethernet frame
+        const uint8_t *dest_mac = &entry->rxBuff[0];
+        // Compare destination MAC to our MAC
+        bool is_for_me = true;
+        for (int i = 0; i < 6; i++) {
+            if (dest_mac[i] != my_mac[i]) {
+                is_for_me = false;
+                Serial.println("Dbg-proc not for me");
+                Serial.flush();
+                break;
+            }
+        }
+
+        // Simple broadcast check
+        bool is_broadcast = true;
+        for (int i = 0; i < 6; i++) {
+            if (dest_mac[i] != 0xFF) {
+                is_broadcast = false;
+                Serial.println("Dbg-proc broadcast");
+                Serial.flush();
+                break;
+            }
+        }
+        Serial.print("D");
+        Serial.print(loopCount);
+        Serial.print(":");
+        Serial.println(entry->length);
+        Serial.flush();
         TC6_ASSERT(0u == (entry->length % TC6_CHUNK_BUF_SIZE));
-        enqueue_rx_spi(g, entry->rxBuff, entry->length);
+        //enqueue_rx_spi(g, entry->rxBuff, entry->length);
+        // Only process if for us or broadcast
+        if (is_for_me ) {
+            Serial.println("Dbg-proc is for me");
+            Serial.flush();
+            enqueue_rx_spi(g, entry->rxBuff, entry->length);
+        }/*else  if (is_broadcast ) {
+            Serial.println("Dbg-proc is broadcast");
+            Serial.flush();
+            enqueue_rx_spi(g, entry->rxBuff, entry->length);
+        }*/
+
+        Serial.println("Dbg-enque");
+        Serial.flush();
         qspibuf_stage3_process_done(&g->qSpi);
+        Serial.println("Dbg-proc done");
+        Serial.flush();
+        loopCount++;
+        if (loopCount > 100) {
+            Serial.println("  Dbg: processDataRx loop > 100, breaking to avoid hang");
+            Serial.flush();
+            break;
+        }
     }
+    Serial.print("Dbg-proc data-rx done, loops: ");
+    Serial.println(loopCount);
 }
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/

@@ -171,7 +171,16 @@ static inline uint8_t qspibuf_stage2_int_cap(struct qspibuf_queue const *q) {
 static inline bool qspibuf_stage3_process_ready(struct qspibuf_queue const *q) {
     return ((uint8_t)(q->stage2_int_ - q->stage3_process_ - 1u)) < q->size_; }
 static inline struct qspibuf *qspibuf_stage3_process_ptr(struct qspibuf_queue const *q) {
-    return &q->buffer_[(q->stage3_process_ & (q->size_ - 1u))]; }
+    /*auto p = &q->buffer_[(q->stage3_process_ & (q->size_ - 1u))];
+    if((p<&q->buffer_[q->size_])&&(p>=q->buffer_)) {
+        return p;
+    } 
+    else
+    {
+        return NULL;
+    }*/
+    return &q->buffer_[(q->stage3_process_ & (q->size_ - 1u))]; 
+}
 static inline void qspibuf_stage3_process_done(struct qspibuf_queue *q) {
     ++q->stage3_process_; }
 static inline void qspibuf_stage3_process_undo(struct qspibuf_queue *q) {

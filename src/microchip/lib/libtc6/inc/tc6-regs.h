@@ -84,6 +84,28 @@ typedef enum
     TC6Regs_Event_Unsupported_Hardware
 } TC6Regs_Event_t;
 
+typedef struct
+{
+    uint8_t mac[6];
+    TC6_t *pTC6;
+    void *pTag;
+    uint32_t unlockExtTime;
+    uint32_t readResult;
+    uint8_t nodeId;
+    uint8_t nodeCount;
+    uint8_t burstCount;
+    uint8_t burstTimer;
+    uint8_t chipRev;
+    bool extBlock;
+    bool initialized;
+    bool initDone;
+    bool enablePlca;
+    bool plcaChanged;
+    bool promiscuous;
+    bool txCutThrough;
+    bool rxCutThrough;
+} TC6Reg_t;
+TC6Reg_t *GetContext(TC6_t *pTC6);
 enum class PADCTRL_A0SEL : uint32_t
 {
   EVENT_CAPTURE     = 0x00,
