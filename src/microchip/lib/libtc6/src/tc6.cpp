@@ -1486,7 +1486,7 @@ static void enqueue_rx_spi(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
                 }
             }
             process_rx(g, &buff[processed], TC6_CHUNK_BUF_SIZE);
-            Serial.println("success");
+            //Serial.println("success");
         } else {
             g->offsetRx = 0;
             g->eth_error = false;

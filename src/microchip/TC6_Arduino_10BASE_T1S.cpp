@@ -193,8 +193,9 @@ bool TC6_Arduino_10BASE_T1S::begin(IPAddress const ip_addr,
   if (!netif_add(&_lw.ip.netint, &lwip_ip_addr, &lwip_network_mask, &lwip_gateway, &_lw, lwIpInit, ethernet_input))
     return false;
 
+  //netif_set_up(&_lw.ip.netint);
   netif_set_link_up(&_lw.ip.netint);
-
+  Serial.printf("\nnetif flags: 0x%02X\n", &_lw.ip.netint.flags);
   /* Copy the settings for internal usage. */
   _t1s_plca_settings = t1s_plca_settings;
 
@@ -293,16 +294,18 @@ void TC6_Arduino_10BASE_T1S::digitalWrite_A1(bool const value)
 
 static err_t lwIpInit(struct netif *netif)
 {
+  Serial.println("/nlwIpInit called");
   TC6LwIP_t *lw = GetContextNetif(netif);
   netif->output = etharp_output;
   netif->linkoutput = lwIpOut;
-  netif->flags = NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET;
+  netif->flags =  NETIF_FLAG_UP | NETIF_FLAG_LINK_UP| NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET;
   netif->mtu = TC6LwIP_MTU;
   netif->hwaddr_len = ETHARP_HWADDR_LEN;
   (void) memcpy(netif->name, TC6LwIP_HOSTNAME, 2);
   (void) memcpy(netif->hwaddr, lw->ip.mac, NETIF_MAX_HWADDR_LEN);
-  netif_set_up(netif);
+  
   netif_set_default(netif);
+  netif_set_up(netif);
   return ERR_OK;
 }
 
@@ -480,9 +483,9 @@ void TC6_CB_OnRxEthernetPacket(TC6_t *pInst, bool success, uint16_t len, uint64_
       err_t result = lw->ip.netint.input(lw->tc.pbuf, &lw->ip.netint);
       if (ERR_OK == result)
       {
-        Serial.print("cb to lwip len:");
-        Serial.println(lw->tc.rxLen);
-        Serial.flush();
+        //Serial.print("cb to lwip len:");
+        //Serial.println(lw->tc.rxLen);
+        //Serial.flush();
         lw->tc.pbuf = NULL;
         lw->tc.rxLen = 0;
         lw->tc.rxInvalid = false;
@@ -490,8 +493,8 @@ void TC6_CB_OnRxEthernetPacket(TC6_t *pInst, bool success, uint16_t len, uint64_
       } else
       {
 //                PrintRateLimited("on_rx_eth_ready: IP input error", result);
-        Serial.println("cb to lwip failed");
-        Serial.flush();
+        //Serial.println("cb to lwip failed");
+        //Serial.flush();
         result = false;
       }
     }

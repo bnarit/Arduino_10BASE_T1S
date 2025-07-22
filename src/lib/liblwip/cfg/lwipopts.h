@@ -561,7 +561,7 @@
 #define TCPDUMP_DEBUG    LWIP_DBG_OFF
 #define API_LIB_DEBUG    LWIP_DBG_OFF
 #define API_MSG_DEBUG    LWIP_DBG_OFF
-#define TCPIP_DEBUG      LWIP_DBG_OFF
+#define TCPIP_DEBUG      LWIP_DBG_ON
 #define NETIF_DEBUG      LWIP_DBG_ON
 #define SOCKETS_DEBUG    LWIP_DBG_OFF
 #define DEMO_DEBUG       LWIP_DBG_ON
@@ -570,8 +570,8 @@
 #define RAW_DEBUG        LWIP_DBG_ON
 #define ICMP_DEBUG       LWIP_DBG_ON
 #define UDP_DEBUG        LWIP_DBG_ON
-#define TCP_DEBUG        LWIP_DBG_OFF
-#define TCP_INPUT_DEBUG  LWIP_DBG_OFF
+#define TCP_DEBUG        LWIP_DBG_ON
+#define TCP_INPUT_DEBUG  LWIP_DBG_ON
 #define TCP_OUTPUT_DEBUG LWIP_DBG_OFF
 #define TCP_RTO_DEBUG    LWIP_DBG_OFF
 #define TCP_CWND_DEBUG   LWIP_DBG_OFF
@@ -583,8 +583,11 @@
 #define DHCP_DEBUG       LWIP_DBG_ON
 #define IP6_DEBUG        LWIP_DBG_OFF
 
-extern unsigned char lwip_debug_flags;
-#define LWIP_DBG_TYPES_ON lwip_debug_flags
+
+
+
+extern unsigned int  lwip_debug_flags;
+#define LWIP_DBG_TYPES_ON (LWIP_DBG_TRACE ) 
 extern  void lwip_diag_serial(const char *fmt, ...) ;
 #define LWIP_PLATFORM_DIAG(x) lwip_diag_serial x
 /*
