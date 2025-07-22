@@ -551,9 +551,9 @@
    ---------------------------------------
 */
 
-//#define LWIP_DEBUG                      0
+#define LWIP_DEBUG                      1
 
-#define TAPIF_DEBUG      LWIP_DBG_OFF
+#define TAPIF_DEBUG      LWIP_DBG_ON
 #define TUNIF_DEBUG      LWIP_DBG_OFF
 #define UNIXIF_DEBUG     LWIP_DBG_OFF
 #define DELIF_DEBUG      LWIP_DBG_OFF
@@ -562,14 +562,14 @@
 #define API_LIB_DEBUG    LWIP_DBG_OFF
 #define API_MSG_DEBUG    LWIP_DBG_OFF
 #define TCPIP_DEBUG      LWIP_DBG_OFF
-#define NETIF_DEBUG      LWIP_DBG_OFF
+#define NETIF_DEBUG      LWIP_DBG_ON
 #define SOCKETS_DEBUG    LWIP_DBG_OFF
-#define DEMO_DEBUG       LWIP_DBG_OFF
-#define IP_DEBUG         LWIP_DBG_OFF
-#define IP_REASS_DEBUG   LWIP_DBG_OFF
-#define RAW_DEBUG        LWIP_DBG_OFF
-#define ICMP_DEBUG       LWIP_DBG_OFF
-#define UDP_DEBUG        LWIP_DBG_OFF
+#define DEMO_DEBUG       LWIP_DBG_ON
+#define IP_DEBUG         LWIP_DBG_ON
+#define IP_REASS_DEBUG   LWIP_DBG_ON
+#define RAW_DEBUG        LWIP_DBG_ON
+#define ICMP_DEBUG       LWIP_DBG_ON
+#define UDP_DEBUG        LWIP_DBG_ON
 #define TCP_DEBUG        LWIP_DBG_OFF
 #define TCP_INPUT_DEBUG  LWIP_DBG_OFF
 #define TCP_OUTPUT_DEBUG LWIP_DBG_OFF
@@ -579,13 +579,15 @@
 #define TCP_FR_DEBUG     LWIP_DBG_OFF
 #define TCP_QLEN_DEBUG   LWIP_DBG_OFF
 #define TCP_RST_DEBUG    LWIP_DBG_OFF
-#define ETHARP_DEBUG     LWIP_DBG_OFF
-#define DHCP_DEBUG       LWIP_DBG_OFF
+#define ETHARP_DEBUG     LWIP_DBG_ON
+#define DHCP_DEBUG       LWIP_DBG_ON
 #define IP6_DEBUG        LWIP_DBG_OFF
 
-extern unsigned char debug_flags;
-#define LWIP_DBG_TYPES_ON debug_flags
-
+extern unsigned char lwip_debug_flags;
+#define LWIP_DBG_TYPES_ON lwip_debug_flags
+extern  void lwip_diag_serial(const char *fmt, ...) ;
+#define LWIP_PLATFORM_DIAG(x) lwip_diag_serial x
+/*
 // Rename APIs / structs to avoid clashes
 #define sys_now t1s_sys_now
 #define etharp_cleanup_netif t1s_etharp_cleanup_netif
@@ -708,7 +710,7 @@ extern unsigned char debug_flags;
 #define bridgeif_fdb_update_src t1s_bridgeif_fdb_update_src
 #define bridgeif_fdb_get_dst_ports t1s_bridgeif_fdb_get_dst_ports
 #define bridgeif_fdb_init t1s_bridgeif_fdb_init
-#define ethernet_input t1s_ethernet_input
+//#define ethernet_input t1s_ethernet_input
 #define ethernet_output t1s_ethernet_output
 #define ethzero t1s_ethzero
 #define ethbroadcast t1s_ethbroadcast
@@ -726,5 +728,17 @@ extern unsigned char debug_flags;
 #define etharp_output t1s_etharp_output
 #define icmp_input t1s_icmp_input
 #define icmp_dest_unreach t1s_icmp_dest_unreach
+*/
+
+#ifndef lwip_htonl
+#define lwip_htonl(x) (((x) & 0xff) << 24 | \
+                       ((x) & 0xff00) << 8 | \
+                       ((x) & 0xff0000) >> 8 | \
+                       ((x) & 0xff000000) >> 24)
+#endif
+
+#ifndef lwip_htons
+#define lwip_htons(x) (((x) << 8) | ((x) >> 8))
+#endif
 
 #endif /* LWIP_LWIPOPTS_H */

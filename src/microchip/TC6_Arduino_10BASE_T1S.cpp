@@ -11,7 +11,7 @@
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
-
+#define lwip_htons(x) (((x) << 8) | ((x) >> 8))
 #include "TC6_Arduino_10BASE_T1S.h"
 
 #include "lib/libtc6/inc/tc6-regs.h"
@@ -135,6 +135,7 @@ bool TC6_Arduino_10BASE_T1S::begin(IPAddress const ip_addr,
   static bool is_lwip_init = false;
   if (!is_lwip_init)
   {
+    Serial.println("Initializing lwIP...");
     lwip_init();
     is_lwip_init = true;
   }
@@ -215,11 +216,11 @@ void TC6_Arduino_10BASE_T1S::service()
 
   if (_tc6_io.isInterruptActive())
   {
-    Serial.println("Interrupt");
+    //Serial.println("Interrupt");
     if (TC6_Service(_lw.tc.tc6, false))
     {
       _tc6_io.releaseInterrupt();
-      Serial.println("Interrupt released");
+      //Serial.println("Interrupt released");
     }else{  
       Serial.println("Interrupt not released- service failed");
     }
@@ -442,6 +443,7 @@ void TC6_CB_OnRxEthernetSlice(TC6_t *pInst, const uint8_t *pRx, uint16_t offset,
 
 void TC6_CB_OnRxEthernetPacket(TC6_t *pInst, bool success, uint16_t len, uint64_t *rxTimestamp, void *pGlobalTag)
 {
+  //Serial.println("TC6_CB_OnRxEthernetPacket");
 #define MIN_HEADER_LEN  (42u)
   TC6LwIP_t *lw = TC6::GetContextTC6(pInst);
   uint16_t ethType;
@@ -478,12 +480,18 @@ void TC6_CB_OnRxEthernetPacket(TC6_t *pInst, bool success, uint16_t len, uint64_
       err_t result = lw->ip.netint.input(lw->tc.pbuf, &lw->ip.netint);
       if (ERR_OK == result)
       {
+        Serial.print("cb to lwip len:");
+        Serial.println(lw->tc.rxLen);
+        Serial.flush();
         lw->tc.pbuf = NULL;
         lw->tc.rxLen = 0;
         lw->tc.rxInvalid = false;
+        
       } else
       {
 //                PrintRateLimited("on_rx_eth_ready: IP input error", result);
+        Serial.println("cb to lwip failed");
+        Serial.flush();
         result = false;
       }
     }

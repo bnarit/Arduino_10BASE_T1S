@@ -285,7 +285,7 @@ bool TC6_Service(TC6_t *g, bool interruptLevel)
     TC6_ASSERT(g && (TC6_MAGIC == g->magic));
     if (!g->intContext) {
         if (serviceControl(g)) {
-            Serial.println("Dbg-proc serv-ctrl");
+            //Serial.println("Dbg-proc serv-ctrl");
            if (!interruptLevel) {
                intPending = true;
            }
@@ -923,6 +923,7 @@ static void processDataRx(TC6_t *g)
 
             }
 */
+            TC6_ASSERT(0u == (entry->length % TC6_CHUNK_BUF_SIZE));
             enqueue_rx_spi(g, entry->rxBuff, entry->length);
             qspibuf_stage3_process_done(&g->qSpi);
             
@@ -989,6 +990,7 @@ static void on_rx_slice(TC6_t *g, const uint8_t *pBuf, uint16_t offset, uint16_t
 
 static void on_rx_done(TC6_t *g, uint16_t buf_len, bool mfd)
 {
+    //Serial.print("rx done");
     bool success = !mfd && !g->eth_error;
     (void)buf_len;
     g->eth_error = false;
@@ -1354,7 +1356,7 @@ static inline void signal_rx_error(TC6_t *g, TC6_Error_t err)
 
 static inline void process_rx(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
 {
-    Serial.println("Dbg-proc data-rx0");
+    //Serial.println("Dbg-proc data-rx0");
     const uint8_t *fptr = &buff[buf_len - TC6_HEADER_SIZE];
 
     if (GET_VAL(FTR_SV, fptr) ||
@@ -1380,7 +1382,7 @@ static inline void process_rx(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
 
         mfd = GET_VAL(FTR_FD, fptr);
         twoFrames = (ebo <= sbo);
-Serial.println("Dbg-proc data-rx1");
+//Serial.println("Dbg-proc data-rx1");
         if (twoFrames) {
             /* Two ETH frames in chunk */
             on_rx_slice(g, buff, g->offsetRx, (uint16_t)ebo, rtsa, rtsp);
@@ -1391,7 +1393,7 @@ Serial.println("Dbg-proc data-rx1");
             /* Single Eth frame in chunk */
             len = ((uint16_t)ebo - (uint16_t)sbo);
         }
-Serial.println("Dbg-proc data-rx2");
+//Serial.println("Dbg-proc data-rx2");
         if (!twoFrames && sv && g->eth_started) {
             signal_rx_error(g, TC6Error_UnexpectedSv);
             success = false;
@@ -1406,7 +1408,7 @@ Serial.println("Dbg-proc data-rx2");
             /* Wait for next start valid flag to clear error flag */
             success = false;
         }
-Serial.println("Dbg-proc data-rx3");
+//Serial.println("Dbg-proc data-rx3");
         if (success) {
 
             if (0u != sv) {
@@ -1422,7 +1424,7 @@ Serial.println("Dbg-proc data-rx3");
             if (0u != rtsa) {
                 len -= 8u;
             }
-Serial.println("Dbg-proc data-rx ts");
+//Serial.println("Dbg-proc data-rx ts");
             if (!twoFrames && ev) {
                 uint16_t offset = g->offsetRx;
                 g->eth_started = false;
@@ -1431,7 +1433,7 @@ Serial.println("Dbg-proc data-rx ts");
             } else {
                 g->offsetRx += len;
             }
-Serial.println("Dbg-proc data-rx done");
+//Serial.println("Dbg-proc data-rx done");
         }
     } else {
         g->eth_error = false;
@@ -1448,9 +1450,9 @@ static void enqueue_rx_spi(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
     }
     for (processed = 0; success && (processed < buf_len); processed += TC6_CHUNK_BUF_SIZE) {
         const uint8_t *pFooter = &buff[processed + TC6_CHUNK_SIZE];
-        Serial.print("Dbg-enq :");
-        Serial.println(processed);
-        Serial.flush();
+        //Serial.print("Dbg-enq :");
+        //Serial.println(processed);
+        //Serial.flush();
 
         if (((0x0u == pFooter[0]) && (0x0u == pFooter[1]) && (0x0u == pFooter[2]) && (0x0u == pFooter[3])) ||
             ((0xFFu == pFooter[0]) && (0xFFu == pFooter[1]) && (0xFFu == pFooter[2]) && (0xFFu == pFooter[3])))

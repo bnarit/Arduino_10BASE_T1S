@@ -93,19 +93,38 @@ typedef uintptr_t mem_ptr_t;
 
 /* Debug facilities. LWIP_DEBUG must be defined to read output */
 #ifdef LWIP_DEBUG
-#define LWIP_PLATFORM_DIAG(x)                                                                                          \
-	{                                                                                                                  \
-		                                                                                                               \
+/*
+	#ifdef __cplusplus
+	extern "C" {
+	#endif
+
+	#define LWIP_PLATFORM_DIAG(x) do { extern void lwip_diag_serial(const char* fmt, ...); lwip_diag_serial x; } while(0)
+
+	#ifdef __cplusplus
 	}
+	#endif
 #define LWIP_PLATFORM_ASSERT(x)                                                                                        \
 	{                                                                                                                  \
 		printf("Assertion \"%s\" failed at line %d in %s\n", x, __LINE__, __FILE__);                                   \
 		while (1)                                                                                                      \
 			;                                                                                                          \
 	}
+*/
+
 #else
+/*
+#ifdef __cplusplus
+	extern "C" {
+	#endif
+
+	#define LWIP_PLATFORM_DIAG(x) do { extern void lwip_diag_serial(const char* fmt, ...); lwip_diag_serial x; } while(0)
+
+	#ifdef __cplusplus
+	}
+	#endif
+
 #define LWIP_PLATFORM_DIAG(x)                                                                                          \
-	{                                                                                                                  \
+	{                                                                                                                \
 		;                                                                                                              \
 	}
 #define LWIP_PLATFORM_ASSERT(x)                                                                                        \
@@ -113,6 +132,7 @@ typedef uintptr_t mem_ptr_t;
 		while (1)                                                                                                      \
 			;                                                                                                          \
 	}
+			*/
 #endif
 
 #endif /* CC_H_INCLUDED */
