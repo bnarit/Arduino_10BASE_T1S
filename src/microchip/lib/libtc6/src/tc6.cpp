@@ -298,7 +298,7 @@ bool TC6_Service(TC6_t *g, bool interruptLevel)
                    intPending = true;
                 }
             }
-           // processDataRx(g);
+            processDataRx(g);
         } else if (!interruptLevel) {
             intPending = true;
         } else {} /* MISRA enforced termination */
@@ -830,12 +830,12 @@ static bool accessRegisters(TC6_t *g, enum register_op_type op, uint32_t addr, u
 static void processDataRx(TC6_t *g)
 {
     // Get our MAC address from the register context
-    TC6Reg_t *pReg = GetContext(g); // g is your TC6_t*
-    const uint8_t *my_mac = pReg->mac;
+    //TC6Reg_t *pReg = GetContext(g); // g is your TC6_t*
+    //const uint8_t *my_mac = pReg->mac;
     /*******************************/
     /* DATA RX & Free up SPI Queue */
     /*******************************/
-    Serial.println("Dbg-proc data-rx");
+    //Serial.println("Dbg-proc data-rx");
     Serial.flush();
     //delayMicroseconds(200);
     int loopCount = 0;
@@ -852,71 +852,94 @@ static void processDataRx(TC6_t *g)
 
     while (qspibuf_stage3_process_ready(&g->qSpi)) {
         
-        for (int i = 0; i < 6; i++) 
-        {
-            Serial.print(my_mac[i], HEX);
-            Serial.print(":");
-        }
-        Serial.println("... Dbgety");
-        Serial.flush();
-        delayMicroseconds(200);
+
+        //Serial.println("... Dbgety");
+        //Serial.flush();
+        //delayMicroseconds(200);
         struct qspibuf *entry = qspibuf_stage3_process_ptr(&g->qSpi);
 
-       // Get destination MAC from the Ethernet frame
-        const uint8_t *dest_mac = &entry->rxBuff[0];
-        // Compare destination MAC to our MAC
-        bool is_for_me = true;
-        for (int i = 0; i < 6; i++) {
-            if (dest_mac[i] != my_mac[i]) {
+        
+            
+            /*Serial.print("Dbg-proc data-rx len: ");
+            Serial.println(entry->length);
+
+            // Get destination MAC from the Ethernet frame
+            const uint8_t *dest_mac = entry->rxBuff;
+
+            for (int i = 0; i < 6; i++) 
+            {
+                Serial.print(my_mac[i], HEX);
+                Serial.print(":");
+            }
+            Serial.print("<=>");
+            for (int i = 0; i < 6; i++) 
+            {
+                Serial.print(dest_mac[i], HEX);
+                Serial.print(":");
+            }
+            Serial.println();
+
+
+            bool is_broadcast = true;
+            bool is_for_me = true;
+            for (int i = 0; i < 6; i++) {
+                if (dest_mac[i] != 0xFF) {
+                    is_broadcast = false;
+                    Serial.println("Dbg-proc not broadcast");
+                    Serial.flush();
+                    break;
+                }
+            }
+            if(!is_broadcast) {
+                for (int i = 0; i < 6; i++) {
+                    if (dest_mac[i] != my_mac[i]) {
+                        is_for_me = false;
+                        Serial.println("Dbg-proc not for me");
+                        Serial.flush();
+                        break;
+                    }
+                }
+            }else{
                 is_for_me = false;
-                Serial.println("Dbg-proc not for me");
+            }
+
+
+            //Serial.print("D");
+            //Serial.print(loopCount);
+            //Serial.print(":");
+            //Serial.println(entry->length);
+            //Serial.flush();
+            //TC6_ASSERT(0u == (entry->length % TC6_CHUNK_BUF_SIZE));
+            //enqueue_rx_spi(g, entry->rxBuff, entry->length);
+            // Only process if for us or broadcast
+            if (is_for_me ) {
+                Serial.println("Dbg-proc is for me");
+                Serial.flush();
+               // enqueue_rx_spi(g, entry->rxBuff, entry->length);
+            }else  if (is_broadcast ) {
+                Serial.println("Dbg-proc is broadcast");
+                Serial.flush();
+                enqueue_rx_spi(g, entry->rxBuff, entry->length);
+
+            }
+*/
+            enqueue_rx_spi(g, entry->rxBuff, entry->length);
+            qspibuf_stage3_process_done(&g->qSpi);
+            
+            
+            /*Serial.println("Dbg-proc done");
+            Serial.flush();
+            loopCount++;
+            if (loopCount > 100) {
+                Serial.println("  Dbg: processDataRx loop > 100, breaking to avoid hang");
                 Serial.flush();
                 break;
-            }
-        }
-
-        // Simple broadcast check
-        bool is_broadcast = true;
-        for (int i = 0; i < 6; i++) {
-            if (dest_mac[i] != 0xFF) {
-                is_broadcast = false;
-                Serial.println("Dbg-proc broadcast");
-                Serial.flush();
-                break;
-            }
-        }
-        Serial.print("D");
-        Serial.print(loopCount);
-        Serial.print(":");
-        Serial.println(entry->length);
-        Serial.flush();
-        TC6_ASSERT(0u == (entry->length % TC6_CHUNK_BUF_SIZE));
-        //enqueue_rx_spi(g, entry->rxBuff, entry->length);
-        // Only process if for us or broadcast
-        if (is_for_me ) {
-            Serial.println("Dbg-proc is for me");
-            Serial.flush();
-            enqueue_rx_spi(g, entry->rxBuff, entry->length);
-        }/*else  if (is_broadcast ) {
-            Serial.println("Dbg-proc is broadcast");
-            Serial.flush();
-            enqueue_rx_spi(g, entry->rxBuff, entry->length);
-        }*/
-
-        Serial.println("Dbg-enque");
-        Serial.flush();
-        qspibuf_stage3_process_done(&g->qSpi);
-        Serial.println("Dbg-proc done");
-        Serial.flush();
-        loopCount++;
-        if (loopCount > 100) {
-            Serial.println("  Dbg: processDataRx loop > 100, breaking to avoid hang");
-            Serial.flush();
-            break;
-        }
+            }*/
+        
+        
     }
-    Serial.print("Dbg-proc data-rx done, loops: ");
-    Serial.println(loopCount);
+    //Serial.print("Dbg-proc data-rx done, loops: ");
+    //Serial.println(loopCount);
 }
 
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
@@ -1331,6 +1354,7 @@ static inline void signal_rx_error(TC6_t *g, TC6_Error_t err)
 
 static inline void process_rx(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
 {
+    Serial.println("Dbg-proc data-rx0");
     const uint8_t *fptr = &buff[buf_len - TC6_HEADER_SIZE];
 
     if (GET_VAL(FTR_SV, fptr) ||
@@ -1356,7 +1380,7 @@ static inline void process_rx(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
 
         mfd = GET_VAL(FTR_FD, fptr);
         twoFrames = (ebo <= sbo);
-
+Serial.println("Dbg-proc data-rx1");
         if (twoFrames) {
             /* Two ETH frames in chunk */
             on_rx_slice(g, buff, g->offsetRx, (uint16_t)ebo, rtsa, rtsp);
@@ -1367,7 +1391,7 @@ static inline void process_rx(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
             /* Single Eth frame in chunk */
             len = ((uint16_t)ebo - (uint16_t)sbo);
         }
-
+Serial.println("Dbg-proc data-rx2");
         if (!twoFrames && sv && g->eth_started) {
             signal_rx_error(g, TC6Error_UnexpectedSv);
             success = false;
@@ -1382,8 +1406,9 @@ static inline void process_rx(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
             /* Wait for next start valid flag to clear error flag */
             success = false;
         }
-
+Serial.println("Dbg-proc data-rx3");
         if (success) {
+
             if (0u != sv) {
                 rtsa = GET_VAL(FTR_RTSA, fptr);
                 rtsp = GET_VAL(FTR_RTSP, fptr);
@@ -1397,7 +1422,7 @@ static inline void process_rx(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
             if (0u != rtsa) {
                 len -= 8u;
             }
-
+Serial.println("Dbg-proc data-rx ts");
             if (!twoFrames && ev) {
                 uint16_t offset = g->offsetRx;
                 g->eth_started = false;
@@ -1406,6 +1431,7 @@ static inline void process_rx(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
             } else {
                 g->offsetRx += len;
             }
+Serial.println("Dbg-proc data-rx done");
         }
     } else {
         g->eth_error = false;
@@ -1422,6 +1448,9 @@ static void enqueue_rx_spi(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
     }
     for (processed = 0; success && (processed < buf_len); processed += TC6_CHUNK_BUF_SIZE) {
         const uint8_t *pFooter = &buff[processed + TC6_CHUNK_SIZE];
+        Serial.print("Dbg-enq :");
+        Serial.println(processed);
+        Serial.flush();
 
         if (((0x0u == pFooter[0]) && (0x0u == pFooter[1]) && (0x0u == pFooter[2]) && (0x0u == pFooter[3])) ||
             ((0xFFu == pFooter[0]) && (0xFFu == pFooter[1]) && (0xFFu == pFooter[2]) && (0xFFu == pFooter[3])))
@@ -1447,6 +1476,7 @@ static void enqueue_rx_spi(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
             success = false;
         }
         if (success) {
+            
             if (!g->exst_locked) {
                 if (0u != GET_VAL(FTR_EXST, pFooter)) {
                     g->exst_locked = true;
@@ -1454,6 +1484,7 @@ static void enqueue_rx_spi(TC6_t *g, const uint8_t *buff, uint16_t buf_len)
                 }
             }
             process_rx(g, &buff[processed], TC6_CHUNK_BUF_SIZE);
+            Serial.println("success");
         } else {
             g->offsetRx = 0;
             g->eth_error = false;
