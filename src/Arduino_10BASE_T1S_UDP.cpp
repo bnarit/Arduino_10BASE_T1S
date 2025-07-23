@@ -13,7 +13,7 @@
  **************************************************************************************/
 
 #include "Arduino_10BASE_T1S_UDP.h"
-
+#include <Arduino.h>
 /**************************************************************************************
  * MODULE INTERNAL FUNCTION DECLARATION
  **************************************************************************************/
@@ -44,6 +44,7 @@ Arduino_10BASE_T1S_UDP::~Arduino_10BASE_T1S_UDP()
 
 uint8_t Arduino_10BASE_T1S_UDP::begin(uint16_t port)
 {
+  Serial.printf("IP_ADDR_ANY = %s %d\n", ipaddr_ntoa(IP_ADDR_ANY),port);
   /* Create a UDP PCB (if none exists yet). */
   if (!_udp_pcb)
     _udp_pcb = udp_new();
@@ -51,9 +52,11 @@ uint8_t Arduino_10BASE_T1S_UDP::begin(uint16_t port)
   /* Bind specified port to all local interfaces. */
   err_t const err = udp_bind(_udp_pcb, IP_ADDR_ANY, port);
   if (err != ERR_OK)
+    //Serial.printf("udp_bind failed: %d\n", err);
     return 0;
 
   /* Set a reception callback to be called upon the arrival of a UDP package. */
+  Serial.println("udp_bind ok");
   udp_recv(_udp_pcb , lwIp_udp_raw_recv, this);
 
   return 1;
@@ -220,6 +223,7 @@ uint16_t Arduino_10BASE_T1S_UDP::remotePort()
 
 void Arduino_10BASE_T1S_UDP::onUdpRawRecv(struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, uint16_t port)
 {
+  Serial.println("onUdpRawRecv");
   /* Obtain remote port and remote IP. */
   auto const remote_ip = IPAddress(
     ip4_addr1(addr),
@@ -251,6 +255,7 @@ void Arduino_10BASE_T1S_UDP::onUdpRawRecv(struct udp_pcb *pcb, struct pbuf *p, c
 
 void lwIp_udp_raw_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, uint16_t port)
 {
+  Serial.println("lwIp_udp_raw_recv called");
   Arduino_10BASE_T1S_UDP * this_ptr = (Arduino_10BASE_T1S_UDP * )arg;
   this_ptr->onUdpRawRecv(pcb, p, addr, port);
 }

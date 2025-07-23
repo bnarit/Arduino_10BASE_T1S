@@ -304,6 +304,11 @@ struct netif {
    *  For ethernet physical layer, this is usually ethip6_output() */
   netif_output_ip6_fn output_ip6;
 #endif /* LWIP_IPV6 */
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+
+#pragma message("LWIP_NETIF_LINK_CALLBACK = " STR(LWIP_NETIF_LINK_CALLBACK))
+
 #if LWIP_NETIF_STATUS_CALLBACK
   /** This function is called when the netif state is set to up or down
    */
@@ -321,6 +326,9 @@ struct netif {
   /** This field can be set by the device driver and could point
    *  to state information for the device. */
   void *state;
+
+  #pragma message("LWIP_NETIF_CLIENT_DATA_INDEX_MAX = " STR(LWIP_NETIF_CLIENT_DATA_INDEX_MAX))
+  #pragma message("LWIP_NUM_NETIF_CLIENT_DATA = " STR(LWIP_NUM_NETIF_CLIENT_DATA))
 #ifdef netif_get_client_data
   void* client_data[LWIP_NETIF_CLIENT_DATA_INDEX_MAX + LWIP_NUM_NETIF_CLIENT_DATA];
 #endif

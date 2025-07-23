@@ -38,6 +38,12 @@
 #ifndef LWIP_LWIPOPTS_H
 #define LWIP_LWIPOPTS_H
 
+
+
+#define LWIP_NETIF_LINK_CALLBACK      0
+#define LWIP_NETIF_HOSTNAME           1
+#define LWIP_NUM_NETIF_CLIENT_DATA    5
+#define LWIP_RAND() ((u32_t)rand())
 /**
  * NO_SYS==1: Provides VERY minimal functionality. Otherwise,
  * use lwIP facilities.
@@ -396,7 +402,7 @@
  * transport.
  */
 #ifndef LWIP_DNS
-#define LWIP_DNS                        0
+#define LWIP_DNS                        1
 #endif
 
 /*
@@ -586,9 +592,17 @@
 
 
 
-extern unsigned int  lwip_debug_flags;
+
 #define LWIP_DBG_TYPES_ON (LWIP_DBG_TRACE ) 
-extern  void lwip_diag_serial(const char *fmt, ...) ;
+#ifndef __ASSEMBLER__
+#ifdef __cplusplus
+extern "C" {
+#endif
+   void lwip_diag_serial(const char *fmt, ...) ;
+#ifdef __cplusplus
+}
+#endif
+#endif
 #define LWIP_PLATFORM_DIAG(x) lwip_diag_serial x
 /*
 // Rename APIs / structs to avoid clashes

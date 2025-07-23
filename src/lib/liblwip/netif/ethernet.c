@@ -80,6 +80,9 @@ const struct eth_addr ethzero = {{0, 0, 0, 0, 0, 0}};
 err_t
 ethernet_input(struct pbuf *p, struct netif *netif)
 {
+  LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,("ethernet_input: %p flags %x [%p] mtu %d %x\n",netif, netif->flags, &netif->flags,netif->mtu,netif->hwaddr[0]));
+  LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,("%p %p %p %p %p %p %p %p\n",&netif->input,&netif->output,&netif->linkoutput,&netif->status_callback,&netif->flags,&netif->state,&netif->client_data,&netif->gw));
+  LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE,("%p %p %p %p %p %p %p %p\n",&netif->hostname,&netif->chksum_flags,&netif->mtu,&netif->hwaddr,&netif->hwaddr_len,&netif->flags,&netif->name,&netif->num));
   struct eth_hdr *ethhdr;
   u16_t type;
 #if LWIP_ARP || ETHARP_SUPPORT_VLAN || LWIP_IPV6
@@ -166,14 +169,17 @@ ethernet_input(struct pbuf *p, struct netif *netif)
       p->flags |= PBUF_FLAG_LLBCAST;
     }
   }
-
+  LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("ethernet_input: switch %x\n",PP_HTONS(type)));
   switch (type) {
 #if LWIP_IPV4 && LWIP_ARP
     /* IP packet? */
     case PP_HTONS(ETHTYPE_IP):
+    
       if (!(netif->flags & NETIF_FLAG_ETHARP)) {
+        LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("ethernet_input: switch NETIF_FLAG_ETHARP %x\n",netif->flags));
         goto free_and_return;
       }
+      LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("ethernet_input: switch ip4_input\n"));
       /* skip Ethernet header (min. size checked above) */
       if (pbuf_remove_header(p, next_hdr_offset)) {
         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_WARNING,
@@ -182,6 +188,7 @@ ethernet_input(struct pbuf *p, struct netif *netif)
         LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("Can't move over header in packet"));
         goto free_and_return;
       } else {
+        LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("ethernet_input: passing packet to ip4_input\n"));
         /* pass to IP layer */
         ip4_input(p, netif);
       }
@@ -201,6 +208,7 @@ ethernet_input(struct pbuf *p, struct netif *netif)
         ETHARP_STATS_INC(etharp.drop);
         goto free_and_return;
       } else {
+        LWIP_DEBUGF(ETHARP_DEBUG | LWIP_DBG_TRACE, ("ethernet_input: passing packet to arp\n"));
         /* pass p to ARP module */
         etharp_input(p, netif);
       }
