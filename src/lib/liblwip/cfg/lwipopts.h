@@ -35,6 +35,13 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
+
+/*
+for arduino pico
+ how to rename libipv4.a in .platformio\packages\framework-arduinopico\lib\rp2350
+ and run  "\.platformio\packages\toolchain-rp2040-earlephilhower\bin\arm-none-eabi-ar.exe" --% rcs libipv4.a
+ and rename lwipopts.h , and create dummy one
+*/
 #ifndef LWIP_LWIPOPTS_H
 #define LWIP_LWIPOPTS_H
 
@@ -585,7 +592,7 @@
 #define TCP_FR_DEBUG     LWIP_DBG_OFF
 #define TCP_QLEN_DEBUG   LWIP_DBG_OFF
 #define TCP_RST_DEBUG    LWIP_DBG_OFF
-#define ETHARP_DEBUG     LWIP_DBG_ON
+#define ETHARP_DEBUG     LWIP_DBG_OFF
 #define DHCP_DEBUG       LWIP_DBG_ON
 #define IP6_DEBUG        LWIP_DBG_OFF
 

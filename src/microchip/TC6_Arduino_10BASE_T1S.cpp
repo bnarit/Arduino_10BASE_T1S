@@ -306,9 +306,9 @@ static err_t lwIpInit(struct netif *netif)
   netif_set_up(netif);
   netif_set_default(netif);
   
-  Serial.printf("lwIpInit: netif %p, flags 0x%02X [%p], mtu %u\n", netif, netif->flags,&netif->flags, netif->mtu);
-  Serial.printf("%p %p %p %p %p %p %p %p\n",&netif->input,&netif->output,&netif->linkoutput,&netif->status_callback,&netif->flags,&netif->state,&netif->client_data,&netif->gw);
-  Serial.printf("%p %p %p %p %p %p %p %p\n",&netif->hostname,&netif->chksum_flags,&netif->mtu,&netif->hwaddr,&netif->hwaddr_len,&netif->flags,&netif->name,&netif->num);
+  //Serial.printf("lwIpInit: netif %p, flags 0x%02X [%p], mtu %u\n", netif, netif->flags,&netif->flags, netif->mtu);
+  //Serial.printf("%p %p %p %p %p %p %p %p\n",&netif->input,&netif->output,&netif->linkoutput,&netif->status_callback,&netif->flags,&netif->state,&netif->client_data,&netif->gw);
+  //Serial.printf("%p %p %p %p %p %p %p %p\n",&netif->hostname,&netif->chksum_flags,&netif->mtu,&netif->hwaddr,&netif->hwaddr_len,&netif->flags,&netif->name,&netif->num);
 
   return ERR_OK;
 }
