@@ -136,7 +136,7 @@ for arduino pico
  * (requires the LWIP_TCP option)
  */
 #ifndef MEMP_NUM_TCP_PCB
-#define MEMP_NUM_TCP_PCB                0
+#define MEMP_NUM_TCP_PCB                8
 #endif
 
 /**
@@ -152,7 +152,7 @@ for arduino pico
  * (requires the LWIP_TCP option)
  */
 #ifndef MEMP_NUM_TCP_SEG
-#define MEMP_NUM_TCP_SEG                0
+#define MEMP_NUM_TCP_SEG                16
 #endif
 
 /**
@@ -214,7 +214,7 @@ for arduino pico
  * PBUF_POOL_SIZE: the number of buffers in the pbuf pool.
  */
 #ifndef PBUF_POOL_SIZE
-#define PBUF_POOL_SIZE                  1
+#define PBUF_POOL_SIZE                  8
 #endif
 
 /*
@@ -447,7 +447,7 @@ for arduino pico
  * LWIP_TCP==1: Turn on TCP.
  */
 #ifndef LWIP_TCP
-#define LWIP_TCP                        0
+#define LWIP_TCP                        1
 #endif
 
 /*
@@ -596,7 +596,8 @@ for arduino pico
 #define DHCP_DEBUG       LWIP_DBG_ON
 #define IP6_DEBUG        LWIP_DBG_OFF
 
-
+#define TCP_QUEUE_OOSEQ 1
+#define TCP_WRITE_FLAG_COPY 0x01  // If missing, define it manually
 
 
 
