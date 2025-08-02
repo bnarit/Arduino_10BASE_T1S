@@ -16,9 +16,9 @@
 
 #include "lib/libtc6/inc/tc6-regs.h"
 
-#include "lib/liblwip/include/lwip/init.h"
-#include "lib/liblwip/include/lwip/timeouts.h"
-#include "lib/liblwip/include/netif/etharp.h"
+#include "lwip/init.h"
+#include "lwip/timeouts.h"
+#include "netif/etharp.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -27,7 +27,7 @@
 namespace TC6
 {
 extern "C" {
-#include "lib/liblwip/include/lwip/netif.h"
+#include "lwip/netif.h"
 }
 bool TC6_Arduino_10BASE_T1S::isLinkUp() const {
     return netif_is_link_up(&(_lw.ip.netint));

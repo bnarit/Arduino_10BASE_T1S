@@ -22,8 +22,8 @@
 
 #include <Arduino.h>
 
-#include "liblwip/include/lwip/opt.h"
-#include "liblwip/arch/cc.h"
+#include "lwip/opt.h"
+#include "arch/cc.h"
 
 /**************************************************************************************
  * FUNCTION DEFINITION

@@ -18,7 +18,7 @@
 
 #include <stdint.h>
 
-#include "lib/liblwip/include/lwip/netif.h"
+#include "lwip/netif.h"
 
 #include "microchip/lib/libtc6/inc/tc6.h"
 

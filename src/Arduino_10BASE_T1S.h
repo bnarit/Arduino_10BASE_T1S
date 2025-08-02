@@ -19,13 +19,13 @@
 
 #include "microchip/TC6_Arduino_10BASE_T1S.h"
 
-#include "lib/liblwip/include/lwip/netif.h"
-#include "lib/liblwip/include/lwip/init.h"
-#include "lib/liblwip/include/lwip/timeouts.h"
-#include "lib/liblwip/include/netif/etharp.h"
-#include "lib/liblwip/include/lwip/mem.h"
-#include "lib/liblwip/include/lwip/memp.h"
-#include "lib/liblwip/include/lwip/udp.h"
+#include "lwip/netif.h"
+#include "lwip/init.h"
+#include "lwip/timeouts.h"
+#include "netif/etharp.h"
+#include "lwip/mem.h"
+#include "lwip/memp.h"
+#include "lwip/udp.h"
 
 /**************************************************************************************
  * CONSTANTS
