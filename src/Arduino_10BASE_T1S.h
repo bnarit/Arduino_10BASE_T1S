@@ -7,7 +7,13 @@
  *  License, v. 2.0. If a copy of the MPL was not distributed with this
  *  file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+/*  To use , copy lwipopts.h to 
+\AppData\Local\Arduino15\packages\rp2040\hardware\rp2040\4.6.0\include
 
+copy "arch/sys_arch.h"
+\AppData\Local\Arduino15\packages\rp2040\hardware\rp2040\4.6.0\pico-sdk\lib\lwip\src   ....  \arch\*
+\AppData\Local\Arduino15\packages\rp2040\hardware\rp2040\4.6.0\pico-sdk\lib\lwip\src\include\lwip
+*/ 
 #pragma once
 
 /**************************************************************************************
@@ -26,6 +32,8 @@
 #include "lwip/mem.h"
 #include "lwip/memp.h"
 #include "lwip/udp.h"
+
+
 
 /**************************************************************************************
  * CONSTANTS
