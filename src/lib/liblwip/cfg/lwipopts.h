@@ -502,6 +502,14 @@ for arduino pico
 #define LWIP_SOCKET                     0
 #endif
 
+//#define LWIP_HTTPD              1
+//#define HTTPD_USE_CUSTOM_FSDATA 0    // If using custom filesystem (fsdata.c)
+//#define LWIP_HTTPD_SSI          0    // If using SSI (Server Side Includes)
+//#define LWIP_HTTPD_CGI          1    // If using CGI
+// dirent.h (DANGEROUS fallback)
+
+
+
 /*
    ----------------------------------------
    ---------- Statistics options ----------
