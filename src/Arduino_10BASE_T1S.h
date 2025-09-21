@@ -11,8 +11,7 @@
 \AppData\Local\Arduino15\packages\rp2040\hardware\rp2040\4.6.0\include
 
 copy "arch/sys_arch.h"
-\AppData\Local\Arduino15\packages\rp2040\hardware\rp2040\4.6.0\pico-sdk\lib\lwip\src   ....  \arch\*
-\AppData\Local\Arduino15\packages\rp2040\hardware\rp2040\4.6.0\pico-sdk\lib\lwip\src\include\lwip
+\AppData\Local\Arduino15\packages\rp2040\hardware\rp2040\4.6.0\pico-sdk\lib\lwip\src\include\lwip....  \arch\*
 */ 
 #pragma once
 
