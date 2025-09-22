@@ -11,6 +11,7 @@ extern "C" {
 class Arduino_10BASE_T1S_TCP {
 public:
   Arduino_10BASE_T1S_TCP();
+  ~Arduino_10BASE_T1S_TCP();
 
   // Server
   bool begin(uint16_t port);
@@ -35,6 +36,9 @@ public:
   void setBufferSizes(size_t rxBytes, size_t txBytes);
 
 private:
+  static constexpr size_t kDefaultRxBytes = 16 * 1024;
+  static constexpr size_t kDefaultTxBytes = 8 * 1024;
+
   // -------- ring buffer --------
   struct Ring {
     uint8_t* data   = nullptr;
@@ -44,7 +48,7 @@ private:
     size_t   count  = 0;     // used bytes
   };
 
-  void   ringAlloc(Ring& r, size_t n);
+  bool   ringAlloc(Ring& r, size_t n);
   void   ringFree(Ring& r);
   size_t ringWrite(Ring& r, const uint8_t* buf, size_t len);
   size_t ringRead (Ring& r, uint8_t* buf, size_t len);

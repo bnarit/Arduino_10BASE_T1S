@@ -6,22 +6,66 @@
 //#define DEBUG_SHOW_TCP_STATE
 
 Arduino_10BASE_T1S_TCP::Arduino_10BASE_T1S_TCP() {
-  ringAlloc(_rx, 2048);
-  ringAlloc(_tx, 2048);
+  if (!ringAlloc(_rx, kDefaultRxBytes)) {
+    //Serial.println("TCP: failed to allocate RX buffer");
+    //Serial.flush();
+  }
+  if (!ringAlloc(_tx, kDefaultTxBytes)) {
+    //Serial.println("TCP: failed to allocate TX buffer");
+    //Serial.flush();
+    ringFree(_rx);
+  }
+}
+
+Arduino_10BASE_T1S_TCP::~Arduino_10BASE_T1S_TCP() {
+  ringFree(_rx);
+  ringFree(_tx);
 }
 
 void Arduino_10BASE_T1S_TCP::setBufferSizes(size_t rx, size_t tx) {
-  ringFree(_rx); ringFree(_tx);
-  ringAlloc(_rx, rx);
-  ringAlloc(_tx, tx);
+  if (!rx || !tx) {
+    //Serial.println("TCP: buffer sizes must be non-zero");
+    //Serial.flush();
+    return;
+  }
+  if (_rx.size == rx && _tx.size == tx) return;
+
+  Ring newRx{};
+  Ring newTx{};
+
+  bool rxOk = ringAlloc(newRx, rx);
+  bool txOk = ringAlloc(newTx, tx);
+
+  if (!rxOk || !txOk) {
+    //Serial.println("TCP: buffer resize failed");
+    //Serial.flush();
+    ringFree(newRx);
+    ringFree(newTx);
+    return;
+  }
+
+  ringFree(_rx);
+  ringFree(_tx);
+  _rx = newRx;
+  _tx = newTx;
+  newRx = Ring{};
+  newTx = Ring{};
 }
 
 // -------- ring buffer --------
 
-void Arduino_10BASE_T1S_TCP::ringAlloc(Ring& r, size_t n) {
-  r.data = (uint8_t*)malloc(n);
-  r.size = r.data ? n : 0;
+bool Arduino_10BASE_T1S_TCP::ringAlloc(Ring& r, size_t n) {
+  ringFree(r);
+  if (!n) return false;
+
+  r.data = static_cast<uint8_t*>(malloc(n));
+  if (!r.data) {
+    r.size = 0;
+    return false;
+  }
+  r.size = n;
   r.rd = r.wr = r.count = 0;
+  return true;
 }
 void Arduino_10BASE_T1S_TCP::ringFree(Ring& r) {
   if (r.data) free(r.data);
@@ -207,7 +251,14 @@ int Arduino_10BASE_T1S_TCP::read(uint8_t* buf, size_t len) {
 size_t Arduino_10BASE_T1S_TCP::write(const uint8_t* buf, size_t len) {
   if (!_tpcb || !len) return 0;
   size_t copied = ringWrite(_tx, buf, len);
-  if (copied) tryPushTx();
+  if (!copied) {
+    // Serial.println("TCP write: TX ring full");
+    return 0;
+  }
+
+  //Serial.print("TCP queued bytes=");
+  //Serial.println(copied);
+  tryPushTx();
   return copied;
 }
 
@@ -320,7 +371,8 @@ err_t Arduino_10BASE_T1S_TCP::onRecv(struct tcp_pcb* tpcb, struct pbuf* p, err_t
 
 err_t Arduino_10BASE_T1S_TCP::onSent(struct tcp_pcb* tpcb, u16_t len) {
   LWIP_UNUSED_ARG(tpcb);
-  LWIP_UNUSED_ARG(len);
+  //Serial.print("TCP ACK len=");
+  //Serial.println(len);
   // ACK notification -> queue more if pending
   tryPushTx();
   return ERR_OK;
@@ -346,7 +398,10 @@ err_t Arduino_10BASE_T1S_TCP::tryPushTx() {
   err_t res = ERR_OK;
   while (_tx.count) {
     u16_t can = tcp_sndbuf(_tpcb);
-    if (!can) break;
+    if (!can) {
+      // Serial.println("TCP tryPushTx: sndbuf=0");
+      break;
+    }
 
     // Peek-copy up to min(queue, can, TCP_WRITE_CHUNK)
     uint8_t buf[TCP_WRITE_CHUNK];
@@ -363,16 +418,21 @@ err_t Arduino_10BASE_T1S_TCP::tryPushTx() {
 
     res = tcp_write(_tpcb, buf, (u16_t)got, flags);
     if (res == ERR_MEM) {
-      // No room right now; wait for onSent/poll
+      // Serial.println("TCP tryPushTx: tcp_write ERR_MEM");
       break;
     }
     if (res != ERR_OK) {
-      // Some other error; stop trying this tick
+      // Serial.print("TCP tryPushTx: tcp_write err=");
+      // Serial.println(res);
       break;
     }
 
     // Success: now consume from ring
     ringConsume(_tx, got);
+    //Serial.print("TCP TX bytes=");
+    //Serial.print(got);
+    //Serial.print(" at ms=");
+    //Serial.println(millis());
 
     // If send buffer is now full, stop; we'll continue on next ACK/poll
     if (!tcp_sndbuf(_tpcb)) break;

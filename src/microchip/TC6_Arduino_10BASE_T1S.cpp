@@ -18,6 +18,7 @@
 
 #include "lwip/init.h"
 #include "lwip/timeouts.h"
+#include "lwip/mem.h"
 #include "netif/etharp.h"
 
 /**************************************************************************************
@@ -105,6 +106,37 @@ static void OnPlcaStatus(TC6_t *pInst, bool success, uint32_t addr, uint32_t val
 static err_t lwIpInit(struct netif *netif);
 static err_t lwIpOut(struct netif *netif, struct pbuf *p);
 
+struct Tc6TxCompleteTag {
+  TC6LwIP_t* lw = nullptr;
+  void* payload = nullptr;
+  bool payloadIsPbuf = false;
+  uint32_t startMs = 0;
+  uint16_t totalLen = 0;
+};
+
+static Tc6TxCompleteTag* makeTxTag(TC6LwIP_t* lw, void* payload, bool isPbuf, uint16_t len) {
+  Tc6TxCompleteTag* tag = static_cast<Tc6TxCompleteTag*>(mem_malloc(sizeof(Tc6TxCompleteTag)));
+  if (!tag) return nullptr;
+  tag->lw = lw;
+  tag->payload = payload;
+  tag->payloadIsPbuf = isPbuf;
+  tag->startMs = millis();
+  tag->totalLen = len;
+  return tag;
+}
+
+static void releaseTxTag(Tc6TxCompleteTag* tag) {
+  if (!tag) return;
+  if (tag->payload) {
+    if (tag->payloadIsPbuf) {
+      pbuf_free(static_cast<pbuf*>(tag->payload));
+    } else {
+      mem_free(tag->payload);
+    }
+  }
+  mem_free(tag);
+}
+
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
@@ -113,6 +145,8 @@ TC6_Arduino_10BASE_T1S::TC6_Arduino_10BASE_T1S(TC6_Io & tc6_io)
 : _tc6_io{tc6_io}
 {
   _lw.io = &tc6_io;
+  _lw.tc.lastTxStartMs = 0;
+  _lw.tc.lastTxBytes = 0;
 }
 
 TC6_Arduino_10BASE_T1S::~TC6_Arduino_10BASE_T1S()
@@ -325,16 +359,44 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
 
   if (maxSeg && needed <= maxSeg) {
     // Zero-copy segmented path
+    Tc6TxCompleteTag* tag = makeTxTag(lw, p, true, (uint16_t)p->tot_len);
+    if (!tag) {
+      Serial.println("TC6: TX tag alloc failed (segmented)");
+      return ERR_MEM;
+    }
+    pbuf_ref(p);
     uint8_t seg = 0;
     for (struct pbuf *q = p; q; q = q->next) {
       txSeg[seg].pEth   = (uint8_t*)q->payload;
       txSeg[seg].segLen = q->len;
       seg++;
     }
-    pbuf_ref(p);
+    lw->tc.lastTxStartMs = tag->startMs;
+    lw->tc.lastTxBytes   = tag->totalLen;
+    //Serial.print("TC6 queue len=");
+    //Serial.print(tag->totalLen);
+    //Serial.print(" segs=");
+    //Serial.print(seg);
+    //Serial.print(" at ms=");
+    //Serial.println(tag->startMs);
     bool ok = TC6_SendRawEthernetSegments(lw->tc.tc6, txSeg, seg, p->tot_len, 0,
-      +[](TC6_t*, const uint8_t*, uint16_t, void *tag, void*){ pbuf_free((pbuf*)tag); }, p);
-    return ok ? ERR_OK : ERR_IF;
+      +[](TC6_t*, const uint8_t*, uint16_t len, void *rawTag, void*){
+        auto tag = static_cast<Tc6TxCompleteTag*>(rawTag);
+        if (tag && tag->lw) {
+         // Serial.print("TC6 TX done len=");
+         // Serial.print(len);
+          //Serial.print(" delta_ms=");
+          //Serial.println(millis() - tag->startMs);
+          tag->lw->tc.lastTxBytes = len;
+        }
+        releaseTxTag(tag);
+      }, tag);
+    if (!ok) {
+      Serial.println("TC6: SendRawSegments failed (segmented)");
+      releaseTxTag(tag);
+      return ERR_IF;
+    }
+    return ERR_OK;
   } else {
     // Coalesce fallback
     uint16_t tot = (uint16_t)p->tot_len;
@@ -342,10 +404,37 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
     if (!tmp) return ERR_MEM;
     pbuf_copy_partial(p, tmp, tot, 0);
     // send 'tmp' as one segment; free in completion
+    Tc6TxCompleteTag* tag = makeTxTag(lw, tmp, false, tot);
+    if (!tag) {
+      //Serial.println("TC6: TX tag alloc failed (coalesce)");
+      mem_free(tmp);
+      return ERR_MEM;
+    }
+    lw->tc.lastTxStartMs = tag->startMs;
+    lw->tc.lastTxBytes   = tag->totalLen;
+    //Serial.print("TC6 queue len=");
+    //Serial.print(tag->totalLen);
+    //Serial.print(" segs=1 at ms=");
+    //Serial.println(tag->startMs);
     bool ok = TC6_SendRawEthernetSegments(lw->tc.tc6, /*seg=*/NULL, /*segCount=*/0,
                                           tot, 0,
-      +[](TC6_t*, const uint8_t*, uint16_t, void *tag, void*){ mem_free(tag); }, tmp);
-    return ok ? ERR_OK : ERR_IF;
+      +[](TC6_t*, const uint8_t*, uint16_t len, void *rawTag, void*){
+        auto tag = static_cast<Tc6TxCompleteTag*>(rawTag);
+        if (tag && tag->lw) {
+          //Serial.print("TC6 TX done len=");
+          //Serial.print(len);
+          //Serial.print(" delta_ms=");
+          Serial.println(millis() - tag->startMs);
+          tag->lw->tc.lastTxBytes = len;
+        }
+        releaseTxTag(tag);
+      }, tag);
+    if (!ok) {
+      Serial.println("TC6: SendRawSegments failed (coalesce)");
+      releaseTxTag(tag);
+      return ERR_IF;
+    }
+    return ERR_OK;
   }
 }
 
