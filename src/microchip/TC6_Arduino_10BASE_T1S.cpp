@@ -298,6 +298,7 @@ static err_t lwIpInit(struct netif *netif)
   TC6LwIP_t *lw = GetContextNetif(netif);
   netif->output = etharp_output;
   netif->linkoutput = lwIpOut;
+  netif->input      = netif_input;
   netif->flags =  NETIF_FLAG_UP | NETIF_FLAG_LINK_UP| NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET; // remove 
   netif->mtu = TC6LwIP_MTU;
   netif->hwaddr_len = ETHARP_HWADDR_LEN;
@@ -306,13 +307,50 @@ static err_t lwIpInit(struct netif *netif)
   netif_set_up(netif);
   netif_set_default(netif);
   
-  Serial.printf("lwIpInit: netif %p, flags 0x%02X [%p], mtu %u\n", netif, netif->flags,&netif->flags, netif->mtu);
-  Serial.printf("%p %p %p %p %p %p %p %p %p\n",&ethernet_input,&netif->input,&netif->output,&netif->linkoutput,&netif->status_callback,&netif->flags,&netif->state,&netif->client_data,&netif->gw);
-  Serial.printf("%p %p %p %p %p %p %p %p\n",&netif->hostname,&netif->chksum_flags,&netif->mtu,&netif->hwaddr,&netif->hwaddr_len,&netif->flags,&netif->name,&netif->num);
+  //Serial.printf("lwIpInit: netif %p, flags 0x%02X [%p], mtu %u\n", netif, netif->flags,&netif->flags, netif->mtu);
+  //Serial.printf("%p %p %p %p %p %p %p %p %p\n",&ethernet_input,&netif->input,&netif->output,&netif->linkoutput,&netif->status_callback,&netif->flags,&netif->state,&netif->client_data,&netif->gw);
+  //Serial.printf("%p %p %p %p %p %p %p %p\n",&netif->hostname,&netif->chksum_flags,&netif->mtu,&netif->hwaddr,&netif->hwaddr_len,&netif->flags,&netif->name,&netif->num);
 
   return ERR_OK;
 }
+static err_t lwIpOut(struct netif *netif, struct pbuf *p)
+{
+  TC6LwIP_t *lw = GetContextNetif(netif);
+  TC6_RawTxSegment *txSeg = NULL;
+  uint8_t maxSeg = TC6_GetRawSegments(lw->tc.tc6, &txSeg);
 
+  // Count nodes
+  uint16_t needed = 0;
+  for (struct pbuf *q = p; q; q = q->next) needed++;
+
+  if (maxSeg && needed <= maxSeg) {
+    // Zero-copy segmented path
+    uint8_t seg = 0;
+    for (struct pbuf *q = p; q; q = q->next) {
+      txSeg[seg].pEth   = (uint8_t*)q->payload;
+      txSeg[seg].segLen = q->len;
+      seg++;
+    }
+    pbuf_ref(p);
+    bool ok = TC6_SendRawEthernetSegments(lw->tc.tc6, txSeg, seg, p->tot_len, 0,
+      +[](TC6_t*, const uint8_t*, uint16_t, void *tag, void*){ pbuf_free((pbuf*)tag); }, p);
+    return ok ? ERR_OK : ERR_IF;
+  } else {
+    // Coalesce fallback
+    uint16_t tot = (uint16_t)p->tot_len;
+    uint8_t *tmp = (uint8_t*)mem_malloc(tot);
+    if (!tmp) return ERR_MEM;
+    pbuf_copy_partial(p, tmp, tot, 0);
+    // send 'tmp' as one segment; free in completion
+    bool ok = TC6_SendRawEthernetSegments(lw->tc.tc6, /*seg=*/NULL, /*segCount=*/0,
+                                          tot, 0,
+      +[](TC6_t*, const uint8_t*, uint16_t, void *tag, void*){ mem_free(tag); }, tmp);
+    return ok ? ERR_OK : ERR_IF;
+  }
+}
+
+
+/*
 static err_t lwIpOut(struct netif *netif, struct pbuf *p)
 {
   TC6_RawTxSegment *txSeg = NULL;
@@ -344,8 +382,11 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
     }
     success = TC6_SendRawEthernetSegments(
       lw->tc.tc6, txSeg, seg, p->tot_len, 0,
-      +[](TC6_t * /* pInst */, const uint8_t * /* pTx */, uint16_t /* len */, void *pTag,
-          void * /* pGlobalTag */) -> void
+      +[](TC6_t *, // pInst 
+      const uint8_t * , // pTx 
+      uint16_t, // len 
+      void *pTag,
+      void * )-> void // pGlobalTag 
       {
         struct pbuf *p = (struct pbuf *) pTag;
 //  TC6_ASSERT(GetContextTC6(pInst));
@@ -355,7 +396,7 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
 //  TC6_ASSERT(p->ref);
         pbuf_free(p);
       }, p);
-//    TC6_ASSERT(success); /* Must always succeed as TC6_GetRawSegments returned a valid value */
+//    TC6_ASSERT(success); // Must always succeed as TC6_GetRawSegments returned a valid value 
     result = success ? ERR_OK : ERR_IF;
   } else
   {
@@ -363,7 +404,7 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
   }
   return result;
 }
-
+*/
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -447,7 +488,22 @@ void TC6_CB_OnRxEthernetSlice(TC6_t *pInst, const uint8_t *pRx, uint16_t offset,
     lw->tc.rxLen += len;
   }
 }
-
+static void sniff_ether_ip(const struct pbuf* p) {
+  if (!p || p->len < sizeof(struct eth_hdr)) return;
+  const struct eth_hdr* eh = (const struct eth_hdr*)p->payload;
+  const u16_t type = lwip_htons(eh->type);
+  if (type != ETHTYPE_IP) return;          // 0x0800
+  if (p->len < sizeof(struct eth_hdr)+sizeof(struct ip_hdr)) return;
+  const uint8_t* ipb = (const uint8_t*)p->payload + sizeof(struct eth_hdr);
+  const struct ip_hdr* ih = (const struct ip_hdr*)ipb;
+  const u8_t proto = IPH_PROTO(ih);        // 6=TCP, 17=UDP
+  //if (proto == 6) {
+    //Serial.printf("TCP ingress: tot=%u src=%u.%u.%u.%u dst=%u.%u.%u.%u\n",
+    //  p->tot_len,
+    //  ipb[12],ipb[13],ipb[14],ipb[15],
+    //  ipb[16],ipb[17],ipb[18],ipb[19]);
+  //}
+}
 void TC6_CB_OnRxEthernetPacket(TC6_t *pInst, bool success, uint16_t len, uint64_t *rxTimestamp, void *pGlobalTag)
 {
  
@@ -485,6 +541,8 @@ void TC6_CB_OnRxEthernetPacket(TC6_t *pInst, bool success, uint16_t len, uint64_
     ethType = htons(ethhdr->type);
     if (FilterRxEthernetPacket(ethType))
     {
+      // In your RX path:
+      sniff_ether_ip(lw->tc.pbuf);        // before input()
       /* Integrator decided that TCP/IP stack shall consume the received packet */
       err_t result = lw->ip.netint.input(lw->tc.pbuf, &lw->ip.netint);
       if (ERR_OK == result)
