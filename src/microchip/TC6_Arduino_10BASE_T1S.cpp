@@ -243,10 +243,11 @@ void TC6_Arduino_10BASE_T1S::digitalWrite(DIO const dio, bool const value)
   else if (dio == DIO::A1)
     digitalWrite_A1(value);
 }
-
+extern "C" volatile uint32_t g_lastServiceUs;
 void TC6_Arduino_10BASE_T1S::service()
 {
  // Serial.println("SPE service");
+  g_lastServiceUs = time_us_32();
   sys_check_timeouts(); /* LWIP timers - ARP, DHCP, TCP, etc. */
 
   if (_tc6_io.isInterruptActive())
