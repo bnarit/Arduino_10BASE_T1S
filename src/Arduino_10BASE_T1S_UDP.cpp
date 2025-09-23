@@ -223,7 +223,7 @@ uint16_t Arduino_10BASE_T1S_UDP::remotePort()
 
 void Arduino_10BASE_T1S_UDP::onUdpRawRecv(struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, uint16_t port)
 {
-  Serial.println("onUdpRawRecv");
+  //Serial.println("onUdpRawRecv");
   /* Obtain remote port and remote IP. */
   auto const remote_ip = IPAddress(
     ip4_addr1(addr),
@@ -255,7 +255,7 @@ void Arduino_10BASE_T1S_UDP::onUdpRawRecv(struct udp_pcb *pcb, struct pbuf *p, c
 
 void lwIp_udp_raw_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, uint16_t port)
 {
-  Serial.println("lwIp_udp_raw_recv called");
+  //Serial.println("lwIp_udp_raw_recv called");
   Arduino_10BASE_T1S_UDP * this_ptr = (Arduino_10BASE_T1S_UDP * )arg;
   this_ptr->onUdpRawRecv(pcb, p, addr, port);
 }
