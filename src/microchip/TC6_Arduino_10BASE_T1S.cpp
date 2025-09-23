@@ -16,10 +16,9 @@
 
 #include "lib/libtc6/inc/tc6-regs.h"
 
-#include "lwip/init.h"
-#include "lwip/timeouts.h"
-#include "lwip/mem.h"
-#include "netif/etharp.h"
+#include "lib/liblwip/include/lwip/init.h"
+#include "lib/liblwip/include/lwip/timeouts.h"
+#include "lib/liblwip/include/netif/etharp.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -28,7 +27,7 @@
 namespace TC6
 {
 extern "C" {
-#include "lwip/netif.h"
+#include "lib/liblwip/include/lwip/netif.h"
 }
 bool TC6_Arduino_10BASE_T1S::isLinkUp() const {
     return netif_is_link_up(&(_lw.ip.netint));
@@ -106,37 +105,6 @@ static void OnPlcaStatus(TC6_t *pInst, bool success, uint32_t addr, uint32_t val
 static err_t lwIpInit(struct netif *netif);
 static err_t lwIpOut(struct netif *netif, struct pbuf *p);
 
-struct Tc6TxCompleteTag {
-  TC6LwIP_t* lw = nullptr;
-  void* payload = nullptr;
-  bool payloadIsPbuf = false;
-  uint32_t startMs = 0;
-  uint16_t totalLen = 0;
-};
-
-static Tc6TxCompleteTag* makeTxTag(TC6LwIP_t* lw, void* payload, bool isPbuf, uint16_t len) {
-  Tc6TxCompleteTag* tag = static_cast<Tc6TxCompleteTag*>(mem_malloc(sizeof(Tc6TxCompleteTag)));
-  if (!tag) return nullptr;
-  tag->lw = lw;
-  tag->payload = payload;
-  tag->payloadIsPbuf = isPbuf;
-  tag->startMs = millis();
-  tag->totalLen = len;
-  return tag;
-}
-
-static void releaseTxTag(Tc6TxCompleteTag* tag) {
-  if (!tag) return;
-  if (tag->payload) {
-    if (tag->payloadIsPbuf) {
-      pbuf_free(static_cast<pbuf*>(tag->payload));
-    } else {
-      mem_free(tag->payload);
-    }
-  }
-  mem_free(tag);
-}
-
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
@@ -145,8 +113,6 @@ TC6_Arduino_10BASE_T1S::TC6_Arduino_10BASE_T1S(TC6_Io & tc6_io)
 : _tc6_io{tc6_io}
 {
   _lw.io = &tc6_io;
-  _lw.tc.lastTxStartMs = 0;
-  _lw.tc.lastTxBytes = 0;
 }
 
 TC6_Arduino_10BASE_T1S::~TC6_Arduino_10BASE_T1S()
@@ -243,11 +209,10 @@ void TC6_Arduino_10BASE_T1S::digitalWrite(DIO const dio, bool const value)
   else if (dio == DIO::A1)
     digitalWrite_A1(value);
 }
-extern "C" volatile uint32_t g_lastServiceUs;
+
 void TC6_Arduino_10BASE_T1S::service()
 {
  // Serial.println("SPE service");
-  g_lastServiceUs = time_us_32();
   sys_check_timeouts(); /* LWIP timers - ARP, DHCP, TCP, etc. */
 
   if (_tc6_io.isInterruptActive())
@@ -333,7 +298,6 @@ static err_t lwIpInit(struct netif *netif)
   TC6LwIP_t *lw = GetContextNetif(netif);
   netif->output = etharp_output;
   netif->linkoutput = lwIpOut;
-  netif->input      = netif_input;
   netif->flags =  NETIF_FLAG_UP | NETIF_FLAG_LINK_UP| NETIF_FLAG_BROADCAST | NETIF_FLAG_ETHARP | NETIF_FLAG_ETHERNET; // remove 
   netif->mtu = TC6LwIP_MTU;
   netif->hwaddr_len = ETHARP_HWADDR_LEN;
@@ -343,105 +307,12 @@ static err_t lwIpInit(struct netif *netif)
   netif_set_default(netif);
   
   //Serial.printf("lwIpInit: netif %p, flags 0x%02X [%p], mtu %u\n", netif, netif->flags,&netif->flags, netif->mtu);
-  //Serial.printf("%p %p %p %p %p %p %p %p %p\n",&ethernet_input,&netif->input,&netif->output,&netif->linkoutput,&netif->status_callback,&netif->flags,&netif->state,&netif->client_data,&netif->gw);
+  //Serial.printf("%p %p %p %p %p %p %p %p\n",&netif->input,&netif->output,&netif->linkoutput,&netif->status_callback,&netif->flags,&netif->state,&netif->client_data,&netif->gw);
   //Serial.printf("%p %p %p %p %p %p %p %p\n",&netif->hostname,&netif->chksum_flags,&netif->mtu,&netif->hwaddr,&netif->hwaddr_len,&netif->flags,&netif->name,&netif->num);
 
   return ERR_OK;
 }
 
-static err_t lwIpOut(struct netif *netif, struct pbuf *p)
-{
-  TC6LwIP_t *lw = GetContextNetif(netif);
-  TC6_RawTxSegment *txSeg = NULL;
-  uint8_t maxSeg = TC6_GetRawSegments(lw->tc.tc6, &txSeg);
-
-  // Count nodes
-  uint16_t needed = 0;
-  for (struct pbuf *q = p; q; q = q->next) needed++;
-
-  if (maxSeg && needed <= maxSeg) {
-    // Zero-copy segmented path
-    Tc6TxCompleteTag* tag = makeTxTag(lw, p, true, (uint16_t)p->tot_len);
-    if (!tag) {
-      Serial.println("TC6: TX tag alloc failed (segmented)");
-      return ERR_MEM;
-    }
-    pbuf_ref(p);
-    uint8_t seg = 0;
-    for (struct pbuf *q = p; q; q = q->next) {
-      txSeg[seg].pEth   = (uint8_t*)q->payload;
-      txSeg[seg].segLen = q->len;
-      seg++;
-    }
-    lw->tc.lastTxStartMs = tag->startMs;
-    lw->tc.lastTxBytes   = tag->totalLen;
-    //Serial.print("TC6 queue len=");
-    //Serial.print(tag->totalLen);
-    //Serial.print(" segs=");
-    //Serial.print(seg);
-    //Serial.print(" at ms=");
-    //Serial.println(tag->startMs);
-    bool ok = TC6_SendRawEthernetSegments(lw->tc.tc6, txSeg, seg, p->tot_len, 0,
-      +[](TC6_t*, const uint8_t*, uint16_t len, void *rawTag, void*){
-        auto tag = static_cast<Tc6TxCompleteTag*>(rawTag);
-        if (tag && tag->lw) {
-         // Serial.print("TC6 TX done len=");
-         // Serial.print(len);
-          //Serial.print(" delta_ms=");
-          //Serial.println(millis() - tag->startMs);
-          tag->lw->tc.lastTxBytes = len;
-        }
-        releaseTxTag(tag);
-      }, tag);
-    if (!ok) {
-      Serial.println("TC6: SendRawSegments failed (segmented)");
-      releaseTxTag(tag);
-      return ERR_IF;
-    }
-    return ERR_OK;
-  } else {
-    // Coalesce fallback
-    uint16_t tot = (uint16_t)p->tot_len;
-    uint8_t *tmp = (uint8_t*)mem_malloc(tot);
-    if (!tmp) return ERR_MEM;
-    pbuf_copy_partial(p, tmp, tot, 0);
-    // send 'tmp' as one segment; free in completion
-    Tc6TxCompleteTag* tag = makeTxTag(lw, tmp, false, tot);
-    if (!tag) {
-      //Serial.println("TC6: TX tag alloc failed (coalesce)");
-      mem_free(tmp);
-      return ERR_MEM;
-    }
-    lw->tc.lastTxStartMs = tag->startMs;
-    lw->tc.lastTxBytes   = tag->totalLen;
-    //Serial.print("TC6 queue len=");
-    //Serial.print(tag->totalLen);
-    //Serial.print(" segs=1 at ms=");
-    //Serial.println(tag->startMs);
-    bool ok = TC6_SendRawEthernetSegments(lw->tc.tc6, /*seg=*/NULL, /*segCount=*/0,
-                                          tot, 0,
-      +[](TC6_t*, const uint8_t*, uint16_t len, void *rawTag, void*){
-        auto tag = static_cast<Tc6TxCompleteTag*>(rawTag);
-        if (tag && tag->lw) {
-          //Serial.print("TC6 TX done len=");
-          //Serial.print(len);
-          //Serial.print(" delta_ms=");
-          Serial.println(millis() - tag->startMs);
-          tag->lw->tc.lastTxBytes = len;
-        }
-        releaseTxTag(tag);
-      }, tag);
-    if (!ok) {
-      Serial.println("TC6: SendRawSegments failed (coalesce)");
-      releaseTxTag(tag);
-      return ERR_IF;
-    }
-    return ERR_OK;
-  }
-}
-
-
-/*
 static err_t lwIpOut(struct netif *netif, struct pbuf *p)
 {
   TC6_RawTxSegment *txSeg = NULL;
@@ -473,11 +344,8 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
     }
     success = TC6_SendRawEthernetSegments(
       lw->tc.tc6, txSeg, seg, p->tot_len, 0,
-      +[](TC6_t *, // pInst 
-      const uint8_t * , // pTx 
-      uint16_t, // len 
-      void *pTag,
-      void * )-> void // pGlobalTag 
+      +[](TC6_t * /* pInst */, const uint8_t * /* pTx */, uint16_t /* len */, void *pTag,
+          void * /* pGlobalTag */) -> void
       {
         struct pbuf *p = (struct pbuf *) pTag;
 //  TC6_ASSERT(GetContextTC6(pInst));
@@ -487,7 +355,7 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
 //  TC6_ASSERT(p->ref);
         pbuf_free(p);
       }, p);
-//    TC6_ASSERT(success); // Must always succeed as TC6_GetRawSegments returned a valid value 
+//    TC6_ASSERT(success); /* Must always succeed as TC6_GetRawSegments returned a valid value */
     result = success ? ERR_OK : ERR_IF;
   } else
   {
@@ -495,7 +363,7 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
   }
   return result;
 }
-*/
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -579,22 +447,7 @@ void TC6_CB_OnRxEthernetSlice(TC6_t *pInst, const uint8_t *pRx, uint16_t offset,
     lw->tc.rxLen += len;
   }
 }
-static void sniff_ether_ip(const struct pbuf* p) {
-  if (!p || p->len < sizeof(struct eth_hdr)) return;
-  const struct eth_hdr* eh = (const struct eth_hdr*)p->payload;
-  const u16_t type = lwip_htons(eh->type);
-  if (type != ETHTYPE_IP) return;          // 0x0800
-  if (p->len < sizeof(struct eth_hdr)+sizeof(struct ip_hdr)) return;
-  const uint8_t* ipb = (const uint8_t*)p->payload + sizeof(struct eth_hdr);
-  const struct ip_hdr* ih = (const struct ip_hdr*)ipb;
-  const u8_t proto = IPH_PROTO(ih);        // 6=TCP, 17=UDP
-  //if (proto == 6) {
-    //Serial.printf("TCP ingress: tot=%u src=%u.%u.%u.%u dst=%u.%u.%u.%u\n",
-    //  p->tot_len,
-    //  ipb[12],ipb[13],ipb[14],ipb[15],
-    //  ipb[16],ipb[17],ipb[18],ipb[19]);
-  //}
-}
+
 void TC6_CB_OnRxEthernetPacket(TC6_t *pInst, bool success, uint16_t len, uint64_t *rxTimestamp, void *pGlobalTag)
 {
  
@@ -632,8 +485,6 @@ void TC6_CB_OnRxEthernetPacket(TC6_t *pInst, bool success, uint16_t len, uint64_
     ethType = htons(ethhdr->type);
     if (FilterRxEthernetPacket(ethType))
     {
-      // In your RX path:
-      sniff_ether_ip(lw->tc.pbuf);        // before input()
       /* Integrator decided that TCP/IP stack shall consume the received packet */
       err_t result = lw->ip.netint.input(lw->tc.pbuf, &lw->ip.netint);
       if (ERR_OK == result)

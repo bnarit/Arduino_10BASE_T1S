@@ -18,7 +18,7 @@
 
 #include <stdint.h>
 
-#include "lwip/netif.h"
+#include "lib/liblwip/include/lwip/netif.h"
 
 #include "microchip/lib/libtc6/inc/tc6.h"
 
@@ -38,8 +38,6 @@ typedef struct
   uint16_t rxLen;
   bool rxInvalid;
   bool tc6NeedService;
-  uint32_t lastTxStartMs;
-  uint16_t lastTxBytes;
 } TC6Lib_t;
 
 typedef struct

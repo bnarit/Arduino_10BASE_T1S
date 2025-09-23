@@ -50,27 +50,7 @@ Microchip or any third party.
 /*                      DEFINES AND LOCAL VARIABLES                     */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
-typedef struct
-{
-    uint8_t mac[6];
-    TC6_t *pTC6;
-    void *pTag;
-    uint32_t unlockExtTime;
-    uint32_t readResult;
-    uint8_t nodeId;
-    uint8_t nodeCount;
-    uint8_t burstCount;
-    uint8_t burstTimer;
-    uint8_t chipRev;
-    bool extBlock;
-    bool initialized;
-    bool initDone;
-    bool enablePlca;
-    bool plcaChanged;
-    bool promiscuous;
-    bool txCutThrough;
-    bool rxCutThrough;
-} TC6Reg_t;
+
 
 static TC6Reg_t m_reg[TC6_MAX_INSTANCES] = { 0 };
 
@@ -78,7 +58,7 @@ static TC6Reg_t m_reg[TC6_MAX_INSTANCES] = { 0 };
 /*                      PRIVATE FUNCTION PROTOTYPES                     */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
-static TC6Reg_t *GetContext(TC6_t *pTC6);
+TC6Reg_t *GetContext(TC6_t *pTC6);
 static void DoInitialization(TC6Reg_t *pReg);
 static void HandlePlca(TC6Reg_t *pReg);
 static void OnSoftResetCB(TC6_t *pInst, bool success, uint32_t addr, uint32_t value, void *pTag, void *pGlobalTag);
@@ -265,7 +245,7 @@ void TC6_CB_OnExtendedStatus(TC6_t *pInst, void *pGlobalTag)
 /*                  PRIVATE FUNCTION IMPLEMENTATIONS                    */
 /*>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>*/
 
-static TC6Reg_t *GetContext(TC6_t *pTC6)
+ TC6Reg_t *GetContext(TC6_t *pTC6)
 {
     TC6Reg_t *pReg = NULL;
     uint8_t i;

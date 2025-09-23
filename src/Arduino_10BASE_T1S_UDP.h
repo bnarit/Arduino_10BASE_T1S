@@ -22,10 +22,9 @@
 
 #include <Udp.h>
 #include <IPAddress.h>
-#include "lwip/udp.h"
 
-
-#include "lwip/ip_addr.h"
+#include "lib/liblwip/include/lwip/udp.h"
+#include "lib/liblwip/include/lwip/ip_addr.h"
 
 #include "MacAddress.h"
 #include "T1SMacSettings.h"

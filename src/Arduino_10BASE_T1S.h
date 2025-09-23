@@ -7,12 +7,7 @@
  *  License, v. 2.0. If a copy of the MPL was not distributed with this
  *  file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-/*  To use , copy lwipopts.h to 
-\AppData\Local\Arduino15\packages\rp2040\hardware\rp2040\4.6.0\include
 
-copy "arch/sys_arch.h"
-\AppData\Local\Arduino15\packages\rp2040\hardware\rp2040\4.6.0\pico-sdk\lib\lwip\src\include\lwip....  \arch\*
-*/ 
 #pragma once
 
 /**************************************************************************************
@@ -21,19 +16,16 @@ copy "arch/sys_arch.h"
 
 #include "Arduino_10BASE_T1S_PHY_Interface.h"
 #include "Arduino_10BASE_T1S_UDP.h"
-#include "Arduino_10BASE_T1S_TCP.h"
 
 #include "microchip/TC6_Arduino_10BASE_T1S.h"
 
-#include "lwip/netif.h"
-#include "lwip/init.h"
-#include "lwip/timeouts.h"
-#include "netif/etharp.h"
-#include "lwip/mem.h"
-#include "lwip/memp.h"
-#include "lwip/udp.h"
-
-
+#include "lib/liblwip/include/lwip/netif.h"
+#include "lib/liblwip/include/lwip/init.h"
+#include "lib/liblwip/include/lwip/timeouts.h"
+#include "lib/liblwip/include/netif/etharp.h"
+#include "lib/liblwip/include/lwip/mem.h"
+#include "lib/liblwip/include/lwip/memp.h"
+#include "lib/liblwip/include/lwip/udp.h"
 
 /**************************************************************************************
  * CONSTANTS
