@@ -348,6 +348,7 @@ static err_t lwIpInit(struct netif *netif)
 
   return ERR_OK;
 }
+
 static err_t lwIpOut(struct netif *netif, struct pbuf *p)
 {
   TC6LwIP_t *lw = GetContextNetif(netif);
