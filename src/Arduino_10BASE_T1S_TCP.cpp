@@ -3,7 +3,7 @@
 #ifndef TCP_WRITE_CHUNK
 #define TCP_WRITE_CHUNK (1460)  // conservative; <= sndbuf/MSS
 #endif
-//#define DEBUG_SHOW_TCP_STATE
+#define DEBUG_SHOW_TCP_STATE
 
 Arduino_10BASE_T1S_TCP::Arduino_10BASE_T1S_TCP() {
   if (!ringAlloc(_rx, kDefaultRxBytes)) {
