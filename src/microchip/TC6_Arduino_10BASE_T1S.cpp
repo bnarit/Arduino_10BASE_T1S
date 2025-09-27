@@ -375,20 +375,20 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
     }
     lw->tc.lastTxStartMs = tag->startMs;
     lw->tc.lastTxBytes   = tag->totalLen;
-    //Serial.print("TC6 queue len=");
-    //Serial.print(tag->totalLen);
-    //Serial.print(" segs=");
-    //Serial.print(seg);
-    //Serial.print(" at ms=");
-    //Serial.println(tag->startMs);
+    Serial.print("TC6 queue len=");
+    Serial.print(tag->totalLen);
+    Serial.print(" segs=");
+    Serial.print(seg);
+    Serial.print(" at ms=");
+    Serial.println(tag->startMs);
     bool ok = TC6_SendRawEthernetSegments(lw->tc.tc6, txSeg, seg, p->tot_len, 0,
       +[](TC6_t*, const uint8_t*, uint16_t len, void *rawTag, void*){
         auto tag = static_cast<Tc6TxCompleteTag*>(rawTag);
         if (tag && tag->lw) {
-         // Serial.print("TC6 TX done len=");
-         // Serial.print(len);
-          //Serial.print(" delta_ms=");
-          //Serial.println(millis() - tag->startMs);
+          Serial.print("TC6 TX done len=");
+          Serial.print(len);
+          Serial.print(" delta_ms=");
+          Serial.println(millis() - tag->startMs);
           tag->lw->tc.lastTxBytes = len;
         }
         releaseTxTag(tag);
@@ -414,18 +414,18 @@ static err_t lwIpOut(struct netif *netif, struct pbuf *p)
     }
     lw->tc.lastTxStartMs = tag->startMs;
     lw->tc.lastTxBytes   = tag->totalLen;
-    //Serial.print("TC6 queue len=");
-    //Serial.print(tag->totalLen);
-    //Serial.print(" segs=1 at ms=");
-    //Serial.println(tag->startMs);
+    Serial.print("CLCB TC6 queue len=");
+    Serial.print(tag->totalLen);
+    Serial.print(" segs=1 at ms=");
+    Serial.println(tag->startMs);
     bool ok = TC6_SendRawEthernetSegments(lw->tc.tc6, /*seg=*/NULL, /*segCount=*/0,
                                           tot, 0,
       +[](TC6_t*, const uint8_t*, uint16_t len, void *rawTag, void*){
         auto tag = static_cast<Tc6TxCompleteTag*>(rawTag);
         if (tag && tag->lw) {
-          //Serial.print("TC6 TX done len=");
-          //Serial.print(len);
-          //Serial.print(" delta_ms=");
+          Serial.print("TC6 TX done len=");
+          Serial.print(len);
+          Serial.print(" delta_ms=");
           Serial.println(millis() - tag->startMs);
           tag->lw->tc.lastTxBytes = len;
         }
@@ -556,7 +556,7 @@ void TC6_CB_OnRxEthernetSlice(TC6_t *pInst, const uint8_t *pRx, uint16_t offset,
     success = false;
   }
   if (success && ((offset + len) > TC6LwIP_MTU)) {
-//    PRINT("on_rx_slice:packet greater than MTU", (offset + len));
+//   PRINT("on_rx_slice:packet greater than MTU", (offset + len));
     lw->tc.rxInvalid = true;
     success = false;
   }
@@ -577,6 +577,11 @@ void TC6_CB_OnRxEthernetSlice(TC6_t *pInst, const uint8_t *pRx, uint16_t offset,
   if (success) {
     (void)memcpy(lw->tc.pbuf->payload + offset, pRx, len);
     lw->tc.rxLen += len;
+    Serial.print("TC6 RX slice off=");
+    Serial.print(offset); 
+    Serial.print(" len=");
+    Serial.println(len);
+
   }
 }
 static void sniff_ether_ip(const struct pbuf* p) {
