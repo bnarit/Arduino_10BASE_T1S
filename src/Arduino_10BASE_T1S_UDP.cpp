@@ -14,6 +14,16 @@
 
 #include "Arduino_10BASE_T1S_UDP.h"
 #include <Arduino.h>
+
+#ifndef T1S_UDP_DEBUG_TRACE
+#define T1S_UDP_DEBUG_TRACE 0
+#endif
+
+#if T1S_UDP_DEBUG_TRACE
+#define UDPDBG(...) Serial.printf(__VA_ARGS__)
+#else
+#define UDPDBG(...) do {} while (0)
+#endif
 /**************************************************************************************
  * MODULE INTERNAL FUNCTION DECLARATION
  **************************************************************************************/
@@ -94,8 +104,13 @@ int Arduino_10BASE_T1S_UDP::beginPacket(const char *host, uint16_t port)
 
 int Arduino_10BASE_T1S_UDP::endPacket()
 {
+  static uint32_t tx_seq = 0;
+  const uint32_t tx_id = ++tx_seq;
   if (_udp_pcb == nullptr)
     return 0;
+  if (_tx_data.empty())
+    return 1;
+  UDPDBG("[UDPDBG][%lu] endPacket enter len=%u\n", tx_id, (unsigned int)_tx_data.size());
 
   /* Convert to IP address required for LWIP. */
   ip_addr_t ipaddr;
@@ -103,24 +118,38 @@ int Arduino_10BASE_T1S_UDP::endPacket()
 
   /* Allocate pbuf structure. */
   struct pbuf * p = pbuf_alloc(PBUF_TRANSPORT, _tx_data.size(), PBUF_RAM);
-  if (!p)
+  if (!p) {
+    UDPDBG("[UDPDBG][%lu] pbuf_alloc failed\n", tx_id);
+    _tx_data.clear();
     return 0;
+  }
+  UDPDBG("[UDPDBG][%lu] pbuf_alloc ok\n", tx_id);
 
   /* Copy data from transmit buffer over. */
   err_t err = pbuf_take(p, _tx_data.data(), _tx_data.size());
-  if (err != ERR_OK)
+  if (err != ERR_OK) {
+    UDPDBG("[UDPDBG][%lu] pbuf_take failed err=%d\n", tx_id, (int)err);
+    pbuf_free(p);
+    _tx_data.clear();
     return -1;
+  }
+  UDPDBG("[UDPDBG][%lu] pbuf_take ok\n", tx_id);
 
   /* Empty our transmit buffer. */
   _tx_data.clear();
 
   /* Send UDP packet. */
   err = udp_sendto(_udp_pcb, p, &ipaddr, _send_to_port);
-  if (err != ERR_OK)
+  if (err != ERR_OK) {
+    UDPDBG("[UDPDBG][%lu] udp_sendto failed err=%d\n", tx_id, (int)err);
+    pbuf_free(p);
     return -1;
+  }
+  UDPDBG("[UDPDBG][%lu] udp_sendto ok\n", tx_id);
 
   /* Free pbuf */
   pbuf_free(p);
+  UDPDBG("[UDPDBG][%lu] endPacket done\n", tx_id);
 
   return 1;
 }

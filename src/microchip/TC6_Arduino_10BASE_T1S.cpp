@@ -676,14 +676,20 @@ char buffer[100];
 #define ESC_GREEN     "\033[32m"
 #define ESC_YELLOW    "\033[33m"
 #define ESC_RESETCOLOR     "\033[0m"
-#define PRINT(...)               \
-  do {                           \
-    char buffer[128];            \
-    sprintf(buffer, __VA_ARGS__); \
-    Serial.print(buffer);        \
-  } while (0);                    \
-  Serial.println();               \
-  Serial.flush();                   
+#ifndef TC6_EVENT_LOG_ENABLE
+#define TC6_EVENT_LOG_ENABLE 0
+#endif
+
+#if TC6_EVENT_LOG_ENABLE
+#define PRINT(...)                 \
+  do {                             \
+    char buffer[128];              \
+    sprintf(buffer, __VA_ARGS__);  \
+    Serial.println(buffer);        \
+  } while (0)
+#else
+#define PRINT(...) do {} while (0)
+#endif
          
 
 void TC6_CB_OnError(TC6_t *pInst, TC6_Error_t err, void *pGlobalTag)
